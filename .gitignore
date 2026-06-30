@@ -1,0 +1,11 @@
+__pycache__/
+*.py[cod]
+.DS_Store
+
+Result*/
+*.lp
+*.log
+*.ilp
+
+.env
+.venv/
