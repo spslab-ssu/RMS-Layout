@@ -33,9 +33,9 @@ def solve_milp(instance, config) -> RMSSolution:
     feasible_pairs = instance.feasible_pairs
     route_arcs = instance.route_arcs
 
-    x_keys = [(p, j, l) for p in P for (j, l) in feasible_pairs]
-    s_keys = [(p, j, l, t) for p in P for (j, l) in feasible_pairs for t in T]
-    y_keys = [
+    x_keys = [(p, j, l) for p in P for (j, l) in feasible_pairs] 
+    s_keys = [(p, j, l, t) for p in P for (j, l) in feasible_pairs for t in T] 
+    y_keys = [                                                                 
         (p, j_prev, j_next, l, t)
         for p in P
         for j_prev in J
@@ -43,7 +43,7 @@ def solve_milp(instance, config) -> RMSSolution:
         for t in T
         if t != 1 and j_prev != j_next and (j_prev, j_next) in instance.reconfiguration_cost
     ]
-    v_keys = [(p, l, t) for p in P for l in L for t in T]
+    v_keys = [(p, l, t) for p in P for l in L for t in T] # period t에 위치 p에서 operation l의 flow량
 
     flow_keys = []
     for t in T:
@@ -57,7 +57,7 @@ def solve_milp(instance, config) -> RMSSolution:
                     if p != q:
                         flow_keys.append((p, left, q, right, t))
 
-    x = model.addVars(x_keys, vtype=GRB.BINARY, name="x")
+    x = model.addVars(x_keys, vtype=GRB.BINARY, name="x") 
 
     # 선택 사항: 논문 Figure 2(a)처럼 초기 구매 배치를 강제로 고정해 비교할 때 사용한다.
     # config.FIXED_PURCHASES = [(p, j, l), ...] 형식으로 전달한다.
@@ -70,10 +70,10 @@ def solve_milp(instance, config) -> RMSSolution:
         for key in x_keys:
             model.addConstr(x[key] == (1 if key in fixed_set else 0), name=f"fixed_purchase[{key}]")
 
-    s = model.addVars(s_keys, vtype=GRB.BINARY, name="s")
-    y = model.addVars(y_keys, vtype=GRB.BINARY, name="y")
-    v = model.addVars(v_keys, lb=0.0, name="v")
-    f = model.addVars(flow_keys, lb=0.0, name="f")
+    s = model.addVars(s_keys, vtype=GRB.BINARY, name="s") #period t에 위치 p에 configuration j, operation l 상태이면 1
+    y = model.addVars(y_keys, vtype=GRB.BINARY, name="y") #period t에 위치 p에서 configuration j_prev에서 j_next로 operation l로 재구성하면 1
+    v = model.addVars(v_keys, lb=0.0, name="v")           #위치 p, configuration j, operation l 설치하면 1 
+    f = model.addVars(flow_keys, lb=0.0, name="f")        #period t에 위치 p에서 operation left에서 위치 q로 operation right로 flow량
 
     feasible_by_op: dict[int, list[str]] = defaultdict(list)
     feasible_by_config: dict[str, list[int]] = defaultdict(list)

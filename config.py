@@ -8,7 +8,7 @@ RESULT_DIR = BASE_DIR / "Result"
 # 실행할 데이터셋을 선택한다.
 # - "single_part": 메인논문 Example 1 단일부품 문제
 # - "multi_part": 메인논문 Example 2 다중부품 문제
-PROBLEM_NAME = "single_part"
+PROBLEM_NAME = "multi_part"
 PROBLEM_DIR = DATA_DIR / PROBLEM_NAME
 
 LOCATION_FILE = PROBLEM_DIR / "locations.csv"
@@ -17,7 +17,7 @@ PRODUCTION_RATE_FILE = PROBLEM_DIR / "production_rates.csv"
 DEMAND_FILE = PROBLEM_DIR / "demands.csv"
 PARAMETER_FILE = PROBLEM_DIR / "parameters.csv"
 
-TIME_LIMIT = 100000
+TIME_LIMIT = 3600
 MIP_GAP = 0.0
 
 # 논문 Example에서는 같은 machine type 안에서만 configuration 변경을 허용한다.
