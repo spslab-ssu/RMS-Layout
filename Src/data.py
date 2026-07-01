@@ -48,7 +48,7 @@ def load_instance(config) -> RMSInstance:
     이 파일이 CSV schema와 모델 사이의 완충층이다.
     CSV 구조가 바뀌면 가능하면 여기만 수정한다.
     """
-    params = _read_parameters(config.PARAMETER_FILE)
+    params = _read_parameters(config.PARAMETER_FILE) 
     locations_df = pd.read_csv(config.LOCATION_FILE)
     configs_df = pd.read_csv(config.CONFIGURATION_FILE)
     rates_df = pd.read_csv(config.PRODUCTION_RATE_FILE)
@@ -113,22 +113,22 @@ def load_instance(config) -> RMSInstance:
         production_rate_file=config.PRODUCTION_RATE_FILE,
         demand_file=config.DEMAND_FILE,
         parameter_file=config.PARAMETER_FILE,
-        periods=periods,
-        install_locations=install_locations,
-        all_locations=all_locations,
-        operations=operations,
-        configurations=configurations,
-        feasible_pairs=feasible_pairs,
-        route_arcs=route_arcs,
+        periods=periods,                                #생산기간 T
+        install_locations=install_locations,            #RMT 설치 가능한 위치 P
+        all_locations=all_locations, 
+        operations=operations,                          #필요한 operation L
+        configurations=configurations,                  #사용가능한 configuration J
+        feasible_pairs=feasible_pairs,                  #가능한 configurtion-operation pair (j,l)
+        route_arcs=route_arcs,                          # 공정흐름 ex) start > 5 > 1 > 17 > end
         locations=locations,
-        cost=cost,
+        cost=cost,                                      #configuration별 cost c_j
         machine=machine,
         modules=modules,
-        production_rate=production_rate,
-        reconfiguration_cost=reconfiguration_cost,
-        distance=distance,
-        arc_demand=arc_demand,
-        parameters=params,
+        production_rate=production_rate,                #configuration-operation별 생산률 B_ij
+        reconfiguration_cost=reconfiguration_cost,      #configuration 변경비용 r_ij
+        distance=distance,                              #location별 Manhattan distance D_pp'    
+        arc_demand=arc_demand,                          #period별 arc demand d_tll' (t,l,l')   
+        parameters=params,                              #MHC, add/remove module cost, start/end location, period count 등
         start_location=start_location,
         end_location=end_location,
         start_operation=start_operation,
