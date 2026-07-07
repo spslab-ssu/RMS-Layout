@@ -129,14 +129,14 @@ def solve_milp(instance, config) -> RMSSolution:
         model.addConstr(y[p, j_prev, j_next, l, t] <= s[p, j_next, l, t])
 
     # RMT capacity 제약.
-    # 각 auxiliary module은 한정된 shared resource로 보고, period별 동시 점유량을 제한한다.
+    # shared resource 사용량은 a_rj * state로 계산한다.
     for resource, capacity in instance.shared_resource_capacity.items():
         for t in T:
             usage = gp.quicksum(
-                s[p, j, l, t]
+                instance.resource_requirement[j, resource] * s[p, j, l, t]
                 for p in P
                 for j, l in feasible_pairs
-                if resource in instance.auxiliary_modules[j] and (p, j, l, t) in s
+                if (j, resource) in instance.resource_requirement and (p, j, l, t) in s
             )
             model.addConstr(usage <= capacity, name=f"shared_resource[{resource},{t}]")
 
@@ -250,9 +250,9 @@ def _extract_solution(model, instance, x, s, y, v, f, purchase_cost, reconfigura
     for resource, capacity in sorted(instance.shared_resource_capacity.items()):
         for t in instance.periods:
             usage = sum(
-                var.X
+                instance.resource_requirement[j, resource] * var.X
                 for (p, j, l, period), var in s.items()
-                if period == t and resource in instance.auxiliary_modules[j]
+                if period == t and (j, resource) in instance.resource_requirement
             )
             resource_usage.append(
                 {

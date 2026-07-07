@@ -17,6 +17,7 @@ PRODUCTION_RATE_FILE = PROBLEM_DIR / "production_rates.csv"
 DEMAND_FILE = PROBLEM_DIR / "demands.csv"
 PARAMETER_FILE = PROBLEM_DIR / "parameters.csv"
 SHARED_RESOURCE_FILE = PROBLEM_DIR / "shared_resources.csv"
+RESOURCE_REQUIREMENT_FILE = PROBLEM_DIR / "resource_requirements.csv"
 
 TIME_LIMIT = 600
 MIP_GAP = 0.0
