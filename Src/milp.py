@@ -17,6 +17,7 @@ class RMSSolution:
     machine_states: list[dict[str, Any]] = field(default_factory=list)
     reconfigurations: list[dict[str, Any]] = field(default_factory=list)
     material_flows: list[dict[str, Any]] = field(default_factory=list)
+    resource_usage: list[dict[str, Any]] = field(default_factory=list)
     cost_breakdown: dict[str, float] = field(default_factory=dict)
 
 
@@ -128,6 +129,17 @@ def solve_milp(instance, config) -> RMSSolution:
         model.addConstr(y[p, j_prev, j_next, l, t] <= s[p, j_next, l, t])
 
     # RMT capacity 제약.
+    # 각 auxiliary module은 한정된 shared resource로 보고, period별 동시 점유량을 제한한다.
+    for resource, capacity in instance.shared_resource_capacity.items():
+        for t in T:
+            usage = gp.quicksum(
+                s[p, j, l, t]
+                for p in P
+                for j, l in feasible_pairs
+                if resource in instance.auxiliary_modules[j] and (p, j, l, t) in s
+            )
+            model.addConstr(usage <= capacity, name=f"shared_resource[{resource},{t}]")
+
     for p in P:
         for l in L:
             for t in T:
@@ -204,12 +216,12 @@ def _extract_solution(model, instance, x, s, y, v, f, purchase_cost, reconfigura
         return RMSSolution(summary=summary)
 
     cost_breakdown = {
-        "purchase_cost": float(purchase_cost.getValue()),
-        "reconfiguration_cost": float(reconfiguration_cost.getValue()),
-        "material_handling_cost": float(handling_cost.getValue()),
-        "total_objective": float(model.ObjVal),
+        "purchase_cost": _clean_float(purchase_cost.getValue()),
+        "reconfiguration_cost": _clean_float(reconfiguration_cost.getValue()),
+        "material_handling_cost": _clean_float(handling_cost.getValue()),
+        "total_objective": _clean_float(model.ObjVal),
     }
-    summary.update({"objective": float(model.ObjVal), "runtime_seconds": float(model.Runtime), "mip_gap": float(model.MIPGap) if model.IsMIP else 0.0})
+    summary.update({"objective": _clean_float(model.ObjVal), "runtime_seconds": float(model.Runtime), "mip_gap": float(model.MIPGap) if model.IsMIP else 0.0})
 
     purchased = []
     for (p, j, l), var in sorted(x.items()):
@@ -234,4 +246,31 @@ def _extract_solution(model, instance, x, s, y, v, f, purchase_cost, reconfigura
             mhc = instance.parameters["material_handling_cost"]
             flows.append({"period": t, "from_location": p, "from_operation": left, "to_location": q, "to_operation": right, "flow": round(var.X, 6), "distance": distance, "mhc": mhc, "flow_cost": round(var.X * distance * mhc, 6)})
 
-    return RMSSolution(summary=summary, purchased_machines=purchased, machine_states=states, reconfigurations=reconfigs, material_flows=flows, cost_breakdown=cost_breakdown)
+    resource_usage = []
+    for resource, capacity in sorted(instance.shared_resource_capacity.items()):
+        for t in instance.periods:
+            usage = sum(
+                var.X
+                for (p, j, l, period), var in s.items()
+                if period == t and resource in instance.auxiliary_modules[j]
+            )
+            resource_usage.append(
+                {
+                    "period": t,
+                    "resource": resource,
+                    "usage": round(usage, 6),
+                    "capacity": capacity,
+                    "slack": round(capacity - usage, 6),
+                }
+            )
+
+    return RMSSolution(summary=summary, purchased_machines=purchased, machine_states=states, reconfigurations=reconfigs, material_flows=flows, resource_usage=resource_usage, cost_breakdown=cost_breakdown)
+
+
+def _clean_float(value: float, integer_tolerance: float = 1e-3) -> float:
+    """Gurobi numerical noise를 사람이 읽기 좋은 값으로 정리한다."""
+    value = float(value)
+    nearest_integer = round(value)
+    if abs(value - nearest_integer) <= integer_tolerance:
+        return float(nearest_integer)
+    return round(value, 6)
