@@ -8,7 +8,7 @@ RESULT_DIR = BASE_DIR / "Result"
 # 실행할 데이터셋을 선택한다.
 # - "single_part": 메인논문 Example 1 단일부품 문제
 # - "multi_part": 메인논문 Example 2 다중부품 문제
-PROBLEM_NAME = "single_part"
+PROBLEM_NAME = "multi_part"
 PROBLEM_DIR = DATA_DIR / PROBLEM_NAME
 
 LOCATION_FILE = PROBLEM_DIR / "locations.csv"

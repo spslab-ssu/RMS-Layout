@@ -23,13 +23,17 @@ RMS_Layout/
 │   │   ├── configurations.csv   # RMT configuration, 비용, module 정보
 │   │   ├── production_rates.csv # configuration별 operation 생산률
 │   │   ├── demands.csv          # part별 period demand와 operation sequence
-│   │   └── parameters.csv       # MHC, add/remove module cost 등 scalar parameter
+│   │   ├── parameters.csv       # MHC, add/remove module cost 등 scalar parameter
+│   │   ├── shared_resources.csv # shared resource별 보유량
+│   │   └── resource_requirements.csv # configuration별 shared resource 요구 여부
 │   └── multi_part/              # 메인논문 Example 2 다중부품 데이터
 │       ├── locations.csv
 │       ├── configurations.csv
 │       ├── production_rates.csv
 │       ├── demands.csv
-│       └── parameters.csv
+│       ├── parameters.csv
+│       ├── shared_resources.csv
+│       └── resource_requirements.csv
 │
 ├── Src/
 │   ├── __init__.py

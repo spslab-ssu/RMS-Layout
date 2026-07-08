@@ -1,7 +1,7 @@
 {
-  "problem_name": "single_part",
-  "status": 2,
-  "status_name": "OPTIMAL",
+  "problem_name": "multi_part",
+  "status": 3,
+  "status_name": "INFEASIBLE",
   "periods": [
     1,
     2,
@@ -9,11 +9,10 @@
     4
   ],
   "operations": [
-    1,
-    5,
+    2,
+    8,
+    11,
+    12,
     17
-  ],
-  "objective": 27585.0,
-  "runtime_seconds": 5.45029616355896,
-  "mip_gap": 0.0
+  ]
 }

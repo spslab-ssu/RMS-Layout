@@ -197,7 +197,7 @@ def _read_resource_requirement(path: Path) -> dict[tuple[str, int], int]:
 def _build_default_resource_requirement(auxiliary_modules: dict[str, set[int]]) -> dict[tuple[str, int], int]:
     """별도 a_rj 파일이 없으면 auxiliary module 포함 여부를 binary requirement로 사용한다."""
     return {
-        (configuration, resource): 1.0
+        (configuration, resource): 1
         for configuration, resources in auxiliary_modules.items()
         for resource in resources
     }
