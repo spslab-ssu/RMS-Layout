@@ -141,6 +141,19 @@ def solve_milp(instance, config) -> RMSSolution:
                     name=f"capacity[{p},{l},{t}]",
                 )
 
+    # 공유 auxiliary module capacity 제약.
+    # period t에 module m을 장착한 기계 수(idle 포함)가 capa_m을 넘을 수 없다.
+    # module_capacity에 없는 모듈은 무제한으로 취급한다.
+    for m, capa in sorted(instance.module_capacity.items()):
+        module_users = [(j, l) for j, l in feasible_pairs if m in instance.aux_modules[j]]
+        if not module_users:
+            continue
+        for t in T:
+            model.addConstr(
+                gp.quicksum(s[p, j, l, t] for p in P for j, l in module_users) <= capa,
+                name=f"module_capacity[{m},{t}]",
+            )
+
     incoming: dict[tuple[int, int, int], list[tuple[int, int, int, int, int]]] = defaultdict(list)
     outgoing: dict[tuple[int, int, int], list[tuple[int, int, int, int, int]]] = defaultdict(list)
     for key in flow_keys:
