@@ -141,17 +141,18 @@ def solve_milp(instance, config) -> RMSSolution:
                     name=f"capacity[{p},{l},{t}]",
                 )
 
-    # 공유 auxiliary module capacity 제약.
-    # period t에 module m을 장착한 기계 수(idle 포함)가 capa_m을 넘을 수 없다.
-    # module_capacity에 없는 모듈은 무제한으로 취급한다.
-    for m, capa in sorted(instance.module_capacity.items()):
-        module_users = [(j, l) for j, l in feasible_pairs if m in instance.aux_modules[j]]
-        if not module_users:
+    # 공유 자원(shared resource) capacity 제약: Σ_p Σ_j Σ_l a_rj·s_pjlt ≤ Capa_r  ∀r∈R, ∀t∈T
+    # period t에 자원 r을 사용하는 RMT 수(idle 포함)가 보유량을 넘을 수 없다.
+    # 현재 자원 r = auxiliary module (basic module은 기계 고정이라 제외).
+    # resource_capacity에 없는 자원은 무제한으로 취급한다.
+    for r, capa in sorted(instance.resource_capacity.items()):
+        resource_users = [(j, l) for j, l in feasible_pairs if r in instance.resource_use[j]]
+        if not resource_users:
             continue
         for t in T:
             model.addConstr(
-                gp.quicksum(s[p, j, l, t] for p in P for j, l in module_users) <= capa,
-                name=f"module_capacity[{m},{t}]",
+                gp.quicksum(s[p, j, l, t] for p in P for j, l in resource_users) <= capa,
+                name=f"shared_resource[{r},{t}]",
             )
 
     incoming: dict[tuple[int, int, int], list[tuple[int, int, int, int, int]]] = defaultdict(list)

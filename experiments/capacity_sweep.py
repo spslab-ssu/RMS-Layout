@@ -38,7 +38,7 @@ def make_config(problem: str) -> SimpleNamespace:
         PRODUCTION_RATE_FILE=d / "production_rates.csv",
         DEMAND_FILE=d / "demands.csv",
         PARAMETER_FILE=d / "parameters.csv",
-        MODULE_CAPACITY_FILE=d / "module_capacities.csv",
+        RESOURCE_CAPACITY_FILE=d / "resource_capacities.csv",
         TIME_LIMIT=TIME_LIMIT,
         MIP_GAP=MIP_GAP,
         SAME_MACHINE_RECONFIG_ONLY=True,
@@ -66,7 +66,7 @@ def run() -> None:
 
         for capa in CAPA_VALUES:
             instance = load_instance(cfg)              # 매 시나리오 새로 로드 (CSV는 그대로)
-            instance.module_capacity[TARGET_MODULE] = capa
+            instance.resource_capacity[TARGET_MODULE] = capa
 
             print(f"\n===== scenario: module {TARGET_MODULE} capa={capa} =====", flush=True)
             solution = solve_milp(instance, cfg)

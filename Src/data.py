@@ -30,8 +30,8 @@ class RMSInstance:
     cost: dict[str, float]
     machine: dict[str, str]
     modules: dict[str, set[int]]          # basic+auxiliary 합본 (재구성 비용 계산용)
-    aux_modules: dict[str, set[int]]      # auxiliary만 (공유자원 capacity 제약용)
-    module_capacity: dict[int, float]     # {모듈번호: capa}. 없는 모듈은 무제한
+    resource_use: dict[str, set[int]]     # a_rj: configuration j가 사용하는 자원 r 집합 (현재 r=auxiliary module)
+    resource_capacity: dict[int, float]   # Capa_r: {자원 r: 보유량}. 없는 자원은 무제한
     production_rate: dict[tuple[str, int], float]
     reconfiguration_cost: dict[tuple[str, str], float]
     distance: dict[tuple[int, int], float]
@@ -75,11 +75,11 @@ def load_instance(config) -> RMSInstance:
         str(row.configuration): _parse_modules(row.basic_modules) | _parse_modules(row.auxiliary_modules)
         for row in configs_df.itertuples(index=False)
     }
-    aux_modules = {
+    resource_use = {
         str(row.configuration): _parse_modules(row.auxiliary_modules)
         for row in configs_df.itertuples(index=False)
     }
-    module_capacity = _read_module_capacities(getattr(config, "MODULE_CAPACITY_FILE", None))
+    resource_capacity = _read_resource_capacities(getattr(config, "RESOURCE_CAPACITY_FILE", None))
     production_rate = {
         (str(row.configuration), int(row.operation)): float(row.production_rate)
         for row in rates_df.itertuples(index=False)
@@ -131,8 +131,8 @@ def load_instance(config) -> RMSInstance:
         cost=cost,                                      #configuration별 cost c_j
         machine=machine,
         modules=modules,
-        aux_modules=aux_modules,                        #configuration별 auxiliary module set (capacity 제약용)
-        module_capacity=module_capacity,                #공유 module capacity {모듈번호: capa}
+        resource_use=resource_use,                      #a_rj: configuration별 사용 자원 집합 (현재 r=auxiliary module)
+        resource_capacity=resource_capacity,            #Capa_r: 공유 자원 보유량 {r: capa}
         production_rate=production_rate,                #configuration-operation별 생산률 B_ij
         reconfiguration_cost=reconfiguration_cost,      #configuration 변경비용 r_ij
         distance=distance,                              #location별 Manhattan distance D_pp'    
@@ -151,12 +151,12 @@ def _read_parameters(path: Path) -> dict[str, float]:
     return {str(row.parameter): float(row.value) for row in df.itertuples(index=False)}
 
 
-def _read_module_capacities(path) -> dict[int, float]:
-    """module,capacity CSV를 dict로 읽는다. 파일이 없으면 빈 dict(=제약 없음)."""
+def _read_resource_capacities(path) -> dict[int, float]:
+    """resource,capacity CSV를 dict로 읽는다. 파일이 없으면 빈 dict(=제약 없음)."""
     if path is None or not Path(path).exists():
         return {}
     df = pd.read_csv(path)
-    return {int(row.module): float(row.capacity) for row in df.itertuples(index=False)}
+    return {int(row.resource): float(row.capacity) for row in df.itertuples(index=False)}
 
 
 def _parse_modules(value) -> set[int]:
