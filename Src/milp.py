@@ -7,6 +7,8 @@ from typing import Any
 import gurobipy as gp
 from gurobipy import GRB
 
+from Src.warm_start import apply_warm_start
+
 
 @dataclass
 class RMSSolution:
@@ -191,6 +193,19 @@ def solve_milp(instance, config) -> RMSSolution:
     )
 
     model.setObjective(purchase_cost + reconfiguration_cost + handling_cost, GRB.MINIMIZE)
+
+    if bool(getattr(config, "USE_WARM_START", False)):
+        warm_start_dir = getattr(config, "WARM_START_DIR", None)
+        if warm_start_dir is None:
+            raise ValueError("USE_WARM_START=True이면 config.WARM_START_DIR를 지정해야 한다.")
+        assigned = apply_warm_start({"x": x, "s": s, "y": y, "v": v, "f": f}, warm_start_dir)
+        print(f"Applied warm start from {warm_start_dir}: {assigned}")
+
+    if bool(getattr(config, "USE_OBJECTIVE_CUTOFF", False)):
+        cutoff = getattr(config, "OBJECTIVE_CUTOFF", None)
+        if cutoff is not None:
+            model.Params.Cutoff = float(cutoff)
+
     model.optimize()
 
     return _extract_solution(model, instance, x, s, y, v, f, purchase_cost, reconfiguration_cost, handling_cost)

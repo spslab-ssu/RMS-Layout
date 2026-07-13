@@ -22,11 +22,20 @@ RESOURCE_REQUIREMENT_FILE = PROBLEM_DIR / "resource_requirements.csv"
 TIME_LIMIT = 600
 MIP_GAP = 0.0
 
+# 논문 Figure 4 등 기존 해를 Gurobi MIP start로 넣을지 여부.
+# multi_part에서 논문 해를 기준으로 시작하려면 아래 두 값을 켠다.
+USE_WARM_START = False
+WARM_START_DIR = PROBLEM_DIR / "warm_start_paper"
+
+# warm start objective보다 나쁜 해를 탐색에서 제외하고 싶을 때만 사용한다.
+USE_OBJECTIVE_CUTOFF = False
+OBJECTIVE_CUTOFF = None
+
 # 논문 Example에서는 같은 machine type 안에서만 configuration 변경을 허용한다.
 SAME_MACHINE_RECONFIG_ONLY = True
 
 # auxiliary module을 한정된 shared resource로 볼지 여부.
-USE_SHARED_RESOURCES = True
+USE_SHARED_RESOURCES = False
 
 # dummy start/end operation id. 실제 operation과 충돌하지 않게 둔다.
 START_OPERATION = 0

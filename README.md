@@ -23,20 +23,26 @@ RMS_Layout/
 │   │   ├── configurations.csv   # RMT configuration, 비용, module 정보
 │   │   ├── production_rates.csv # configuration별 operation 생산률
 │   │   ├── demands.csv          # part별 period demand와 operation sequence
-│   │   └── parameters.csv       # MHC, add/remove module cost 등 scalar parameter
+│   │   ├── parameters.csv       # MHC, add/remove module cost 등 scalar parameter
+│   │   ├── shared_resources.csv # shared resource별 보유량
+│   │   └── resource_requirements.csv # configuration별 shared resource 요구 여부
 │   └── multi_part/              # 메인논문 Example 2 다중부품 데이터
 │       ├── locations.csv
 │       ├── configurations.csv
 │       ├── production_rates.csv
 │       ├── demands.csv
-│       └── parameters.csv
+│       ├── parameters.csv
+│       ├── shared_resources.csv
+│       ├── resource_requirements.csv
+│       └── warm_start_paper/    # 논문 Figure 4 기반 multi-part warm start CSV
 │
 ├── Src/
 │   ├── __init__.py
 │   ├── data.py          # ① CSV 입력 + MILP parameter 전처리
 │   ├── milp.py          # ② Gurobi MILP 모델 생성 및 solve
 │   ├── output.py        # ③ 해를 CSV/JSON 결과 파일로 저장
-│   └── visualize.py     # ④ 결과 CSV를 layout 이미지로 시각화
+│   ├── warm_start.py    # ④ 기존 해 CSV를 Gurobi MIP start로 적용
+│   └── visualize.py     # ⑤ 결과 CSV를 layout 이미지로 시각화
 │
 └── Result/              # 실행 결과 CSV, summary, figure 저장
 ```
@@ -104,8 +110,9 @@ config.py -> Src/data.py        ->    Src/milp.py   ->   Src/output.py  ->  Src/
 | 설정 | `config.py` | 데이터셋, 경로, solver 옵션 정의 | `PROBLEM_NAME`만 바꿔 single/multi 선택 |
 | 입력 생성 | `Data/generate_data.py` | 논문 재현용 CSV 생성/복사 | 기존 검증 데이터를 새 구조로 이동 |
 | 데이터 | `Src/data.py` | CSV 읽기 및 MILP parameter화 | `RMSInstance` 생성, single/multi 표준화 |
-| 모델 | `Src/milp.py` | Gurobi MILP 생성 및 solve | 구매/상태/재구성/flow 변수와 제약 정의 |
+| 모델 | `Src/milp.py` | Gurobi MILP 생성 및 solve | 구매/상태/재구성/flow/shared resource 제약 정의 |
 | 출력 | `Src/output.py` | 결과 CSV/JSON 저장 | 결과 schema 고정 |
+| Warm start | `Src/warm_start.py` | 기존 해 CSV를 Gurobi MIP start로 주입 | multi-part 논문 해 기반 warm start 선택 적용 |
 | 시각화 | `Src/visualize.py` | period별 layout 이미지 생성 | Figure 2 스타일 결과 확인 |
 
 ---
@@ -176,6 +183,31 @@ end_location,18
 add_module_cost,50
 remove_module_cost,25
 ```
+
+### `shared_resources.csv`
+
+shared resource별 보유량을 저장합니다. `config.USE_SHARED_RESOURCES=True`일 때만 MILP 제약으로 사용합니다.
+
+```text
+resource,capacity
+13,5
+16,5
+```
+
+### `resource_requirements.csv`
+
+각 configuration이 어떤 shared resource를 요구하는지 저장합니다.
+
+```text
+configuration,resource,amount
+mc11,13,1
+mc11,17,1
+```
+
+### `warm_start_paper/`
+
+multi-part 문제에서 논문 Figure 4 기반 해를 Gurobi MIP start로 넣기 위한 CSV 묶음입니다.
+`config.PROBLEM_NAME="multi_part"`와 `config.USE_WARM_START=True`로 설정하면 사용됩니다.
 
 ---
 
