@@ -35,7 +35,7 @@ OBJECTIVE_CUTOFF = None
 SAME_MACHINE_RECONFIG_ONLY = True
 
 # auxiliary module을 한정된 shared resource로 볼지 여부.
-USE_SHARED_RESOURCES = False
+USE_SHARED_RESOURCES = True
 
 # dummy start/end operation id. 실제 operation과 충돌하지 않게 둔다.
 START_OPERATION = 0

@@ -44,6 +44,9 @@ RMS_Layout/
 │   ├── warm_start.py    # ④ 기존 해 CSV를 Gurobi MIP start로 적용
 │   └── visualize.py     # ⑤ 결과 CSV를 layout 이미지로 시각화
 │
+├── experiments/
+│   └── shared_resource_sensitivity.py # shared resource capacity 민감도 분석
+│
 └── Result/              # 실행 결과 CSV, summary, figure 저장
 ```
 
@@ -114,6 +117,7 @@ config.py -> Src/data.py        ->    Src/milp.py   ->   Src/output.py  ->  Src/
 | 출력 | `Src/output.py` | 결과 CSV/JSON 저장 | 결과 schema 고정 |
 | Warm start | `Src/warm_start.py` | 기존 해 CSV를 Gurobi MIP start로 주입 | multi-part 논문 해 기반 warm start 선택 적용 |
 | 시각화 | `Src/visualize.py` | period별 layout 이미지 생성 | Figure 2 스타일 결과 확인 |
+| 실험 | `experiments/shared_resource_sensitivity.py` | shared resource 보유량 민감도 분석 | infeasible 경계와 비용 안정화 구간 확인 |
 
 ---
 
@@ -211,7 +215,39 @@ multi-part 문제에서 논문 Figure 4 기반 해를 Gurobi MIP start로 넣기
 
 ---
 
-## 6. 단일/다중부품 통합 방식
+## 6. Shared Resource 민감도 분석
+
+shared resource 보유량은 너무 작으면 infeasible이 되고, 너무 크면 resource sharing 제약이 사실상 사라집니다.
+따라서 `experiments/shared_resource_sensitivity.py`로 single/multi를 같은 기준에서 반복 실행해 적정 구간을 찾습니다.
+
+resource별 capacity를 모두 같은 값으로 두고 최소 feasible level을 찾는 기본 실행:
+
+```bash
+python3 experiments/shared_resource_sensitivity.py \
+  --problems single_part multi_part \
+  --mode uniform \
+  --levels 0,1,2,3,4,5,6,8,10,12,15,20 \
+  --time-limit 60 \
+  --mip-gap 0.05
+```
+
+현재 CSV의 capacity를 기준으로 배율만 바꾸는 실행:
+
+```bash
+python3 experiments/shared_resource_sensitivity.py \
+  --problems single_part multi_part \
+  --mode scale \
+  --levels 0.25,0.5,0.75,1.0,1.25,1.5,2.0 \
+  --time-limit 60 \
+  --mip-gap 0.05
+```
+
+결과는 기본적으로 `Result/sensitivity/shared_resource_sensitivity.csv`에 저장됩니다.
+판단 기준은 먼저 `status_name`으로 feasible 여부를 보고, feasible 구간에서는 `objective`, `max_utilization`, `binding_resource_period_count`, `min_slack`을 함께 봅니다.
+
+---
+
+## 7. 단일/다중부품 통합 방식
 
 현재 구조에서는 단일부품과 다중부품 MILP를 분리하지 않습니다.
 

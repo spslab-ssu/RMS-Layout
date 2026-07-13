@@ -28,6 +28,8 @@ def solve_milp(instance, config) -> RMSSolution:
     model = gp.Model(f"rms_layout_{instance.problem_name}")
     model.Params.TimeLimit = config.TIME_LIMIT
     model.Params.MIPGap = config.MIP_GAP
+    if hasattr(config, "OUTPUT_FLAG"):
+        model.Params.OutputFlag = int(config.OUTPUT_FLAG)
 
     P = instance.install_locations
     J = instance.configurations
