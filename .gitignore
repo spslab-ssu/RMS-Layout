@@ -1,11 +1,17 @@
+# Python
 __pycache__/
 *.py[cod]
+.venv/
+
+# macOS
 .DS_Store
 
-Result*/
+# Generated outputs
+Result/
+Result_*/
+tmp/
+
+# Solver artifacts
 *.lp
 *.log
 *.ilp
-
-.env
-.venv/

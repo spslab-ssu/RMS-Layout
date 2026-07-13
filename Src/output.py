@@ -13,6 +13,7 @@ def save_solution(solution, result_dir: Path) -> None:
     _write_rows(result_dir / "machine_states.csv", solution.machine_states)
     _write_rows(result_dir / "reconfigurations.csv", solution.reconfigurations)
     _write_rows(result_dir / "material_flows.csv", solution.material_flows)
+    _write_rows(result_dir / "resource_usage.csv", solution.resource_usage)
     _write_rows(result_dir / "cost_breakdown.csv", [solution.cost_breakdown] if solution.cost_breakdown else [])
 
 

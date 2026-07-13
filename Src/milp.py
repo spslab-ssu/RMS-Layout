@@ -7,6 +7,8 @@ from typing import Any
 import gurobipy as gp
 from gurobipy import GRB
 
+from Src.warm_start import apply_warm_start
+
 
 @dataclass
 class RMSSolution:
@@ -17,6 +19,7 @@ class RMSSolution:
     machine_states: list[dict[str, Any]] = field(default_factory=list)
     reconfigurations: list[dict[str, Any]] = field(default_factory=list)
     material_flows: list[dict[str, Any]] = field(default_factory=list)
+    resource_usage: list[dict[str, Any]] = field(default_factory=list)
     cost_breakdown: dict[str, float] = field(default_factory=dict)
 
 
@@ -128,6 +131,17 @@ def solve_milp(instance, config) -> RMSSolution:
         model.addConstr(y[p, j_prev, j_next, l, t] <= s[p, j_next, l, t])
 
     # RMT capacity 제약.
+    # shared resource 사용량은 a_rj * state로 계산한다.
+    for resource, capacity in instance.shared_resource_capacity.items():
+        for t in T:
+            usage = gp.quicksum(
+                instance.resource_requirement[j, resource] * s[p, j, l, t]
+                for p in P
+                for j, l in feasible_pairs
+                if (j, resource) in instance.resource_requirement and (p, j, l, t) in s
+            )
+            model.addConstr(usage <= capacity, name=f"shared_resource[{resource},{t}]")
+
     for p in P:
         for l in L:
             for t in T:
@@ -179,6 +193,19 @@ def solve_milp(instance, config) -> RMSSolution:
     )
 
     model.setObjective(purchase_cost + reconfiguration_cost + handling_cost, GRB.MINIMIZE)
+
+    if bool(getattr(config, "USE_WARM_START", False)):
+        warm_start_dir = getattr(config, "WARM_START_DIR", None)
+        if warm_start_dir is None:
+            raise ValueError("USE_WARM_START=True이면 config.WARM_START_DIR를 지정해야 한다.")
+        assigned = apply_warm_start({"x": x, "s": s, "y": y, "v": v, "f": f}, warm_start_dir)
+        print(f"Applied warm start from {warm_start_dir}: {assigned}")
+
+    if bool(getattr(config, "USE_OBJECTIVE_CUTOFF", False)):
+        cutoff = getattr(config, "OBJECTIVE_CUTOFF", None)
+        if cutoff is not None:
+            model.Params.Cutoff = float(cutoff)
+
     model.optimize()
 
     return _extract_solution(model, instance, x, s, y, v, f, purchase_cost, reconfiguration_cost, handling_cost)
@@ -204,12 +231,12 @@ def _extract_solution(model, instance, x, s, y, v, f, purchase_cost, reconfigura
         return RMSSolution(summary=summary)
 
     cost_breakdown = {
-        "purchase_cost": float(purchase_cost.getValue()),
-        "reconfiguration_cost": float(reconfiguration_cost.getValue()),
-        "material_handling_cost": float(handling_cost.getValue()),
-        "total_objective": float(model.ObjVal),
+        "purchase_cost": _clean_float(purchase_cost.getValue()),
+        "reconfiguration_cost": _clean_float(reconfiguration_cost.getValue()),
+        "material_handling_cost": _clean_float(handling_cost.getValue()),
+        "total_objective": _clean_float(model.ObjVal),
     }
-    summary.update({"objective": float(model.ObjVal), "runtime_seconds": float(model.Runtime), "mip_gap": float(model.MIPGap) if model.IsMIP else 0.0})
+    summary.update({"objective": _clean_float(model.ObjVal), "runtime_seconds": float(model.Runtime), "mip_gap": float(model.MIPGap) if model.IsMIP else 0.0})
 
     purchased = []
     for (p, j, l), var in sorted(x.items()):
@@ -234,4 +261,31 @@ def _extract_solution(model, instance, x, s, y, v, f, purchase_cost, reconfigura
             mhc = instance.parameters["material_handling_cost"]
             flows.append({"period": t, "from_location": p, "from_operation": left, "to_location": q, "to_operation": right, "flow": round(var.X, 6), "distance": distance, "mhc": mhc, "flow_cost": round(var.X * distance * mhc, 6)})
 
-    return RMSSolution(summary=summary, purchased_machines=purchased, machine_states=states, reconfigurations=reconfigs, material_flows=flows, cost_breakdown=cost_breakdown)
+    resource_usage = []
+    for resource, capacity in sorted(instance.shared_resource_capacity.items()):
+        for t in instance.periods:
+            usage = sum(
+                instance.resource_requirement[j, resource] * var.X
+                for (p, j, l, period), var in s.items()
+                if period == t and (j, resource) in instance.resource_requirement
+            )
+            resource_usage.append(
+                {
+                    "period": t,
+                    "resource": resource,
+                    "usage": round(usage, 6),
+                    "capacity": capacity,
+                    "slack": round(capacity - usage, 6),
+                }
+            )
+
+    return RMSSolution(summary=summary, purchased_machines=purchased, machine_states=states, reconfigurations=reconfigs, material_flows=flows, resource_usage=resource_usage, cost_breakdown=cost_breakdown)
+
+
+def _clean_float(value: float, integer_tolerance: float = 1e-3) -> float:
+    """Gurobi numerical noise를 사람이 읽기 좋은 값으로 정리한다."""
+    value = float(value)
+    nearest_integer = round(value)
+    if abs(value - nearest_integer) <= integer_tolerance:
+        return float(nearest_integer)
+    return round(value, 6)

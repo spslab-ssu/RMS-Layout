@@ -17,6 +17,8 @@ class RMSInstance:
     production_rate_file: Path
     demand_file: Path
     parameter_file: Path
+    shared_resource_file: Path | None
+    resource_requirement_file: Path | None
 
     periods: list[int]
     install_locations: list[int]
@@ -29,7 +31,11 @@ class RMSInstance:
     locations: dict[int, dict[str, float | str]]
     cost: dict[str, float]
     machine: dict[str, str]
+    basic_modules: dict[str, set[int]]
+    auxiliary_modules: dict[str, set[int]]
     modules: dict[str, set[int]]
+    shared_resource_capacity: dict[int, int]
+    resource_requirement: dict[tuple[str, int], int]
     production_rate: dict[tuple[str, int], float]
     reconfiguration_cost: dict[tuple[str, str], float]
     distance: dict[tuple[int, int], float]
@@ -53,6 +59,9 @@ def load_instance(config) -> RMSInstance:
     configs_df = pd.read_csv(config.CONFIGURATION_FILE)
     rates_df = pd.read_csv(config.PRODUCTION_RATE_FILE)
     demand_df = pd.read_csv(config.DEMAND_FILE)
+    use_shared_resources = bool(getattr(config, "USE_SHARED_RESOURCES", False))
+    shared_resource_file = getattr(config, "SHARED_RESOURCE_FILE", None)
+    resource_requirement_file = getattr(config, "RESOURCE_REQUIREMENT_FILE", None)
 
     periods = _periods_from_demand(demand_df, params)
     start_location = int(params["start_location"])
@@ -69,10 +78,25 @@ def load_instance(config) -> RMSInstance:
 
     cost = {str(row.configuration): float(row.cost) for row in configs_df.itertuples(index=False)}
     machine = {str(row.configuration): str(row.machine) for row in configs_df.itertuples(index=False)}
-    modules = {
-        str(row.configuration): _parse_modules(row.basic_modules) | _parse_modules(row.auxiliary_modules)
+    basic_modules = {str(row.configuration): _parse_modules(row.basic_modules) for row in configs_df.itertuples(index=False)}
+    auxiliary_modules = {
+        str(row.configuration): _parse_modules(row.auxiliary_modules)
         for row in configs_df.itertuples(index=False)
     }
+    modules = {
+        configuration: basic_modules[configuration] | auxiliary_modules[configuration]
+        for configuration in cost
+    }
+    shared_resource_capacity = (
+        _read_shared_resource_capacity(shared_resource_file)
+        if use_shared_resources and shared_resource_file is not None and Path(shared_resource_file).exists()
+        else {}
+    )
+    resource_requirement = (
+        _read_resource_requirement(resource_requirement_file)
+        if use_shared_resources and resource_requirement_file is not None and Path(resource_requirement_file).exists()
+        else _build_default_resource_requirement(auxiliary_modules)
+    )
     production_rate = {
         (str(row.configuration), int(row.operation)): float(row.production_rate)
         for row in rates_df.itertuples(index=False)
@@ -113,6 +137,8 @@ def load_instance(config) -> RMSInstance:
         production_rate_file=config.PRODUCTION_RATE_FILE,
         demand_file=config.DEMAND_FILE,
         parameter_file=config.PARAMETER_FILE,
+        shared_resource_file=shared_resource_file if shared_resource_capacity else None,
+        resource_requirement_file=resource_requirement_file if shared_resource_capacity else None,
         periods=periods,                                #생산기간 T
         install_locations=install_locations,            #RMT 설치 가능한 위치 P
         all_locations=all_locations, 
@@ -123,7 +149,11 @@ def load_instance(config) -> RMSInstance:
         locations=locations,
         cost=cost,                                      #configuration별 cost c_j
         machine=machine,
+        basic_modules=basic_modules,
+        auxiliary_modules=auxiliary_modules,
         modules=modules,
+        shared_resource_capacity=shared_resource_capacity,
+        resource_requirement=resource_requirement,
         production_rate=production_rate,                #configuration-operation별 생산률 B_ij
         reconfiguration_cost=reconfiguration_cost,      #configuration 변경비용 r_ij
         distance=distance,                              #location별 Manhattan distance D_pp'    
@@ -140,6 +170,37 @@ def _read_parameters(path: Path) -> dict[str, float]:
     """parameter,value CSV를 dict로 읽는다."""
     df = pd.read_csv(path)
     return {str(row.parameter): float(row.value) for row in df.itertuples(index=False)}
+
+
+def _read_shared_resource_capacity(path: Path) -> dict[int, int]:
+    """resource,capacity CSV를 shared resource capacity dict로 읽는다."""
+    df = pd.read_csv(path)
+    return {int(row.resource): int(row.capacity) for row in df.itertuples(index=False)}
+
+
+def _read_resource_requirement(path: Path) -> dict[tuple[str, int], int]:
+    """configuration,resource,amount CSV를 binary a_rj dict로 읽는다."""
+    df = pd.read_csv(path)
+    requirements: dict[tuple[str, int], int] = {}
+    for row in df.itertuples(index=False):
+        amount = float(row.amount)
+        if not amount.is_integer():
+            raise ValueError(f"Resource requirement amount must be an integer: {row}")
+        amount = int(amount)
+        if amount not in {0, 1}:
+            raise ValueError(f"Resource requirement amount must be binary (0 or 1): {row}")
+        if amount == 1:
+            requirements[(str(row.configuration), int(row.resource))] = amount
+    return requirements
+
+
+def _build_default_resource_requirement(auxiliary_modules: dict[str, set[int]]) -> dict[tuple[str, int], int]:
+    """별도 a_rj 파일이 없으면 auxiliary module 포함 여부를 binary requirement로 사용한다."""
+    return {
+        (configuration, resource): 1
+        for configuration, resources in auxiliary_modules.items()
+        for resource in resources
+    }
 
 
 def _parse_modules(value) -> set[int]:
