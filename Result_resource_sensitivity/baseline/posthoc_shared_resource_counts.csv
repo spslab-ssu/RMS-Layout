@@ -1,0 +1,16 @@
+resource,required_capacity,peak_usage_in_solution,capacity_minus_peak,capacity_basis,system_solution_proven_optimal,proven_lexicographic_optimal
+11,8.0,8.0,0.0,fixed_input_capacity,False,False
+12,6.0,4.0,2.0,fixed_input_capacity,False,False
+13,9.0,9.0,0.0,fixed_input_capacity,False,False
+14,10.0,10.0,0.0,fixed_input_capacity,False,False
+15,7.0,7.0,0.0,fixed_input_capacity,False,False
+16,10.0,9.0,1.0,fixed_input_capacity,False,False
+17,5.0,4.0,1.0,fixed_input_capacity,False,False
+18,8.0,8.0,0.0,fixed_input_capacity,False,False
+19,11.0,11.0,0.0,fixed_input_capacity,False,False
+20,10.0,9.0,1.0,fixed_input_capacity,False,False
+21,5.0,5.0,0.0,fixed_input_capacity,False,False
+22,0.0,0.0,0.0,fixed_input_capacity,False,False
+23,0.0,0.0,0.0,fixed_input_capacity,False,False
+24,5.0,5.0,0.0,fixed_input_capacity,False,False
+25,0.0,0.0,0.0,fixed_input_capacity,False,False

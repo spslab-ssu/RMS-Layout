@@ -1,0 +1,2 @@
+resource,baseline_capacity,tested_capacity,capacity_change,baseline_objective,scenario_objective,scenario_lower_bound,proven_min_increase,best_found_increase,decision,status_name,mip_gap,runtime_seconds
+11,8,7,8->7,36724.0,37107.0,34469.162484,-2254.837516,383.0,UNRESOLVED,11,0.07108732897280773,33.481779

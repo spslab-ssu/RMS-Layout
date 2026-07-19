@@ -1,6 +1,6 @@
 period,location,from_machine,from_configuration,to_machine,to_configuration,operation,reconfiguration_cost
 2,6,M2,mc22,M2,mc24,2,325.0
 2,7,M2,mc22,M2,mc24,2,325.0
-2,15,M3,mc31,M3,mc32,11,275.0
-2,19,M3,mc31,M3,mc32,8,275.0
+2,15,M3,mc31,M3,mc32,17,275.0
+2,19,M3,mc31,M3,mc32,11,275.0
 3,4,M3,mc31,M3,mc32,8,275.0

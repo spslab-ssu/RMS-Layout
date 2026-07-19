@@ -14,6 +14,10 @@ def save_solution(solution, result_dir: Path) -> None:
     _write_rows(result_dir / "reconfigurations.csv", solution.reconfigurations)
     _write_rows(result_dir / "material_flows.csv", solution.material_flows)
     _write_rows(result_dir / "resource_usage.csv", solution.resource_usage)
+    if solution.summary.get("optimization_mode") == "lexicographic_shared_resource_capacity":
+        _write_rows(result_dir / "optimal_shared_resources.csv", solution.shared_resource_capacities)
+    else:
+        _write_rows(result_dir / "posthoc_shared_resource_counts.csv", solution.shared_resource_capacities)
     _write_rows(result_dir / "cost_breakdown.csv", [solution.cost_breakdown] if solution.cost_breakdown else [])
 
 

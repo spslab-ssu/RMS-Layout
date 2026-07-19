@@ -323,6 +323,8 @@ purchased_machines.csv      # 구매된 RMT와 초기 configuration/operation
 machine_states.csv          # period별 위치/configuration/operation/flow
 reconfigurations.csv        # period별 configuration 변경 내역
 material_flows.csv          # arc별 material flow와 flow cost
+posthoc_shared_resource_counts.csv # 최종 해에서 계산한 resource별 peak 사용량
+resource_usage.csv          # period/resource별 사용량, capacity, slack
 figures/layout_period_1.png
 figures/layout_period_2.png
 figures/layout_period_3.png

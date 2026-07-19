@@ -1,7 +1,7 @@
 {
   "problem_name": "multi_part",
-  "status": 9,
-  "status_name": "TIME_LIMIT",
+  "status": 11,
+  "status_name": "11",
   "periods": [
     1,
     2,
@@ -15,14 +15,14 @@
     12,
     17
   ],
-  "objective": 36720.0,
-  "runtime_seconds": 3600.0173189640045,
+  "objective": 36724.0,
+  "runtime_seconds": 474.8135311603546,
   "solution_count": 10,
-  "node_count": 204607.0,
+  "node_count": 30425.0,
   "optimization_mode": "fixed_shared_resource_capacity",
-  "upper_bound": 36720.0,
-  "lower_bound": 35922.065409,
-  "absolute_gap": 797.934591,
-  "mip_gap": 0.02173024485677327,
+  "upper_bound": 36724.0,
+  "lower_bound": 35486.588118,
+  "absolute_gap": 1237.411882,
+  "mip_gap": 0.03369491019383658,
   "resource_counting_mode": "fixed_capacity"
 }
