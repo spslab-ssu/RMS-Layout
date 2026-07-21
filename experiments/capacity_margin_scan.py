@@ -43,7 +43,9 @@ def make_config(problem: str) -> SimpleNamespace:
         PRODUCTION_RATE_FILE=d / "production_rates.csv",
         DEMAND_FILE=d / "demands.csv",
         PARAMETER_FILE=d / "parameters.csv",
-        RESOURCE_CAPACITY_FILE=d / "resource_capacities.csv",
+        USE_SHARED_RESOURCES=True,
+        SHARED_RESOURCE_FILE=d / "shared_resources.csv",
+        RESOURCE_REQUIREMENT_FILE=d / "resource_requirements.csv",
         TIME_LIMIT=TIME_LIMIT,
         MIP_GAP=MIP_GAP,
         SAME_MACHINE_RECONFIG_ONLY=True,
@@ -71,7 +73,7 @@ def verdict_of(status: str, objective, bound) -> str:
 def run() -> None:
     cfg = make_config(PROBLEM)
     base_instance = load_instance(cfg)
-    peaks = dict(sorted(base_instance.resource_capacity.items()))
+    peaks = dict(sorted(base_instance.shared_resource_capacity.items()))
     targets = [m for m in peaks if m not in SKIP_MODULES]
 
     out_path = BASE_DIR / "Result" / PROBLEM / "capacity_margin_scan.csv"
@@ -89,7 +91,7 @@ def run() -> None:
                 continue
 
             instance = load_instance(cfg)
-            instance.resource_capacity[m] = tested
+            instance.shared_resource_capacity[m] = tested
 
             print(f"\n===== module {m}: capa {peak} -> {tested} =====", flush=True)
             solution = solve_milp(instance, cfg)
