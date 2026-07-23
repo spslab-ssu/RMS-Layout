@@ -19,8 +19,12 @@ PARAMETER_FILE = PROBLEM_DIR / "parameters.csv"
 SHARED_RESOURCE_FILE = PROBLEM_DIR / "shared_resources.csv"
 RESOURCE_REQUIREMENT_FILE = PROBLEM_DIR / "resource_requirements.csv"
 
-TIME_LIMIT = 600
+TIME_LIMIT = 100
 MIP_GAP = 0.0
+
+# formulation 비교용 pure LP relaxation bound를 기록할지 여부.
+# True이면 MIP solve 전에 LP relaxation을 한 번 더 풀기 때문에 실행시간이 추가된다.
+COMPUTE_LP_RELAXATION_BOUND = True
 
 # 논문 Figure 4 등 기존 해를 Gurobi MIP start로 넣을지 여부.
 # multi_part에서 논문 해를 기준으로 시작하려면 아래 두 값을 켠다.
@@ -35,7 +39,7 @@ OBJECTIVE_CUTOFF = None
 SAME_MACHINE_RECONFIG_ONLY = True
 
 # auxiliary module을 한정된 shared resource로 볼지 여부.
-USE_SHARED_RESOURCES = True
+USE_SHARED_RESOURCES = False
 
 # dummy start/end operation id. 실제 operation과 충돌하지 않게 둔다.
 START_OPERATION = 0

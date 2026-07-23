@@ -195,6 +195,7 @@ def solve_milp(instance, config) -> RMSSolution:
     )
 
     model.setObjective(purchase_cost + reconfiguration_cost + handling_cost, GRB.MINIMIZE)
+    lp_relaxation_bound = _compute_lp_relaxation_bound(model, config)
 
     if bool(getattr(config, "USE_WARM_START", False)):
         warm_start_dir = getattr(config, "WARM_START_DIR", None)
@@ -210,10 +211,10 @@ def solve_milp(instance, config) -> RMSSolution:
 
     model.optimize()
 
-    return _extract_solution(model, instance, x, s, y, v, f, purchase_cost, reconfiguration_cost, handling_cost)
+    return _extract_solution(model, instance, x, s, y, v, f, purchase_cost, reconfiguration_cost, handling_cost, lp_relaxation_bound)
 
 
-def _extract_solution(model, instance, x, s, y, v, f, purchase_cost, reconfiguration_cost, handling_cost) -> RMSSolution:
+def _extract_solution(model, instance, x, s, y, v, f, purchase_cost, reconfiguration_cost, handling_cost, lp_relaxation_bound) -> RMSSolution:
     """Gurobi 변수값을 output.py가 저장하기 쉬운 row list로 변환한다."""
     status_name = {
         GRB.OPTIMAL: "OPTIMAL",
@@ -223,11 +224,14 @@ def _extract_solution(model, instance, x, s, y, v, f, purchase_cost, reconfigura
     }.get(model.Status, str(model.Status))
     summary: dict[str, Any] = {
         "problem_name": instance.problem_name,
+        "model_type": "base",
         "status": int(model.Status),
         "status_name": status_name,
         "periods": instance.periods,
         "operations": instance.operations,
     }
+    summary.update(_solver_metrics(model))
+    summary["lp_relaxation_bound"] = lp_relaxation_bound
 
     if not model.SolCount:
         return RMSSolution(summary=summary)
@@ -238,7 +242,7 @@ def _extract_solution(model, instance, x, s, y, v, f, purchase_cost, reconfigura
         "material_handling_cost": _clean_float(handling_cost.getValue()),
         "total_objective": _clean_float(model.ObjVal),
     }
-    summary.update({"objective": _clean_float(model.ObjVal), "runtime_seconds": float(model.Runtime), "mip_gap": float(model.MIPGap) if model.IsMIP else 0.0})
+    summary.update({"objective": _clean_float(model.ObjVal)})
 
     purchased = []
     for (p, j, l), var in sorted(x.items()):
@@ -291,3 +295,51 @@ def _clean_float(value: float, integer_tolerance: float = 1e-3) -> float:
     if abs(value - nearest_integer) <= integer_tolerance:
         return float(nearest_integer)
     return round(value, 6)
+
+
+def _compute_lp_relaxation_bound(model, config) -> float | None:
+    """선택적으로 pure LP relaxation bound를 계산한다.
+
+    MIP solve 전에 별도 relaxation model을 한 번 풀기 때문에 큰 instance에서는
+    시간이 추가로 든다. 필요할 때만 config.COMPUTE_LP_RELAXATION_BOUND=True로 켠다.
+    """
+    if not bool(getattr(config, "COMPUTE_LP_RELAXATION_BOUND", False)):
+        return None
+    model.update()
+    relaxation = model.relax()
+    relaxation.Params.OutputFlag = 0
+    relaxation.optimize()
+    if relaxation.Status != GRB.OPTIMAL:
+        return None
+    return _clean_float(relaxation.ObjVal)
+
+
+def _solver_metrics(model) -> dict[str, float | int | None]:
+    """formulation 비교에 필요한 Gurobi solve 지표를 summary에 기록한다."""
+    metrics: dict[str, float | int | None] = {
+        "runtime_seconds": float(model.Runtime),
+        "num_vars": int(model.NumVars),
+        "num_constraints": int(model.NumConstrs),
+        "node_count": float(model.NodeCount),
+        "simplex_iterations": float(model.IterCount),
+    }
+    if model.IsMIP:
+        metrics["mip_gap"] = _safe_model_attr(model, "MIPGap")
+        metrics["best_bound"] = _safe_model_attr(model, "ObjBound")
+        metrics["best_bound_c"] = _safe_model_attr(model, "ObjBoundC")
+    else:
+        metrics["mip_gap"] = 0.0
+        metrics["best_bound"] = _safe_model_attr(model, "ObjVal")
+        metrics["best_bound_c"] = _safe_model_attr(model, "ObjVal")
+    return metrics
+
+
+def _safe_model_attr(model, name: str):
+    """status에 따라 존재하지 않을 수 있는 Gurobi attribute를 안전하게 읽는다."""
+    try:
+        value = getattr(model, name)
+    except (AttributeError, gp.GurobiError):
+        return None
+    if value in {GRB.INFINITY, -GRB.INFINITY}:
+        return None
+    return _clean_float(value)

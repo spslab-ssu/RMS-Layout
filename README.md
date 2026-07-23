@@ -114,6 +114,8 @@ config.py -> Src/data.py        ->    Src/milp.py   ->   Src/output.py  ->  Src/
 | 입력 생성 | `Data/generate_data.py` | 논문 재현용 CSV 생성/복사 | 기존 검증 데이터를 새 구조로 이동 |
 | 데이터 | `Src/data.py` | CSV 읽기 및 MILP parameter화 | `RMSInstance` 생성, single/multi 표준화 |
 | 모델 | `Src/milp.py` | Gurobi MILP 생성 및 solve | 구매/상태/재구성/flow/shared resource 제약 정의 |
+| 모델 | `Src/milp_network.py` | time-expanded network reformulation | 같은 문제를 machine lifecycle path로 재표현 |
+| 실행 | `run_network.py` | network model 별도 실행 | `main.py`와 분리해 협업 충돌 최소화 |
 | 출력 | `Src/output.py` | 결과 CSV/JSON 저장 | 결과 schema 고정 |
 | Warm start | `Src/warm_start.py` | 기존 해 CSV를 Gurobi MIP start로 주입 | multi-part 논문 해 기반 warm start 선택 적용 |
 | 시각화 | `Src/visualize.py` | period별 layout 이미지 생성 | Figure 2 스타일 결과 확인 |
@@ -432,10 +434,24 @@ __pycache__/
 
 - adaptive layout
 - shared resource
+- network reformulation
 - stochastic demand
 - robust layout
 - part-specific flow tracking
 - sensitivity analysis용 데이터 생성
 
-초기에는 `Src/milp.py` 하나에서 옵션 형태로 확장합니다.  
-코드가 커지고 모델 간 차이가 명확해지면 그때 `milp_adaptive.py`, `milp_shared_resource.py`처럼 분리합니다.
+`network reformulation`은 문제를 바꾸는 확장이 아니라 같은 RMS layout 문제를 다른 수식으로 푸는 모델 개선입니다.  
+기존 base 모델은 `python3 main.py`로 실행하고, network 모델은 `python3 run_network.py`로 별도 실행합니다.
+
+실행 후 `Result/solution_summary.json`에는 formulation 비교용 지표가 함께 저장됩니다.
+
+- `lp_relaxation_bound`: MIP solve 전 별도로 푼 pure LP relaxation bound
+- `best_bound`: Gurobi가 최종적으로 증명한 best bound
+- `mip_gap`: incumbent와 best bound의 gap
+- `runtime_seconds`: solve 시간
+- `node_count`: branch-and-bound node 수
+- `num_vars`, `num_constraints`: 모델 크기
+- `simplex_iterations`: simplex iteration 수
+
+초기에는 `Src/milp.py`와 `Src/milp_network.py`를 분리해 두고, shared resource처럼 두 모델에 공통으로 들어가는 제약은 같은 output schema로 비교합니다.  
+adaptive layout처럼 문제 자체가 바뀌는 확장은 별도 파일(`milp_adaptive.py`)로 분리하는 것이 좋습니다.
