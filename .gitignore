@@ -15,3 +15,10 @@ tmp/
 *.lp
 *.log
 *.ilp
+
+.env
+.venv/
+
+# 로컬 전용 (GitHub 제외)
+docs/RESEARCH_LOG.md
+experiments/margin_explain.py
