@@ -41,8 +41,15 @@ OBJECTIVE_CUTOFF = None
 # M1 -> M2 불가
 SAME_MACHINE_RECONFIG_ONLY = True
 
-# auxiliary module을 한정된 shared resource로 볼지 여부.
+# auxiliary module을 한정된 shared resource로 볼지 여부. (하위호환용 플래그)
 USE_SHARED_RESOURCES = False
+
+# shared resource를 모델에서 어떻게 다룰지 선택한다.
+#   "off"      : 자원 제약 없음 (기준 문제, S1)
+#   "fixed"    : shared_resources.csv의 Cap을 상수 상한으로 사용 (S2)
+#   "variable" : Cap_r을 정수 결정변수로 두고, 비용 최소 후 ΣCap_r을 최소화 (최소 사이징, S3)
+# SHARED_RESOURCE_MODE가 지정되면 USE_SHARED_RESOURCES보다 우선한다.
+SHARED_RESOURCE_MODE = "fixed"
 
 # dummy start/end operation id. 실제 operation과 충돌하지 않게 둔다.
 START_OPERATION = 0
