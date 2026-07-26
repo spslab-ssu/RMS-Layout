@@ -49,7 +49,16 @@ USE_SHARED_RESOURCES = False
 #   "fixed"    : shared_resources.csv의 Cap을 상수 상한으로 사용 (S2)
 #   "variable" : Cap_r을 정수 결정변수로 두고, 비용 최소 후 ΣCap_r을 최소화 (최소 사이징, S3)
 # SHARED_RESOURCE_MODE가 지정되면 USE_SHARED_RESOURCES보다 우선한다.
-SHARED_RESOURCE_MODE = "fixed"
+SHARED_RESOURCE_MODE = "variable"
+
+# adaptive layout: 기간 경계에서 기계 relocation(이동) 허용 정책. (milp_adaptive에서 사용)
+#   "off"      : 위치 고정 (base와 동등)
+#   "separate" : 이동이면 config 유지, 재구성이면 제자리 (동시 금지)
+#   "joint"    : 이동 + 재구성 동시 허용
+ADAPTIVE_MODE = "off"
+# 이동비 = 구매가 C_j * (ALPHA + BETA * 거리 D_kp)
+ALPHA = 0.0
+BETA = 0.0
 
 # dummy start/end operation id. 실제 operation과 충돌하지 않게 둔다.
 START_OPERATION = 0

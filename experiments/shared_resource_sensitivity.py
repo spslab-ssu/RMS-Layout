@@ -168,6 +168,7 @@ def _result_metrics(solution) -> dict[str, object]:
         "gap_to_lp": gap_to_lp,
         "mip_gap": round(float(mip_gap), 6) if mip_gap is not None else None,
         "runtime_seconds": round(float(runtime), 6) if runtime is not None else None,
+        "lp_relaxation_seconds": summary.get("lp_relaxation_seconds"),
         "num_vars": summary.get("num_vars"),
         "num_constraints": summary.get("num_constraints"),
         "num_binary_vars": summary.get("num_binary_vars"),

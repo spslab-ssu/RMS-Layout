@@ -22,6 +22,7 @@ class RMSSolution:
     material_flows: list[dict[str, Any]] = field(default_factory=list)
     resource_usage: list[dict[str, Any]] = field(default_factory=list)
     cost_breakdown: dict[str, float] = field(default_factory=dict)
+    relocations: list[dict[str, Any]] = field(default_factory=list)
 
 
 def solve_milp(instance, config) -> RMSSolution:
@@ -136,7 +137,8 @@ def solve_milp(instance, config) -> RMSSolution:
     # shared resource 사용량은 a_rj * state로 계산한다.
     # 모드에 따라 상한을 상수(fixed)로 두거나 정수 결정변수(variable)로 둔다.
     mode = resource_mode(config)
-    cap_vars = _add_shared_resource_constraints(model, instance, P, T, feasible_pairs, s, mode)
+    cap_ub = getattr(config, "CAP_UPPER_BOUNDS", None)
+    cap_vars = _add_shared_resource_constraints(model, instance, P, T, feasible_pairs, s, mode, cap_ub)
 
     for p in P:
         for l in L:
@@ -191,7 +193,7 @@ def solve_milp(instance, config) -> RMSSolution:
     cost_expr = purchase_cost + reconfiguration_cost + handling_cost
     model.setObjective(cost_expr, GRB.MINIMIZE)
     # LP bound는 항상 단일 비용 목적 기준으로 측정한다(아래 multi-objective 전환 전에 계산).
-    lp_relaxation_bound = _compute_lp_relaxation_bound(model, config)
+    lp_relaxation_bound, lp_relaxation_seconds = _compute_lp_relaxation_bound(model, config)
 
     if cap_vars is not None:
         # variable 모드: lexicographic 2목적 — 1순위 비용, 2순위 ΣCap_r(최소 사이징).
@@ -213,10 +215,10 @@ def solve_milp(instance, config) -> RMSSolution:
 
     model.optimize()
 
-    return _extract_solution(model, instance, x, s, y, v, f, purchase_cost, reconfiguration_cost, handling_cost, lp_relaxation_bound, cap_vars)
+    return _extract_solution(model, instance, x, s, y, v, f, purchase_cost, reconfiguration_cost, handling_cost, lp_relaxation_bound, cap_vars, lp_relaxation_seconds)
 
 
-def _add_shared_resource_constraints(model, instance, locations, periods, feasible_pairs, s, mode):
+def _add_shared_resource_constraints(model, instance, locations, periods, feasible_pairs, s, mode, cap_ub=None):
     """shared resource 사용량 제약을 모드별로 추가한다.
 
     off      : 제약 없음
@@ -242,6 +244,11 @@ def _add_shared_resource_constraints(model, instance, locations, periods, feasib
     if mode == "variable":
         # 한 기간에 자원 r을 쓰는 기계는 최대 설치위치 수만큼(위치당 상태 <= 1).
         cap_vars = model.addVars(resources, vtype=GRB.INTEGER, lb=0, ub=len(locations), name="cap")
+        # cap_ub가 주어지면 자원별 상한을 그 값으로 낮춘다(사이징 수준 실험용).
+        if cap_ub:
+            for r in resources:
+                if r in cap_ub:
+                    cap_vars[r].ub = int(cap_ub[r])
 
     for resource in resources:
         for t in periods:
@@ -256,7 +263,7 @@ def _add_shared_resource_constraints(model, instance, locations, periods, feasib
     return cap_vars
 
 
-def _extract_solution(model, instance, x, s, y, v, f, purchase_cost, reconfiguration_cost, handling_cost, lp_relaxation_bound, cap_vars=None) -> RMSSolution:
+def _extract_solution(model, instance, x, s, y, v, f, purchase_cost, reconfiguration_cost, handling_cost, lp_relaxation_bound, cap_vars=None, lp_relaxation_seconds=None) -> RMSSolution:
     """Gurobi 변수값을 output.py가 저장하기 쉬운 row list로 변환한다."""
     status_name = {
         GRB.OPTIMAL: "OPTIMAL",
@@ -274,6 +281,7 @@ def _extract_solution(model, instance, x, s, y, v, f, purchase_cost, reconfigura
     }
     summary.update(_solver_metrics(model))
     summary["lp_relaxation_bound"] = lp_relaxation_bound
+    summary["lp_relaxation_seconds"] = lp_relaxation_seconds
     summary["num_cap_vars"] = len(cap_vars) if cap_vars is not None else 0
 
     if not model.SolCount:
@@ -353,21 +361,23 @@ def _clean_float(value: float, integer_tolerance: float = 1e-3) -> float:
     return round(value, 6)
 
 
-def _compute_lp_relaxation_bound(model, config) -> float | None:
-    """선택적으로 pure LP relaxation bound를 계산한다.
+def _compute_lp_relaxation_bound(model, config) -> tuple[float | None, float | None]:
+    """선택적으로 pure LP relaxation bound와 그 LP를 푸는 데 걸린 시간을 계산한다.
 
     MIP solve 전에 별도 relaxation model을 한 번 풀기 때문에 큰 instance에서는
     시간이 추가로 든다. 필요할 때만 config.COMPUTE_LP_RELAXATION_BOUND=True로 켠다.
+    반환값은 (bound, seconds)이며, 계산하지 않으면 (None, None)이다.
     """
     if not bool(getattr(config, "COMPUTE_LP_RELAXATION_BOUND", False)):
-        return None
+        return None, None
     model.update()
     relaxation = model.relax()
     relaxation.Params.OutputFlag = 0
     relaxation.optimize()
+    seconds = float(relaxation.Runtime)
     if relaxation.Status != GRB.OPTIMAL:
-        return None
-    return _clean_float(relaxation.ObjVal)
+        return None, seconds
+    return _clean_float(relaxation.ObjVal), seconds
 
 
 def _solver_metrics(model) -> dict[str, float | int | None]:
