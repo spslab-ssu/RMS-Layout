@@ -51,6 +51,15 @@ USE_SHARED_RESOURCES = False
 # SHARED_RESOURCE_MODE가 지정되면 USE_SHARED_RESOURCES보다 우선한다.
 SHARED_RESOURCE_MODE = "variable"
 
+# variable 모드에서 각 auxiliary module의 Cap_r 상한을 개별로 낮춘다. {모듈ID: 상한개수}
+#   - 여기 없는 모듈은 상한이 안 걸린다(자유 = 위치 수까지).
+#   - None이면 상한 없음(진짜 최소 사이징 탐색, S3).
+#   - 아래 값은 min-cost(22,910) 최소 사이징(총 76)으로 고정 → 빠른 확인용 실험.
+CAP_UPPER_BOUNDS = {
+    11: 5, 12: 5, 13: 5, 14: 5, 15: 0, 16: 8, 17: 10, 18: 5,
+    19: 10, 20: 12, 21: 0, 22: 4, 23: 0, 24: 2, 25: 5,
+}
+
 # adaptive layout: 기간 경계에서 기계 relocation(이동) 허용 정책. (milp_adaptive에서 사용)
 #   "off"      : 위치 고정 (base와 동등)
 #   "separate" : 이동이면 config 유지, 재구성이면 제자리 (동시 금지)
