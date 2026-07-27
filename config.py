@@ -64,7 +64,7 @@ CAP_UPPER_BOUNDS = {
 #   "off"      : 위치 고정 (base와 동등)
 #   "separate" : 이동이면 config 유지, 재구성이면 제자리 (동시 금지)
 #   "joint"    : 이동 + 재구성 동시 허용
-ADAPTIVE_MODE = "off"
+ADAPTIVE_MODE = "joint"
 # 이동비 = 구매가 C_j * (ALPHA + BETA * 거리 D_kp)
 ALPHA = 0.0
 BETA = 0.0

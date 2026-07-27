@@ -6,17 +6,26 @@ import pandas as pd
 from PIL import Image, ImageDraw, ImageFont
 
 
+def _read_csv(path: Path) -> pd.DataFrame:
+    """CSV를 읽되, 없거나 내용이 비면(BOM만) 빈 DataFrame을 반환한다."""
+    if not path.exists() or path.stat().st_size == 0:
+        return pd.DataFrame()
+    try:
+        return pd.read_csv(path)
+    except pd.errors.EmptyDataError:
+        return pd.DataFrame()
+
+
 def draw_layouts(result_dir: Path, instance) -> None:
     """Result CSV를 읽어서 논문 Figure 2 스타일의 period별 layout 그림을 만든다."""
     states_path = result_dir / "machine_states.csv"
-    flows_path = result_dir / "material_flows.csv"
-    reconfigs_path = result_dir / "reconfigurations.csv"
     if not states_path.exists() or states_path.stat().st_size == 0:
         return
 
     states = pd.read_csv(states_path)
-    flows = pd.read_csv(flows_path) if flows_path.exists() and flows_path.stat().st_size else pd.DataFrame()
-    reconfigs = pd.read_csv(reconfigs_path) if reconfigs_path.exists() and reconfigs_path.stat().st_size else pd.DataFrame()
+    flows = _read_csv(result_dir / "material_flows.csv")
+    reconfigs = _read_csv(result_dir / "reconfigurations.csv")
+    relocations = _read_csv(result_dir / "relocations.csv")
 
     figure_dir = result_dir / "figures"
     figure_dir.mkdir(parents=True, exist_ok=True)
@@ -28,6 +37,7 @@ def draw_layouts(result_dir: Path, instance) -> None:
             states=states[states["period"] == period],
             flows=flows[flows["period"] == period] if not flows.empty else flows,
             reconfigs=reconfigs[reconfigs["period"] == period] if not reconfigs.empty else reconfigs,
+            relocations=relocations[relocations["period"] == period] if not relocations.empty else relocations,
             title=f"RMS layout - {instance.problem_name} - period {period}",
         )
         image.save(figure_dir / f"layout_period_{period}.png")
@@ -51,6 +61,7 @@ class _LayoutRenderer:
         span_y = max(1.0, self.max_y - self.min_y)
         self.scale = min((self.width - 2 * self.margin) / span_x, (self.height - 2 * self.margin) / span_y)
         self.font = ImageFont.load_default()
+        self.reloc_color = "#0d8fa1"
 
     def xy(self, location: int) -> tuple[float, float]:
         loc = self.locations[location]
@@ -58,13 +69,22 @@ class _LayoutRenderer:
         y = self.height - (self.margin + (float(loc["y"]) - self.min_y) * self.scale)
         return x, y
 
-    def render(self, states: pd.DataFrame, flows: pd.DataFrame, reconfigs: pd.DataFrame, title: str) -> Image.Image:
+    def render(self, states: pd.DataFrame, flows: pd.DataFrame, reconfigs: pd.DataFrame, title: str, relocations: pd.DataFrame | None = None) -> Image.Image:
+        if relocations is None:
+            relocations = pd.DataFrame()
         image = Image.new("RGB", (self.width, self.height), "white")
         draw = ImageDraw.Draw(image)
         draw.text((35, 30), title, fill="#111111", font=self.font)
+        if not relocations.empty:
+            draw.text((35, 48), "teal dashed arrow = machine relocation (from previous period position)", fill=self.reloc_color, font=self.font)
 
         for idx, row in enumerate(flows.itertuples(index=False)):
             self._draw_arrow(draw, self.xy(int(row.from_location)), self.xy(int(row.to_location)), f"{float(row.flow):g}", idx, max(1, min(5, int(1 + float(row.flow) / 20))))
+
+        # relocation 화살표: 이전 기간 위치(from) → 현재 기간 위치(to). flow와 구분되게 teal 점선.
+        for idx, row in enumerate(relocations.itertuples(index=False)):
+            self._draw_reloc_arrow(draw, self.xy(int(row.from_location)), self.xy(int(row.to_location)), str(row.configuration), idx)
+        relocated_dest = {int(row.to_location) for row in relocations.itertuples(index=False)} if not relocations.empty else set()
 
         state_by_location = {int(row.location): row for row in states.itertuples(index=False)}
         reconfigured = {int(row.location) for row in reconfigs.itertuples(index=False)} if not reconfigs.empty else set()
@@ -82,7 +102,9 @@ class _LayoutRenderer:
             elif location in state_by_location:
                 row = state_by_location[location]
                 fill = "#d9d9d9" if location in reconfigured else "white"
-                draw.rectangle(box, fill=fill, outline="#222222", width=2)
+                outline = self.reloc_color if location in relocated_dest else "#222222"
+                outline_w = 3 if location in relocated_dest else 2
+                draw.rectangle(box, fill=fill, outline=outline, width=outline_w)
                 self._draw_text(draw, (x, y), [f"{location}, {row.configuration}", f"op {int(row.operation)}", f"v={float(row.flow):g}"])
             else:
                 self._draw_dashed_box(draw, box)
@@ -126,8 +148,41 @@ class _LayoutRenderer:
         mx, my = (start[0] + end[0]) / 2 + nx * 10, (start[1] + end[1]) / 2 + ny * 10
         draw.text((mx, my), label, fill="#111111", font=self.font)
 
+    def _draw_reloc_arrow(self, draw: ImageDraw.ImageDraw, start: tuple[float, float], end: tuple[float, float], label: str, offset_idx: int) -> None:
+        x1, y1 = start
+        x2, y2 = end
+        dx, dy = x2 - x1, y2 - y1
+        length = (dx * dx + dy * dy) ** 0.5
+        if length == 0:
+            return
+        ux, uy = dx / length, dy / length
+        nx, ny = -uy, ux
+        offset = (offset_idx % 5 - 2) * 6
+        pad = 50
+        s = (x1 + ux * pad + nx * offset, y1 + uy * pad + ny * offset)
+        e = (x2 - ux * pad + nx * offset, y2 - uy * pad + ny * offset)
+        self._dashed_line(draw, s, e, self.reloc_color, 3)
+        self._draw_arrow_head(draw, s, e, self.reloc_color)
+        mx, my = (s[0] + e[0]) / 2 + nx * 11, (s[1] + e[1]) / 2 + ny * 11
+        draw.text((mx, my), label, fill=self.reloc_color, font=self.font)
+
     @staticmethod
-    def _draw_arrow_head(draw: ImageDraw.ImageDraw, start: tuple[float, float], end: tuple[float, float]) -> None:
+    def _dashed_line(draw: ImageDraw.ImageDraw, start: tuple[float, float], end: tuple[float, float], color: str, width: int, dash: int = 13, gap: int = 8) -> None:
+        x1, y1 = start
+        x2, y2 = end
+        dx, dy = x2 - x1, y2 - y1
+        length = (dx * dx + dy * dy) ** 0.5
+        if length == 0:
+            return
+        ux, uy = dx / length, dy / length
+        pos = 0.0
+        while pos < length:
+            seg_end = min(pos + dash, length)
+            draw.line((x1 + ux * pos, y1 + uy * pos, x1 + ux * seg_end, y1 + uy * seg_end), fill=color, width=width)
+            pos += dash + gap
+
+    @staticmethod
+    def _draw_arrow_head(draw: ImageDraw.ImageDraw, start: tuple[float, float], end: tuple[float, float], color: str = "#555555") -> None:
         x1, y1 = start
         x2, y2 = end
         dx, dy = x2 - x1, y2 - y1
@@ -140,7 +195,7 @@ class _LayoutRenderer:
         p1 = (x2, y2)
         p2 = (x2 - ux * size + left[0] * size * 0.55, y2 - uy * size + left[1] * size * 0.55)
         p3 = (x2 - ux * size - left[0] * size * 0.55, y2 - uy * size - left[1] * size * 0.55)
-        draw.polygon([p1, p2, p3], fill="#555555")
+        draw.polygon([p1, p2, p3], fill=color)
 
 
 def _combine_images(images: list[Image.Image], output_path: Path) -> None:
