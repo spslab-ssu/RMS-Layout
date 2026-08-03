@@ -10,10 +10,10 @@ V2GRO의 README처럼, 이 문서는 **코드를 처음 보는 사람이 어떤 
 
 ```text
 main.py는 조립만 한다.
-데이터 처리는 data.py가 한다.
-모델 수식은 milp.py가 한다.
-결과 저장은 output.py가 한다.
-그림은 visualize.py가 한다.
+데이터 처리는 Src/data/loader.py가 한다.
+base 모델 수식은 Src/models/milp.py가 한다.
+결과 저장은 Src/io/output.py가 한다.
+그림은 Src/viz/visualize.py가 한다.
 ```
 
 즉, 한 파일이 여러 책임을 동시에 갖지 않도록 합니다.
@@ -36,13 +36,13 @@ main.py
   ↓
 config.py
   ↓
-Src/data.py
+Src/data/loader.py
   ↓
-Src/milp.py
+Src/models/milp.py
   ↓
-Src/output.py
+Src/io/output.py
   ↓
-Src/visualize.py
+Src/viz/visualize.py
   ↓
 Result/
 ```
@@ -54,19 +54,19 @@ config.py
   - PROBLEM_NAME = single_part / multi_part
   - 파일 경로, solver 옵션 지정
 
-Src/data.py
-  - Data/<PROBLEM_NAME>/*.csv 읽기
+Src/data/loader.py
+  - Data/datasets/<PROBLEM_NAME>/*.csv와 Data/rmt_tables/<RMT_TABLE_NAME>/*.csv 읽기
   - RMSInstance 생성
 
-Src/milp.py
+Src/models/milp.py
   - RMSInstance를 받아 Gurobi 모델 생성
   - 최적화 수행
   - RMSSolution 생성
 
-Src/output.py
+Src/io/output.py
   - RMSSolution을 CSV/JSON으로 저장
 
-Src/visualize.py
+Src/viz/visualize.py
   - 저장된 CSV를 읽어서 layout figure 생성
 ```
 
@@ -171,8 +171,9 @@ python Data/generate_data.py
 실행 후 다음 폴더가 채워집니다.
 
 ```text
-Data/single_part/
-Data/multi_part/
+Data/datasets/single_part/
+Data/datasets/multi_part/
+Data/rmt_tables/goyal_saffar/
 ```
 
 ### 나중에 추가할 수 있는 기능
@@ -187,7 +188,13 @@ Data/multi_part/
 
 ## 6. `Data/` CSV schema
 
-### `locations.csv`
+현재 Data는 두 층으로 나뉩니다.
+
+- `Data/rmt_tables/<table_name>/`: RMT configuration, production rate, resource requirement처럼 여러 문제에서 공유하는 table
+- `Data/datasets/<problem_name>/`: locations, demands, parameters처럼 문제별로 달라지는 데이터
+
+
+### `Data/datasets/<problem>/locations.csv`
 
 위치 정보를 저장합니다.
 
@@ -206,7 +213,7 @@ start
 end
 ```
 
-### `configurations.csv`
+### `Data/rmt_tables/<table>/configurations.csv`
 
 configuration 정보입니다.
 
@@ -223,7 +230,7 @@ auxiliary_modules
 
 이 파일은 사람이 보기 좋은 wide format입니다.
 
-### `production_rates.csv`
+### `Data/rmt_tables/<table>/production_rates.csv`
 
 MILP가 실제로 쓰는 production rate 파일입니다.
 
@@ -232,7 +239,7 @@ machine,configuration,operation,production_rate
 M5,mc52,5,20
 ```
 
-### `demands.csv`
+### `Data/datasets/<problem>/demands.csv`
 
 part demand와 route입니다.
 
@@ -241,7 +248,7 @@ part,period1,period2,period3,period4,operation_sequence
 A,50,60,80,100,5>1>17
 ```
 
-### `parameters.csv`
+### `Data/datasets/<problem>/parameters.csv`
 
 scalar parameter입니다.
 
@@ -257,7 +264,7 @@ remove_module_cost,25
 
 ---
 
-## 7. `Src/data.py`
+## 7. `Src/data/loader.py`
 
 ### 역할
 
@@ -309,7 +316,7 @@ arc_demand[(period, left_operation, right_operation)] = required_flow
 
 ---
 
-## 8. `Src/milp.py`
+## 8. `Src/models/milp.py`
 
 ### 역할
 
@@ -380,7 +387,7 @@ cost_breakdown
 
 ---
 
-## 9. `Src/output.py`
+## 9. `Src/io/output.py`
 
 ### 역할
 
@@ -405,7 +412,7 @@ material_flows.csv
 
 ---
 
-## 10. `Src/visualize.py`
+## 10. `Src/viz/visualize.py`
 
 ### 역할
 
@@ -458,26 +465,26 @@ gap = 0.0
 ### 데이터 CSV 형식이 바뀌면
 
 ```text
-Src/data.py 수정
+Src/data/loader.py 수정
 ```
 
 ### MILP 수식이 바뀌면
 
 ```text
-Src/milp.py 수정
+Src/models/milp.py 수정
 ```
 
 ### 결과 파일 컬럼을 바꾸면
 
 ```text
-Src/output.py 수정
-Src/visualize.py도 같이 확인
+Src/io/output.py 수정
+Src/viz/visualize.py도 같이 확인
 ```
 
 ### 그림 스타일을 바꾸면
 
 ```text
-Src/visualize.py 수정
+Src/viz/visualize.py 수정
 ```
 
 ### 실험 옵션을 바꾸면
@@ -500,12 +507,12 @@ robust layout
 part-specific flow tracking
 ```
 
-처음에는 `config.py`에 옵션을 추가하고 `Src/milp.py`에서 조건부 제약을 추가하는 방식이 단순합니다.
+처음에는 `config.py`에 옵션을 추가하고 `Src/models/milp.py`에서 조건부 제약을 추가하는 방식이 단순합니다.
 
 나중에 모델이 커지면 다음처럼 분리할 수 있습니다.
 
 ```text
-Src/milp.py
-Src/milp_adaptive.py
+Src/models/milp.py
+Src/models/adaptive_shared_resource.py
 Src/milp_shared_resource.py
 ```

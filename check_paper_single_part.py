@@ -13,10 +13,10 @@
 from pathlib import Path
 
 import config
-from Src.data import load_instance
-from Src.milp import solve_milp
-from Src.output import save_solution
-from Src.visualize import draw_layouts
+from Src.data.loader import load_instance
+from Src.models.milp import solve_milp
+from Src.io.output import save_solution
+from Src.viz.visualize import draw_layouts
 
 
 # 논문 Figure 2(a)에 보이는 period 1 구매/초기 상태.
@@ -48,10 +48,10 @@ PAPER_REPORTED = {
 
 def main() -> None:
     config.PROBLEM_NAME = "single_part"
-    config.PROBLEM_DIR = config.DATA_DIR / config.PROBLEM_NAME
+    config.PROBLEM_DIR = config.DATASET_DIR / config.PROBLEM_NAME
     config.LOCATION_FILE = config.PROBLEM_DIR / "locations.csv"
-    config.CONFIGURATION_FILE = config.PROBLEM_DIR / "configurations.csv"
-    config.PRODUCTION_RATE_FILE = config.PROBLEM_DIR / "production_rates.csv"
+    config.CONFIGURATION_FILE = config.RMT_TABLE_PATH / "configurations.csv"
+    config.PRODUCTION_RATE_FILE = config.RMT_TABLE_PATH / "production_rates.csv"
     config.DEMAND_FILE = config.PROBLEM_DIR / "demands.csv"
     config.PARAMETER_FILE = config.PROBLEM_DIR / "parameters.csv"
     config.RESULT_DIR = config.BASE_DIR / "Result_paper_initial_fixed"

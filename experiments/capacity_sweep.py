@@ -17,8 +17,8 @@ from types import SimpleNamespace
 BASE_DIR = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(BASE_DIR))
 
-from Src.data import load_instance
-from Src.milp import solve_milp
+from Src.data.loader import load_instance
+from Src.models.milp import solve_milp
 
 # ---------------- 실험 설정 ----------------
 PROBLEM = "single_part"
@@ -30,17 +30,18 @@ MIP_GAP = 0.01                        # 민감도 분석용 1% gap
 
 
 def make_config(problem: str) -> SimpleNamespace:
-    d = BASE_DIR / "Data" / problem
+    d = BASE_DIR / "Data" / "datasets" / problem
+    rmt = BASE_DIR / "Data" / "rmt_tables" / "goyal_saffar"
     return SimpleNamespace(
         PROBLEM_NAME=problem,
         LOCATION_FILE=d / "locations.csv",
-        CONFIGURATION_FILE=d / "configurations.csv",
-        PRODUCTION_RATE_FILE=d / "production_rates.csv",
+        CONFIGURATION_FILE=rmt / "configurations.csv",
+        PRODUCTION_RATE_FILE=rmt / "production_rates.csv",
         DEMAND_FILE=d / "demands.csv",
         PARAMETER_FILE=d / "parameters.csv",
         USE_SHARED_RESOURCES=True,
         SHARED_RESOURCE_FILE=d / "shared_resources.csv",
-        RESOURCE_REQUIREMENT_FILE=d / "resource_requirements.csv",
+        RESOURCE_REQUIREMENT_FILE=rmt / "resource_requirements.csv",
         TIME_LIMIT=TIME_LIMIT,
         MIP_GAP=MIP_GAP,
         SAME_MACHINE_RECONFIG_ONLY=True,

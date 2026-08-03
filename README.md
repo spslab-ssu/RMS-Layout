@@ -9,65 +9,74 @@
 
 ```text
 RMS_Layout/
-├── main.py              # 진입점: 전체 단계를 순서대로 호출만 함
-├── config.py            # 데이터셋 선택, solver 옵션, 공통 상수 설정
-├── requirements.txt     # Python package 의존성
-├── README.md            # 프로젝트 개요, 실행 방법, 구조 설명
-├── SEQUENCE.md          # 실행 시퀀스와 파일별 역할 상세 설명
-├── .gitignore           # Git에서 제외할 생성 파일 목록
+├── main.py              # base MILP 실행 진입점
+├── run_network.py       # time-expanded network model 실행 진입점
+├── config.py            # 데이터셋, RMT table, solver 옵션 설정
+├── requirements.txt
+├── README.md
+├── SEQUENCE.md
+├── .gitignore
 │
 ├── Data/
-│   ├── generate_data.py         # 논문 재현용 CSV 데이터 생성/복사
-│   ├── single_part/             # 메인논문 Example 1 단일부품 데이터
-│   │   ├── locations.csv        # 위치 좌표, start/end, install location 정보
-│   │   ├── configurations.csv   # RMT configuration, 비용, module 정보
-│   │   ├── production_rates.csv # configuration별 operation 생산률
-│   │   ├── demands.csv          # part별 period demand와 operation sequence
-│   │   ├── parameters.csv       # MHC, add/remove module cost 등 scalar parameter
-│   │   ├── shared_resources.csv # shared resource별 보유량
-│   │   └── resource_requirements.csv # configuration별 shared resource 요구 여부
-│   └── multi_part/              # 메인논문 Example 2 다중부품 데이터
-│       ├── locations.csv
-│       ├── configurations.csv
-│       ├── production_rates.csv
-│       ├── demands.csv
-│       ├── parameters.csv
-│       ├── shared_resources.csv
-│       ├── resource_requirements.csv
-│       └── warm_start_paper/    # 논문 Figure 4 기반 multi-part warm start CSV
+│   ├── generate_data.py
+│   ├── rmt_tables/              # 여러 논문의 RMT table을 공통 자원으로 관리
+│   │   └── goyal_saffar/         # 현재 Saffar/Goyal 기반 RMT table
+│   │       ├── configurations.csv
+│   │       ├── production_rates.csv
+│   │       └── resource_requirements.csv
+│   └── datasets/                # 문제별 데이터셋. RMT table은 중복 저장하지 않음
+│       ├── single_part/
+│       │   ├── locations.csv
+│       │   ├── demands.csv
+│       │   ├── parameters.csv
+│       │   ├── shared_resources.csv
+│       │   └── resource_capacities.csv
+│       └── multi_part/
+│           ├── locations.csv
+│           ├── demands.csv
+│           ├── parameters.csv
+│           ├── shared_resources.csv
+│           ├── resource_capacities.csv
+│           └── warm_start_paper/
 │
 ├── Src/
-│   ├── __init__.py
-│   ├── data.py          # ① CSV 입력 + MILP parameter 전처리
-│   ├── milp.py          # ② Gurobi MILP 모델 생성 및 solve
-│   ├── output.py        # ③ 해를 CSV/JSON 결과 파일로 저장
-│   ├── warm_start.py    # ④ 기존 해 CSV를 Gurobi MIP start로 적용
-│   └── visualize.py     # ⑤ 결과 CSV를 layout 이미지로 시각화
+│   ├── data/
+│   │   └── loader.py             # CSV 입력 + RMSInstance 생성
+│   ├── models/
+│   │   ├── milp.py               # 기존 Saffar식 base MILP
+│   │   ├── milp_network.py       # time-expanded network reformulation
+│   │   └── adaptive_shared_resource.py
+│   ├── io/
+│   │   └── output.py             # solution CSV/JSON 저장
+│   ├── viz/
+│   │   └── visualize.py          # layout figure 생성
+│   └── warm_start/
+│       └── mip_start.py          # Gurobi MIP start 적용
 │
 ├── experiments/
-│   └── shared_resource_sensitivity.py # shared resource capacity 민감도 분석
+│   ├── shared_resource_sensitivity.py
+│   ├── capacity_sweep.py
+│   └── capacity_margin_scan.py
 │
-└── Result/              # 실행 결과 CSV, summary, figure 저장
+└── Result/                       # 실행 결과. GitHub 제외
 ```
 
-> `Result/`는 실행할 때 생성되는 산출물입니다. GitHub에는 기본적으로 올리지 않습니다.
-
----
+> `Result/`, `__pycache__/`, `.DS_Store`는 생성 산출물이므로 GitHub에는 올리지 않습니다.
 
 ## 2. 데이터 흐름
 
 ```text
 설정          데이터 입력/전처리            MILP 모델             결과 저장             시각화
-config.py -> Src/data.py        ->    Src/milp.py   ->   Src/output.py  ->  Src/visualize.py
+config.py -> Src/data/loader.py  ->  Src/models/milp.py  ->  Src/io/output.py  ->  Src/viz/visualize.py
             RMSInstance              RMSSolution        Result/*.csv       Result/figures/*.png
 ```
 
 각 단계는 앞 단계의 결과만 입력으로 받습니다.
 
-예를 들어 `Src/milp.py`는 CSV 파일명을 직접 알 필요가 없습니다.  
-`Src/data.py`가 CSV를 읽고 `RMSInstance` 객체를 만들어주면, 모델 코드는 그 객체의 속성만 사용합니다.
+예를 들어 `Src/models/milp.py`는 CSV 파일명을 직접 알 필요가 없습니다.  
+`Src/data/loader.py`가 CSV를 읽고 `RMSInstance` 객체를 만들어주면, 모델 코드는 그 객체의 속성만 사용합니다.
 
-이렇게 나누면 CSV 형식이 바뀌어도 `Src/data.py`만 수정하면 되고, MILP 수식이 바뀌어도 `Src/milp.py`만 수정하면 됩니다.
+이렇게 나누면 CSV 형식이 바뀌어도 `Src/data/loader.py`만 수정하면 되고, MILP 수식이 바뀌어도 `Src/models/milp.py`만 수정하면 됩니다.
 
 ---
 
@@ -85,22 +94,22 @@ config.py -> Src/data.py        ->    Src/milp.py   ->   Src/output.py  ->  Src/
 3. **`config.py`**  
    어떤 문제를 풀지, 어떤 데이터 폴더를 쓸지, Gurobi 옵션이 무엇인지 확인합니다.
 
-4. **`Data/*.csv`**  
+4. **`Data/datasets/*/*.csv와 Data/rmt_tables/*/*.csv`**  
    모델의 원시 입력 데이터입니다.  
-   single/multi는 같은 파일 schema를 사용합니다.
+   dataset은 문제별 schema를 공유하고, RMT table은 `Data/rmt_tables`에서 공통으로 사용합니다.
 
-5. **`Src/data.py`**  
+5. **`Src/data/loader.py`**  
    CSV가 모델용 parameter로 바뀌는 과정입니다.  
    여기서 `RMSInstance`가 만들어집니다.
 
-6. **`Src/milp.py`**  
+6. **`Src/models/milp.py`**  
    핵심 최적화 모델입니다.  
    변수, 제약식, 목적함수, 해 추출이 들어 있습니다.
 
-7. **`Src/output.py`**  
+7. **`Src/io/output.py`**  
    Gurobi 해가 어떤 CSV/JSON으로 저장되는지 확인합니다.
 
-8. **`Src/visualize.py`**  
+8. **`Src/viz/visualize.py`**  
    저장된 결과를 period별 layout 그림으로 변환합니다.
 
 ---
@@ -112,20 +121,20 @@ config.py -> Src/data.py        ->    Src/milp.py   ->   Src/output.py  ->  Src/
 | 조립 | `main.py` | 전체 실행 순서 호출 | 계산 로직 없이 모듈만 연결 |
 | 설정 | `config.py` | 데이터셋, 경로, solver 옵션 정의 | `PROBLEM_NAME`만 바꿔 single/multi 선택 |
 | 입력 생성 | `Data/generate_data.py` | 논문 재현용 CSV 생성/복사 | 기존 검증 데이터를 새 구조로 이동 |
-| 데이터 | `Src/data.py` | CSV 읽기 및 MILP parameter화 | `RMSInstance` 생성, single/multi 표준화 |
-| 모델 | `Src/milp.py` | Gurobi MILP 생성 및 solve | 구매/상태/재구성/flow/shared resource 제약 정의 |
-| 모델 | `Src/milp_network.py` | time-expanded network reformulation | 같은 문제를 machine lifecycle path로 재표현 |
+| 데이터 | `Src/data/loader.py` | CSV 읽기 및 MILP parameter화 | `RMSInstance` 생성, single/multi 표준화 |
+| 모델 | `Src/models/milp.py` | Gurobi MILP 생성 및 solve | 구매/상태/재구성/flow/shared resource 제약 정의 |
+| 모델 | `Src/models/milp_network.py` | time-expanded network reformulation | 같은 문제를 machine lifecycle path로 재표현 |
 | 실행 | `run_network.py` | network model 별도 실행 | `main.py`와 분리해 협업 충돌 최소화 |
-| 출력 | `Src/output.py` | 결과 CSV/JSON 저장 | 결과 schema 고정 |
-| Warm start | `Src/warm_start.py` | 기존 해 CSV를 Gurobi MIP start로 주입 | multi-part 논문 해 기반 warm start 선택 적용 |
-| 시각화 | `Src/visualize.py` | period별 layout 이미지 생성 | Figure 2 스타일 결과 확인 |
+| 출력 | `Src/io/output.py` | 결과 CSV/JSON 저장 | 결과 schema 고정 |
+| Warm start | `Src/warm_start/mip_start.py` | 기존 해 CSV를 Gurobi MIP start로 주입 | multi-part 논문 해 기반 warm start 선택 적용 |
+| 시각화 | `Src/viz/visualize.py` | period별 layout 이미지 생성 | Figure 2 스타일 결과 확인 |
 | 실험 | `experiments/shared_resource_sensitivity.py` | shared resource 보유량 민감도 분석 | infeasible 경계와 비용 안정화 구간 확인 |
 
 ---
 
 ## 5. 입력 데이터 설명
 
-### `locations.csv`
+### `Data/datasets/<problem>/locations.csv`
 
 위치 좌표와 위치 유형을 저장합니다.
 
@@ -141,9 +150,9 @@ location,x,y,type
 - `start`: inbound dummy location
 - `end`: outbound dummy location
 
-### `configurations.csv`
+### `Data/rmt_tables/<table>/configurations.csv`
 
-RMT configuration 정보입니다.
+RMT configuration 정보입니다. single/multi 데이터셋에 중복 저장하지 않고 공통 table로 사용합니다.
 
 주요 컬럼:
 
@@ -154,7 +163,7 @@ RMT configuration 정보입니다.
 - `basic_modules`: basic module set
 - `auxiliary_modules`: auxiliary module set
 
-### `production_rates.csv`
+### `Data/rmt_tables/<table>/production_rates.csv`
 
 configuration별 operation 생산률을 long format으로 저장합니다.
 
@@ -165,7 +174,7 @@ M5,mc52,5,20
 
 MILP에서는 이 파일을 주로 사용합니다.
 
-### `demands.csv`
+### `Data/datasets/<problem>/demands.csv`
 
 part별 period demand와 operation sequence를 저장합니다.
 
@@ -176,7 +185,7 @@ A,50,60,80,100,5>1>17
 
 다중부품도 같은 형식입니다.
 
-### `parameters.csv`
+### `Data/datasets/<problem>/parameters.csv`
 
 모델 scalar parameter입니다.
 
@@ -190,7 +199,7 @@ add_module_cost,50
 remove_module_cost,25
 ```
 
-### `shared_resources.csv`
+### `Data/datasets/<problem>/shared_resources.csv`
 
 shared resource별 보유량을 저장합니다. `config.USE_SHARED_RESOURCES=True`일 때만 MILP 제약으로 사용합니다.
 
@@ -200,7 +209,7 @@ resource,capacity
 16,5
 ```
 
-### `resource_requirements.csv`
+### `Data/rmt_tables/<table>/resource_requirements.csv`
 
 각 configuration이 어떤 shared resource를 요구하는지 저장합니다.
 
@@ -261,7 +270,7 @@ python3 experiments/shared_resource_sensitivity.py \
 - material flow 구조도 operation arc 기준으로 보면 동일합니다.
 - 차이는 part 수와 route/demand 집계 방식뿐입니다.
 
-따라서 `Src/data.py`에서 다음과 같이 전처리합니다.
+따라서 `Src/data/loader.py`에서 다음과 같이 전처리합니다.
 
 ```text
 part별 demand + operation sequence
@@ -408,7 +417,7 @@ config.py
 requirements.txt
 README.md
 SEQUENCE.md
-Data/*.csv
+Data/datasets/*/*.csv와 Data/rmt_tables/*/*.csv
 Data/generate_data.py
 Src/*.py
 ```
@@ -453,5 +462,5 @@ __pycache__/
 - `num_vars`, `num_constraints`: 모델 크기
 - `simplex_iterations`: simplex iteration 수
 
-초기에는 `Src/milp.py`와 `Src/milp_network.py`를 분리해 두고, shared resource처럼 두 모델에 공통으로 들어가는 제약은 같은 output schema로 비교합니다.  
-adaptive layout처럼 문제 자체가 바뀌는 확장은 별도 파일(`milp_adaptive.py`)로 분리하는 것이 좋습니다.
+초기에는 `Src/models/milp.py`와 `Src/models/milp_network.py`를 분리해 두고, shared resource처럼 두 모델에 공통으로 들어가는 제약은 같은 output schema로 비교합니다.  
+adaptive layout처럼 문제 자체가 바뀌는 확장은 별도 파일(`Src/models/adaptive_shared_resource.py`)로 분리하는 것이 좋습니다.

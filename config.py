@@ -3,23 +3,30 @@ from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent
 DATA_DIR = BASE_DIR / "Data"
+DATASET_DIR = DATA_DIR / "datasets"
+RMT_TABLE_DIR = DATA_DIR / "rmt_tables"
 
 # 실행할 데이터셋을 선택한다.
 # - "single_part": 메인논문 Example 1 단일부품 문제
 # - "multi_part": 메인논문 Example 2 다중부품 문제
 PROBLEM_NAME = "single_part"
-PROBLEM_DIR = DATA_DIR / PROBLEM_NAME
+PROBLEM_DIR = DATASET_DIR / PROBLEM_NAME
+
+# 사용할 RMT table을 선택한다.
+# 새 논문 table을 CSV로 추가하면 Data/rmt_tables/<name>/ 아래에 둔다.
+RMT_TABLE_NAME = "goyal_saffar"
+RMT_TABLE_PATH = RMT_TABLE_DIR / RMT_TABLE_NAME
 
 # 결과는 문제별로 나누어 저장한다. (예: Result/single_part, Result/multi_part)
 RESULT_DIR = BASE_DIR / "Result" / PROBLEM_NAME
 
 LOCATION_FILE = PROBLEM_DIR / "locations.csv"
-CONFIGURATION_FILE = PROBLEM_DIR / "configurations.csv"
-PRODUCTION_RATE_FILE = PROBLEM_DIR / "production_rates.csv"
+CONFIGURATION_FILE = RMT_TABLE_PATH / "configurations.csv"
+PRODUCTION_RATE_FILE = RMT_TABLE_PATH / "production_rates.csv"
 DEMAND_FILE = PROBLEM_DIR / "demands.csv"
 PARAMETER_FILE = PROBLEM_DIR / "parameters.csv"
 SHARED_RESOURCE_FILE = PROBLEM_DIR / "shared_resources.csv"
-RESOURCE_REQUIREMENT_FILE = PROBLEM_DIR / "resource_requirements.csv"
+RESOURCE_REQUIREMENT_FILE = RMT_TABLE_PATH / "resource_requirements.csv"
 
 TIME_LIMIT = 100
 MIP_GAP = 0.0

@@ -7,7 +7,7 @@
 
 ## 0. 논문 재현 (완료)
 
-**무엇을:** 논문의 MILP 정식화 식 (1)–(16)을 Gurobi로 구현 (`Src/milp.py`, `Src/data.py`).
+**무엇을:** 논문의 MILP 정식화 식 (1)–(16)을 Gurobi로 구현 (`Src/models/milp.py`, `Src/data/loader.py`).
 수요를 route arc 기반 네트워크 플로우로 재구성한 것 외에는 논문과 동일한 모델.
 
 **결과 (논문 대비):**

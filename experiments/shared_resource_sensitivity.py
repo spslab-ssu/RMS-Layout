@@ -12,8 +12,8 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PROJECT_ROOT))
 
 import config as base_config
-from Src.data import load_instance
-from Src.milp import solve_milp
+from Src.data.loader import load_instance
+from Src.models.milp import solve_milp
 
 
 DEFAULT_UNIFORM_LEVELS = "3,4,5,6,7,8,9,10,11,12,13,15,20"
@@ -99,14 +99,14 @@ def _make_config(problem_name: str, args) -> SimpleNamespace:
         **{name: getattr(base_config, name) for name in dir(base_config) if name.isupper()}
     )
     cfg.PROBLEM_NAME = problem_name
-    cfg.PROBLEM_DIR = cfg.DATA_DIR / problem_name
+    cfg.PROBLEM_DIR = cfg.DATASET_DIR / problem_name
     cfg.LOCATION_FILE = cfg.PROBLEM_DIR / "locations.csv"
-    cfg.CONFIGURATION_FILE = cfg.PROBLEM_DIR / "configurations.csv"
-    cfg.PRODUCTION_RATE_FILE = cfg.PROBLEM_DIR / "production_rates.csv"
+    cfg.CONFIGURATION_FILE = cfg.RMT_TABLE_PATH / "configurations.csv"
+    cfg.PRODUCTION_RATE_FILE = cfg.RMT_TABLE_PATH / "production_rates.csv"
     cfg.DEMAND_FILE = cfg.PROBLEM_DIR / "demands.csv"
     cfg.PARAMETER_FILE = cfg.PROBLEM_DIR / "parameters.csv"
     cfg.SHARED_RESOURCE_FILE = cfg.PROBLEM_DIR / "shared_resources.csv"
-    cfg.RESOURCE_REQUIREMENT_FILE = cfg.PROBLEM_DIR / "resource_requirements.csv"
+    cfg.RESOURCE_REQUIREMENT_FILE = cfg.RMT_TABLE_PATH / "resource_requirements.csv"
     cfg.TIME_LIMIT = args.time_limit
     cfg.MIP_GAP = args.mip_gap
     cfg.OUTPUT_FLAG = args.output_flag

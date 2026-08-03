@@ -7,7 +7,7 @@ from typing import Any
 import gurobipy as gp
 from gurobipy import GRB
 
-from Src.warm_start import apply_warm_start
+from Src.warm_start.mip_start import apply_warm_start
 
 
 @dataclass

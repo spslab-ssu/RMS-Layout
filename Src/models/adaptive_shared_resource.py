@@ -2,7 +2,7 @@ from __future__ import annotations
 
 """Adaptive layout + shared-resource MILP for the RMS layout project.
 
-이 파일은 기존 `Src/milp.py`를 직접 수정하지 않고, 논문 개선 아이디어를
+이 파일은 기존 `Src/models/milp.py`를 직접 수정하지 않고, 논문 개선 아이디어를
 실험하기 위한 별도 모델입니다. 기존 모델의 좋은 점은 유지하되, 아래 한계를
 보완하는 방향으로 작성했습니다.
 
@@ -53,12 +53,12 @@ config.py에 선택적으로 넣을 수 있는 예시는 아래와 같습니다.
     }
 
 사용 방법:
-    from Src.data import load_instance
+    from Src.data.loader import load_instance
     from RMS_chatgpt_like_loader import solve_adaptive_shared_resource_milp
 
-`RMS-chatgpt` 폴더명에는 하이픈이 있어 일반 import package로 쓰기는 어렵습니다.
-실제 프로젝트에 붙일 때는 이 파일을 `Src/milp_adaptive_shared_resource.py`로
-복사하거나, importlib로 파일 경로를 로드하면 됩니다.
+`Src/models` 폴더명에는 하이픈이 있어 일반 import package로 쓰기는 어렵습니다.
+현재는 `Src/models/adaptive_shared_resource.py`에 위치하므로
+`from Src.models.adaptive_shared_resource import solve_adaptive_shared_resource_milp`로 사용할 수 있습니다.
 """
 
 from collections import defaultdict
@@ -67,14 +67,14 @@ from typing import Any
 import gurobipy as gp
 from gurobipy import GRB
 
-from Src.milp import RMSSolution
+from Src.models.milp import RMSSolution
 
 
 def solve_adaptive_shared_resource_milp(instance, config) -> RMSSolution:
     """Adaptive layout과 shared resource 제약을 포함한 RMS layout MILP를 푼다.
 
     기존 `solve_milp(instance, config)`와 같은 `RMSSolution`을 반환하므로,
-    `Src/output.py`와 `Src/visualize.py`를 비교적 쉽게 재사용할 수 있다.
+    `Src/io/output.py`와 `Src/viz/visualize.py`를 비교적 쉽게 재사용할 수 있다.
     """
     model = gp.Model(f"rms_adaptive_shared_{instance.problem_name}")
     model.Params.TimeLimit = config.TIME_LIMIT
