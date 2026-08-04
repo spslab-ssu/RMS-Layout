@@ -16,10 +16,10 @@ WARM_START_BASE_DIR = DATA_DIR / "warm_starts"
 # - LOCATION_NAME: "layout_18" / "layout_22"
 # - RMT_TABLE_NAME: "table_1" / "table_2"
 # - DEMAND_NAME: "demand_1" / "demand_2" / ...
-PROBLEM_TYPE = "single_part"
-LOCATION_NAME = "layout_22"
-RMT_TABLE_NAME = "table_2"
-DEMAND_NAME = "demand_2"
+PROBLEM_TYPE = "single_part" 
+LOCATION_NAME = "layout_18"
+RMT_TABLE_NAME = "table_1"
+DEMAND_NAME = "demand_1"
 PARAMETER_NAME = PROBLEM_TYPE
 SHARED_RESOURCE_NAME = "shared_resources_2"
 RESOURCE_CAPACITY_NAME = "resource_capacities_2"
@@ -40,6 +40,10 @@ RESOURCE_REQUIREMENT_FILE = RMT_TABLE_DIR / RMT_TABLE_NAME / "resource_requireme
 
 TIME_LIMIT = 100
 MIP_GAP = 0.0
+
+# Adaptive layout relocation cost. MHC 단가보다는 크고 구매비보다는 작게 둔다.
+RELOCATION_COST_PER_DISTANCE = 1.0
+RELOCATION_FIXED_COST = 0.0
 
 # formulation 비교용 pure LP relaxation bound를 기록할지 여부.
 # True이면 MIP solve 전에 LP relaxation을 한 번 더 풀기 때문에 실행시간이 추가된다.

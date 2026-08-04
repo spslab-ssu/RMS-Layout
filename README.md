@@ -11,6 +11,7 @@
 RMS-Layout/
 ├── main.py              # base MILP 실행 진입점
 ├── run_network.py       # time-expanded network model 실행 진입점
+├── run_network_adaptive.py # full adaptive network model 실행 진입점
 ├── config.py            # 입력 조합과 solver 옵션 설정
 ├── README.md
 ├── SEQUENCE.md
@@ -50,6 +51,7 @@ RMS-Layout/
 │   ├── data/loader.py
 │   ├── models/milp.py
 │   ├── models/milp_network.py
+│   ├── models/network_adaptive.py
 │   ├── models/adaptive_shared_resource.py
 │   ├── io/output.py
 │   ├── viz/visualize.py
@@ -61,12 +63,22 @@ RMS-Layout/
 
 > `Result/`, `__pycache__/`, `.DS_Store`는 생성 산출물이므로 GitHub에는 올리지 않습니다.
 
+실행 결과는 모델별로 분리해서 저장합니다. 같은 `table/demand` 조합을 여러 모델로 풀어도 CSV가 서로 덮어쓰이지 않습니다.
+
+```text
+Result/<problem_type>/<rmt_table>/<demand>/base/
+Result/<problem_type>/<rmt_table>/<demand>/network/
+Result/<problem_type>/<rmt_table>/<demand>/network_adaptive/
+```
+
+`solution_summary.json`의 `cost_consistency.difference`가 `0.0`이면 `cost_breakdown.csv`, `material_flows.csv`, `reconfigurations.csv`, `purchased_machines.csv`의 비용 합계가 objective와 일치한다는 뜻입니다.
+
 ## 2. 데이터 흐름
 
 ```text
 설정          데이터 입력/전처리            MILP 모델             결과 저장             시각화
 config.py -> Src/data/loader.py  ->  Src/models/milp.py  ->  Src/io/output.py  ->  Src/viz/visualize.py
-            RMSInstance              RMSSolution        Result/*.csv       Result/figures/*.png
+            RMSInstance              RMSSolution        Result/<model>/*.csv  Result/<model>/figures/*.png
 ```
 
 각 단계는 앞 단계의 결과만 입력으로 받습니다.
@@ -122,6 +134,7 @@ config.py -> Src/data/loader.py  ->  Src/models/milp.py  ->  Src/io/output.py  -
 | 데이터 | `Src/data/loader.py` | CSV 읽기 및 MILP parameter화 | `RMSInstance` 생성, single/multi 표준화 |
 | 모델 | `Src/models/milp.py` | Gurobi MILP 생성 및 solve | 구매/상태/재구성/flow/shared resource 제약 정의 |
 | 모델 | `Src/models/milp_network.py` | time-expanded network reformulation | 같은 문제를 machine lifecycle path로 재표현 |
+| 모델 | `Src/models/network_adaptive.py` | full adaptive network model | period 사이 RMT location 이동 허용 |
 | 실행 | `run_network.py` | network model 별도 실행 | `main.py`와 분리해 협업 충돌 최소화 |
 | 출력 | `Src/io/output.py` | 결과 CSV/JSON 저장 | 결과 schema 고정 |
 | Warm start | `Src/warm_start/mip_start.py` | 기존 해 CSV를 Gurobi MIP start로 주입 | multi-part 논문 해 기반 warm start 선택 적용 |
@@ -404,6 +417,18 @@ python main.py
 ```
 
 ---
+
+
+### Full adaptive network model
+
+`run_network_adaptive.py`는 period 사이 RMT relocation을 허용하는 network model을 실행합니다. 이동 비용은 거리 기반으로 계산합니다.
+
+```python
+RELOCATION_COST_PER_DISTANCE = 100.0
+RELOCATION_FIXED_COST = 0.0
+```
+
+목적함수에는 기존 구매비, 재구성비, MHC에 `relocation_cost`가 추가됩니다. 결과는 `cost_breakdown.csv`, `cost_by_period.csv`, `cost_detail.csv`에서 확인할 수 있습니다.
 
 ## 9. 결과 파일
 
