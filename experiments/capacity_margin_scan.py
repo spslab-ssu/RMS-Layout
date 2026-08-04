@@ -24,7 +24,13 @@ from Src.data.loader import load_instance
 from Src.models.milp import solve_milp
 
 # ---------------- 실험 설정 ----------------
-PROBLEM = "single_part"
+PROBLEM_TYPE = "single_part"
+LOCATION_NAME = "layout_18"
+RMT_TABLE_NAME = "table_1"
+DEMAND_NAME = "demand_1"
+PARAMETER_NAME = PROBLEM_TYPE
+SHARED_RESOURCE_NAME = "shared_resources_1"
+PROBLEM = PROBLEM_TYPE
 BASELINE_OBJ = 22910.0                # capa=peak 기준선 최적값
 SKIP_MODULES = {20}                   # 이미 스윕 완료 (적정 capa=12 확정)
 REDUCE_BY = 1                         # peak - 1 테스트
@@ -35,17 +41,21 @@ TOL = 1e-6
 
 
 def make_config(problem: str) -> SimpleNamespace:
-    d = BASE_DIR / "Data" / "datasets" / problem
-    rmt = BASE_DIR / "Data" / "rmt_tables" / "goyal_saffar"
+    location_dir = BASE_DIR / "Data" / "locations"
+    rmt = BASE_DIR / "Data" / "rmt_tables" / RMT_TABLE_NAME
+    demand_dir = BASE_DIR / "Data" / "demands" / problem
+    parameter_dir = BASE_DIR / "Data" / "parameters"
+    shared_dir = BASE_DIR / "Data" / "shared_resources"
     return SimpleNamespace(
+        PROBLEM_TYPE=problem,
         PROBLEM_NAME=problem,
-        LOCATION_FILE=d / "locations.csv",
+        LOCATION_FILE=location_dir / f"{LOCATION_NAME}.csv",
         CONFIGURATION_FILE=rmt / "configurations.csv",
         PRODUCTION_RATE_FILE=rmt / "production_rates.csv",
-        DEMAND_FILE=d / "demands.csv",
-        PARAMETER_FILE=d / "parameters.csv",
+        DEMAND_FILE=demand_dir / f"{DEMAND_NAME}.csv",
+        PARAMETER_FILE=parameter_dir / f"{PARAMETER_NAME}.csv",
         USE_SHARED_RESOURCES=True,
-        SHARED_RESOURCE_FILE=d / "shared_resources.csv",
+        SHARED_RESOURCE_FILE=shared_dir / f"{SHARED_RESOURCE_NAME}.csv",
         RESOURCE_REQUIREMENT_FILE=rmt / "resource_requirements.csv",
         TIME_LIMIT=TIME_LIMIT,
         MIP_GAP=MIP_GAP,
@@ -77,7 +87,7 @@ def run() -> None:
     peaks = dict(sorted(base_instance.shared_resource_capacity.items()))
     targets = [m for m in peaks if m not in SKIP_MODULES]
 
-    out_path = BASE_DIR / "Result" / PROBLEM / "capacity_margin_scan.csv"
+    out_path = BASE_DIR / "Result" / PROBLEM / RMT_TABLE_NAME / DEMAND_NAME / "capacity_margin_scan.csv"
     out_path.parent.mkdir(parents=True, exist_ok=True)
 
     with out_path.open("w", newline="", encoding="utf-8-sig") as f:

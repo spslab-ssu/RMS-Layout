@@ -8,56 +8,54 @@
 ## 1. 한눈에 보는 디렉토리 구조
 
 ```text
-RMS_Layout/
+RMS-Layout/
 ├── main.py              # base MILP 실행 진입점
 ├── run_network.py       # time-expanded network model 실행 진입점
-├── config.py            # 데이터셋, RMT table, solver 옵션 설정
-├── requirements.txt
+├── config.py            # 입력 조합과 solver 옵션 설정
 ├── README.md
 ├── SEQUENCE.md
-├── .gitignore
 │
 ├── Data/
 │   ├── generate_data.py
-│   ├── rmt_tables/              # 여러 논문의 RMT table을 공통 자원으로 관리
-│   │   └── goyal_saffar/         # 현재 Saffar/Goyal 기반 RMT table
+│   ├── locations/               # layout 좌표만 관리
+│   │   ├── layout_18.csv
+│   │   └── layout_22.csv
+│   ├── rmt_tables/              # RMT configuration table만 관리
+│   │   ├── table_1/
+│   │   │   ├── configurations.csv
+│   │   │   ├── production_rates.csv
+│   │   │   └── resource_requirements.csv
+│   │   └── table_2/
 │   │       ├── configurations.csv
 │   │       ├── production_rates.csv
 │   │       └── resource_requirements.csv
-│   └── datasets/                # 문제별 데이터셋. RMT table은 중복 저장하지 않음
-│       ├── single_part/
-│       │   ├── locations.csv
-│       │   ├── demands.csv
-│       │   ├── parameters.csv
-│       │   ├── shared_resources.csv
-│       │   └── resource_capacities.csv
-│       └── multi_part/
-│           ├── locations.csv
-│           ├── demands.csv
-│           ├── parameters.csv
-│           ├── shared_resources.csv
-│           ├── resource_capacities.csv
-│           └── warm_start_paper/
+│   ├── parameters/              # single/multi 공통 모델 파라미터
+│   │   ├── single_part.csv
+│   │   └── multi_part.csv
+│   ├── demands/                 # 문제 유형별 demand scenario
+│   │   ├── single_part/
+│   │   │   ├── demand_1.csv
+│   │   │   └── demand_2.csv
+│   │   └── multi_part/
+│   │       └── demand_1.csv
+│   ├── shared_resources/        # shared resource 보유량
+│   │   ├── shared_resources_1.csv
+│   │   ├── resource_capacities_1.csv
+│   │   ├── shared_resources_2.csv
+│   │   └── resource_capacities_2.csv
+│   └── warm_starts/
+│       └── multi_part/paper_table_1/
 │
 ├── Src/
-│   ├── data/
-│   │   └── loader.py             # CSV 입력 + RMSInstance 생성
-│   ├── models/
-│   │   ├── milp.py               # 기존 Saffar식 base MILP
-│   │   ├── milp_network.py       # time-expanded network reformulation
-│   │   └── adaptive_shared_resource.py
-│   ├── io/
-│   │   └── output.py             # solution CSV/JSON 저장
-│   ├── viz/
-│   │   └── visualize.py          # layout figure 생성
-│   └── warm_start/
-│       └── mip_start.py          # Gurobi MIP start 적용
+│   ├── data/loader.py
+│   ├── models/milp.py
+│   ├── models/milp_network.py
+│   ├── models/adaptive_shared_resource.py
+│   ├── io/output.py
+│   ├── viz/visualize.py
+│   └── warm_start/mip_start.py
 │
 ├── experiments/
-│   ├── shared_resource_sensitivity.py
-│   ├── capacity_sweep.py
-│   └── capacity_margin_scan.py
-│
 └── Result/                       # 실행 결과. GitHub 제외
 ```
 
@@ -94,7 +92,7 @@ config.py -> Src/data/loader.py  ->  Src/models/milp.py  ->  Src/io/output.py  -
 3. **`config.py`**  
    어떤 문제를 풀지, 어떤 데이터 폴더를 쓸지, Gurobi 옵션이 무엇인지 확인합니다.
 
-4. **`Data/datasets/*/*.csv와 Data/rmt_tables/*/*.csv`**  
+4. **`Data/locations`, `Data/rmt_tables`, `Data/demands`, `Data/parameters`, `Data/shared_resources`**  
    모델의 원시 입력 데이터입니다.  
    dataset은 문제별 schema를 공유하고, RMT table은 `Data/rmt_tables`에서 공통으로 사용합니다.
 
@@ -119,7 +117,7 @@ config.py -> Src/data/loader.py  ->  Src/models/milp.py  ->  Src/io/output.py  -
 | 단계 | 파일 | 책임 | 핵심 포인트 |
 |---|---|---|---|
 | 조립 | `main.py` | 전체 실행 순서 호출 | 계산 로직 없이 모듈만 연결 |
-| 설정 | `config.py` | 데이터셋, 경로, solver 옵션 정의 | `PROBLEM_NAME`만 바꿔 single/multi 선택 |
+| 설정 | `config.py` | 데이터셋, 경로, solver 옵션 정의 | `PROBLEM_TYPE`, `LOCATION_NAME`, `RMT_TABLE_NAME`, `DEMAND_NAME`으로 입력 조합 선택 |
 | 입력 생성 | `Data/generate_data.py` | 논문 재현용 CSV 생성/복사 | 기존 검증 데이터를 새 구조로 이동 |
 | 데이터 | `Src/data/loader.py` | CSV 읽기 및 MILP parameter화 | `RMSInstance` 생성, single/multi 표준화 |
 | 모델 | `Src/models/milp.py` | Gurobi MILP 생성 및 solve | 구매/상태/재구성/flow/shared resource 제약 정의 |
@@ -134,7 +132,16 @@ config.py -> Src/data/loader.py  ->  Src/models/milp.py  ->  Src/io/output.py  -
 
 ## 5. 입력 데이터 설명
 
-### `Data/datasets/<problem>/locations.csv`
+### 데이터 번호
+
+현재 데이터는 논문명 대신 번호로 관리합니다.
+
+- `1`: 메인논문 데이터. `single_part`, `multi_part` 문제를 포함합니다.
+- `2`: `papers/layout/메인논문/유사 데이터 table`의 table 1/2 기반 신규 데이터. 현재는 `single_part` 예제를 포함합니다.
+
+`config.py`에서 `PROBLEM_TYPE`, `LOCATION_NAME`, `RMT_TABLE_NAME`, `DEMAND_NAME`을 바꾸면 실행할 입력 조합을 선택할 수 있습니다.
+
+### `Data/locations/<location_name>.csv`
 
 위치 좌표와 위치 유형을 저장합니다.
 
@@ -150,7 +157,7 @@ location,x,y,type
 - `start`: inbound dummy location
 - `end`: outbound dummy location
 
-### `Data/rmt_tables/<table>/configurations.csv`
+### `Data/rmt_tables/<rmt_table_name>/configurations.csv`
 
 RMT configuration 정보입니다. single/multi 데이터셋에 중복 저장하지 않고 공통 table로 사용합니다.
 
@@ -163,7 +170,7 @@ RMT configuration 정보입니다. single/multi 데이터셋에 중복 저장하
 - `basic_modules`: basic module set
 - `auxiliary_modules`: auxiliary module set
 
-### `Data/rmt_tables/<table>/production_rates.csv`
+### `Data/rmt_tables/<rmt_table_name>/production_rates.csv`
 
 configuration별 operation 생산률을 long format으로 저장합니다.
 
@@ -174,7 +181,7 @@ M5,mc52,5,20
 
 MILP에서는 이 파일을 주로 사용합니다.
 
-### `Data/datasets/<problem>/demands.csv`
+### `Data/demands/<problem_type>/<demand_name>.csv`
 
 part별 period demand와 operation sequence를 저장합니다.
 
@@ -185,7 +192,7 @@ A,50,60,80,100,5>1>17
 
 다중부품도 같은 형식입니다.
 
-### `Data/datasets/<problem>/parameters.csv`
+### `Data/parameters/<problem_type>.csv`
 
 모델 scalar parameter입니다.
 
@@ -199,7 +206,7 @@ add_module_cost,50
 remove_module_cost,25
 ```
 
-### `Data/datasets/<problem>/shared_resources.csv`
+### `Data/shared_resources/<shared_resource_name>.csv`
 
 shared resource별 보유량을 저장합니다. `config.USE_SHARED_RESOURCES=True`일 때만 MILP 제약으로 사용합니다.
 
@@ -209,7 +216,7 @@ resource,capacity
 16,5
 ```
 
-### `Data/rmt_tables/<table>/resource_requirements.csv`
+### `Data/rmt_tables/<rmt_table_name>/resource_requirements.csv`
 
 각 configuration이 어떤 shared resource를 요구하는지 저장합니다.
 
@@ -222,7 +229,7 @@ mc11,17,1
 ### `warm_start_paper/`
 
 multi-part 문제에서 논문 Figure 4 기반 해를 Gurobi MIP start로 넣기 위한 CSV 묶음입니다.
-`config.PROBLEM_NAME="multi_part"`와 `config.USE_WARM_START=True`로 설정하면 사용됩니다.
+`config.PROBLEM_TYPE="multi_part"`, `config.RMT_TABLE_NAME="table_1"`, `config.USE_WARM_START=True`와 `config.USE_WARM_START=True`로 설정하면 사용됩니다.
 
 ---
 
@@ -235,6 +242,10 @@ resource별 capacity를 모두 같은 값으로 두고 최소 feasible level을 
 
 ```bash
 python3 experiments/shared_resource_sensitivity.py \
+  --location-name layout_18 \
+  --rmt-table-name table_1 \
+  --demand-name demand_1 \
+  --shared-resource-name shared_resources_1 \
   --problems single_part multi_part \
   --mode uniform \
   --levels 0,1,2,3,4,5,6,8,10,12,15,20 \
@@ -246,6 +257,10 @@ python3 experiments/shared_resource_sensitivity.py \
 
 ```bash
 python3 experiments/shared_resource_sensitivity.py \
+  --location-name layout_18 \
+  --rmt-table-name table_1 \
+  --demand-name demand_1 \
+  --shared-resource-name shared_resources_1 \
   --problems single_part multi_part \
   --mode scale \
   --levels 0.25,0.5,0.75,1.0,1.25,1.5,2.0 \
@@ -357,7 +372,7 @@ min 구매비 + 재구성비 + material handling cost
 ```bash
 cd /Users/miles/Documents/02_학부연구생
 source .venv/bin/activate
-cd 01_RMS/03_Development/RMS_Layout
+cd 01_RMS/03_Development/RMS-Layout
 pip install -r requirements.txt
 ```
 
@@ -376,7 +391,10 @@ python main.py
 다중부품 문제를 풀려면 `config.py`에서 다음 값을 바꿉니다.
 
 ```python
-PROBLEM_NAME = "multi_part"
+PROBLEM_TYPE = "multi_part"
+LOCATION_NAME = "layout_22"
+RMT_TABLE_NAME = "table_1"
+DEMAND_NAME = "demand_1"
 ```
 
 그리고 다시 실행합니다.
@@ -417,7 +435,7 @@ config.py
 requirements.txt
 README.md
 SEQUENCE.md
-Data/datasets/*/*.csv와 Data/rmt_tables/*/*.csv
+Data/locations, Data/rmt_tables, Data/demands, Data/parameters, Data/shared_resources
 Data/generate_data.py
 Src/*.py
 ```

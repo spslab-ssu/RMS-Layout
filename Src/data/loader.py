@@ -64,8 +64,6 @@ def load_instance(config) -> RMSInstance:
     resource_requirement_file = getattr(config, "RESOURCE_REQUIREMENT_FILE", None)
 
     periods = _periods_from_demand(demand_df, params)
-    start_location = int(params["start_location"])
-    end_location = int(params["end_location"])
     start_operation = int(config.START_OPERATION)
     end_operation = int(config.END_OPERATION)
 
@@ -75,6 +73,8 @@ def load_instance(config) -> RMSInstance:
     }
     install_locations = sorted(p for p, row in locations.items() if row["type"] == "install")
     all_locations = sorted(locations)
+    start_location = _location_by_type(locations, "start", params.get("start_location"))
+    end_location = _location_by_type(locations, "end", params.get("end_location"))
 
     cost = {str(row.configuration): float(row.cost) for row in configs_df.itertuples(index=False)}
     machine = {str(row.configuration): str(row.machine) for row in configs_df.itertuples(index=False)}
@@ -165,6 +165,16 @@ def load_instance(config) -> RMSInstance:
         end_operation=end_operation,
     )
 
+
+
+def _location_by_type(locations: dict[int, dict[str, float | str]], location_type: str, fallback: float | None = None) -> int:
+    """locations.csv의 type 컬럼에서 start/end 위치를 찾는다."""
+    matches = [location for location, row in locations.items() if row["type"] == location_type]
+    if len(matches) == 1:
+        return int(matches[0])
+    if fallback is not None:
+        return int(fallback)
+    raise ValueError(f"locations.csv must contain exactly one {location_type} location, got {matches}")
 
 def _read_parameters(path: Path) -> dict[str, float]:
     """parameter,value CSV를 dict로 읽는다."""

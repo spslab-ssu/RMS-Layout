@@ -3,6 +3,7 @@ from __future__ import annotations
 from pathlib import Path
 
 import pandas as pd
+from pandas.errors import EmptyDataError
 from PIL import Image, ImageDraw, ImageFont
 
 
@@ -14,9 +15,11 @@ def draw_layouts(result_dir: Path, instance) -> None:
     if not states_path.exists() or states_path.stat().st_size == 0:
         return
 
-    states = pd.read_csv(states_path)
-    flows = pd.read_csv(flows_path) if flows_path.exists() and flows_path.stat().st_size else pd.DataFrame()
-    reconfigs = pd.read_csv(reconfigs_path) if reconfigs_path.exists() and reconfigs_path.stat().st_size else pd.DataFrame()
+    states = _read_csv_or_empty(states_path)
+    flows = _read_csv_or_empty(flows_path)
+    reconfigs = _read_csv_or_empty(reconfigs_path)
+    if states.empty:
+        return
 
     figure_dir = result_dir / "figures"
     figure_dir.mkdir(parents=True, exist_ok=True)
@@ -33,6 +36,16 @@ def draw_layouts(result_dir: Path, instance) -> None:
         image.save(figure_dir / f"layout_period_{period}.png")
         images.append(image)
     _combine_images(images, figure_dir / "layout_all_periods.png")
+
+
+def _read_csv_or_empty(path: Path) -> pd.DataFrame:
+    """빈 결과 CSV는 pandas EmptyDataError 대신 빈 DataFrame으로 처리한다."""
+    if not path.exists() or path.stat().st_size == 0:
+        return pd.DataFrame()
+    try:
+        return pd.read_csv(path)
+    except EmptyDataError:
+        return pd.DataFrame()
 
 
 class _LayoutRenderer:

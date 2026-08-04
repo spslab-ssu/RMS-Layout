@@ -25,7 +25,7 @@ CSV 읽기 + parameter 계산 + Gurobi 변수 생성 + 제약식 + 결과 저장
 ```
 
 이 구조는 빠르게 실험할 때는 편하지만, 협업하거나 GitHub로 관리하기 시작하면 수정 충돌이 많아집니다.  
-그래서 RMS_Layout에서는 V2GRO처럼 실행 단계를 나눕니다.
+그래서 RMS-Layout에서는 V2GRO처럼 실행 단계를 나눕니다.
 
 ---
 
@@ -51,11 +51,14 @@ Result/
 
 ```text
 config.py
-  - PROBLEM_NAME = single_part / multi_part
+  - PROBLEM_TYPE = single_part / multi_part
+  - LOCATION_NAME = layout_18 / layout_22
+  - RMT_TABLE_NAME = table_1 / table_2
+  - DEMAND_NAME = demand_1 / demand_2 / ...
   - 파일 경로, solver 옵션 지정
 
 Src/data/loader.py
-  - Data/datasets/<PROBLEM_NAME>/*.csv와 Data/rmt_tables/<RMT_TABLE_NAME>/*.csv 읽기
+  - Data/locations, Data/rmt_tables, Data/demands, Data/parameters, Data/shared_resources의 선택된 CSV 읽기
   - RMSInstance 생성
 
 Src/models/milp.py
@@ -115,7 +118,10 @@ draw_layouts(config.RESULT_DIR, instance)
 ### 주요 값
 
 ```python
-PROBLEM_NAME = "single_part"
+PROBLEM_TYPE = "single_part"
+LOCATION_NAME = "layout_18"
+RMT_TABLE_NAME = "table_1"
+DEMAND_NAME = "demand_1"
 ```
 
 어떤 데이터셋을 풀지 정합니다.
@@ -145,13 +151,28 @@ dummy start/end operation 번호입니다.
 단일부품:
 
 ```python
-PROBLEM_NAME = "single_part"
+PROBLEM_TYPE = "single_part"
+LOCATION_NAME = "layout_18"
+RMT_TABLE_NAME = "table_1"
+DEMAND_NAME = "demand_1"
 ```
 
 다중부품:
 
 ```python
-PROBLEM_NAME = "multi_part"
+PROBLEM_TYPE = "multi_part"
+LOCATION_NAME = "layout_22"
+RMT_TABLE_NAME = "table_1"
+DEMAND_NAME = "demand_1"
+```
+
+유사 데이터 table 기반 실행:
+
+```python
+PROBLEM_TYPE = "single_part"
+LOCATION_NAME = "layout_22"
+RMT_TABLE_NAME = "table_2"
+DEMAND_NAME = "demand_2"
 ```
 
 ---
@@ -171,9 +192,13 @@ python Data/generate_data.py
 실행 후 다음 폴더가 채워집니다.
 
 ```text
-Data/datasets/single_part/
-Data/datasets/multi_part/
-Data/rmt_tables/goyal_saffar/
+Data/locations/
+Data/rmt_tables/table_1/
+Data/rmt_tables/table_2/
+Data/parameters/
+Data/demands/single_part/
+Data/demands/multi_part/
+Data/shared_resources/
 ```
 
 ### 나중에 추가할 수 있는 기능
@@ -190,11 +215,14 @@ Data/rmt_tables/goyal_saffar/
 
 현재 Data는 두 층으로 나뉩니다.
 
-- `Data/rmt_tables/<table_name>/`: RMT configuration, production rate, resource requirement처럼 여러 문제에서 공유하는 table
-- `Data/datasets/<problem_name>/`: locations, demands, parameters처럼 문제별로 달라지는 데이터
+- `Data/locations/`: 18칸/22칸 layout 좌표
+- `Data/rmt_tables/<rmt_table_name>/`: RMT configuration, production rate, resource requirement
+- `Data/parameters/`: single/multi별 모델 파라미터
+- `Data/demands/<problem_type>/`: demand scenario
+- `Data/shared_resources/`: shared resource 보유량
 
 
-### `Data/datasets/<problem>/locations.csv`
+### `Data/locations/<location_name>.csv`
 
 위치 정보를 저장합니다.
 
@@ -213,7 +241,7 @@ start
 end
 ```
 
-### `Data/rmt_tables/<table>/configurations.csv`
+### `Data/rmt_tables/<rmt_table_name>/configurations.csv`
 
 configuration 정보입니다.
 
@@ -230,7 +258,7 @@ auxiliary_modules
 
 이 파일은 사람이 보기 좋은 wide format입니다.
 
-### `Data/rmt_tables/<table>/production_rates.csv`
+### `Data/rmt_tables/<rmt_table_name>/production_rates.csv`
 
 MILP가 실제로 쓰는 production rate 파일입니다.
 
@@ -239,7 +267,7 @@ machine,configuration,operation,production_rate
 M5,mc52,5,20
 ```
 
-### `Data/datasets/<problem>/demands.csv`
+### `Data/demands/<problem_type>/<demand_name>.csv`
 
 part demand와 route입니다.
 
@@ -248,7 +276,7 @@ part,period1,period2,period3,period4,operation_sequence
 A,50,60,80,100,5>1>17
 ```
 
-### `Data/datasets/<problem>/parameters.csv`
+### `Data/parameters/<problem_type>.csv`
 
 scalar parameter입니다.
 
@@ -442,7 +470,14 @@ Result/figures/layout_all_periods.png
 
 ### 단일부품
 
-`PROBLEM_NAME = "single_part"` 기준으로 정상 실행됩니다.
+다음 설정 기준으로 정상 실행됩니다.
+
+```python
+PROBLEM_TYPE = "single_part"
+LOCATION_NAME = "layout_18"
+RMT_TABLE_NAME = "table_1"
+DEMAND_NAME = "demand_1"
+```
 
 확인된 결과:
 
@@ -453,7 +488,14 @@ gap = 0.0
 
 ### 다중부품
 
-`PROBLEM_NAME = "multi_part"` 기준으로 모델 생성과 solve가 정상 작동합니다.
+다음 설정 기준으로 모델 생성과 solve가 정상 작동합니다.
+
+```python
+PROBLEM_TYPE = "multi_part"
+LOCATION_NAME = "layout_22"
+RMT_TABLE_NAME = "table_1"
+DEMAND_NAME = "demand_1"
+```
 
 테스트에서는 120초 제한 내 feasible solution과 figure 생성까지 확인했습니다.  
 다만 120초 제한에서는 최적성 증명까지 완료되지 않았습니다.

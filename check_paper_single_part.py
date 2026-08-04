@@ -47,13 +47,17 @@ PAPER_REPORTED = {
 
 
 def main() -> None:
-    config.PROBLEM_NAME = "single_part"
-    config.PROBLEM_DIR = config.DATASET_DIR / config.PROBLEM_NAME
-    config.LOCATION_FILE = config.PROBLEM_DIR / "locations.csv"
-    config.CONFIGURATION_FILE = config.RMT_TABLE_PATH / "configurations.csv"
-    config.PRODUCTION_RATE_FILE = config.RMT_TABLE_PATH / "production_rates.csv"
-    config.DEMAND_FILE = config.PROBLEM_DIR / "demands.csv"
-    config.PARAMETER_FILE = config.PROBLEM_DIR / "parameters.csv"
+    config.PROBLEM_TYPE = "single_part"
+    config.PROBLEM_NAME = config.PROBLEM_TYPE
+    config.LOCATION_NAME = "layout_18"
+    config.RMT_TABLE_NAME = "table_1"
+    config.DEMAND_NAME = "demand_1"
+    config.PARAMETER_NAME = config.PROBLEM_TYPE
+    config.LOCATION_FILE = config.LOCATION_DIR / f"{config.LOCATION_NAME}.csv"
+    config.CONFIGURATION_FILE = config.RMT_TABLE_DIR / config.RMT_TABLE_NAME / "configurations.csv"
+    config.PRODUCTION_RATE_FILE = config.RMT_TABLE_DIR / config.RMT_TABLE_NAME / "production_rates.csv"
+    config.DEMAND_FILE = config.DEMAND_DIR / config.PROBLEM_TYPE / f"{config.DEMAND_NAME}.csv"
+    config.PARAMETER_FILE = config.PARAMETER_DIR / f"{config.PARAMETER_NAME}.csv"
     config.RESULT_DIR = config.BASE_DIR / "Result_paper_initial_fixed"
     config.MIP_GAP = 0.0
     config.FIXED_PURCHASES = PAPER_INITIAL_PURCHASES

@@ -24,6 +24,10 @@ def main() -> None:
     parser = argparse.ArgumentParser(
         description="Run shared resource capacity sensitivity analysis for RMS layout problems."
     )
+    parser.add_argument("--location-name", default="layout_18")
+    parser.add_argument("--rmt-table-name", default="table_1")
+    parser.add_argument("--demand-name", default="demand_1")
+    parser.add_argument("--shared-resource-name", default="shared_resources_1")
     parser.add_argument("--problems", nargs="+", default=["single_part", "multi_part"])
     parser.add_argument("--mode", choices=["uniform", "scale"], default="uniform")
     parser.add_argument("--levels", default=None, help="Comma-separated capacity levels or scale factors.")
@@ -55,6 +59,9 @@ def run_case(problem_name: str, mode: str, level: float, args) -> dict[str, obje
     instance.shared_resource_capacity = _build_capacity(base_capacity, mode, level)
 
     row: dict[str, object] = {
+        "location_name": args.location_name,
+        "rmt_table_name": args.rmt_table_name,
+        "demand_name": args.demand_name,
         "problem_name": problem_name,
         "mode": mode,
         "level": _clean_number(level),
@@ -98,21 +105,26 @@ def _make_config(problem_name: str, args) -> SimpleNamespace:
     cfg = SimpleNamespace(
         **{name: getattr(base_config, name) for name in dir(base_config) if name.isupper()}
     )
+    cfg.PROBLEM_TYPE = problem_name
     cfg.PROBLEM_NAME = problem_name
-    cfg.PROBLEM_DIR = cfg.DATASET_DIR / problem_name
-    cfg.LOCATION_FILE = cfg.PROBLEM_DIR / "locations.csv"
-    cfg.CONFIGURATION_FILE = cfg.RMT_TABLE_PATH / "configurations.csv"
-    cfg.PRODUCTION_RATE_FILE = cfg.RMT_TABLE_PATH / "production_rates.csv"
-    cfg.DEMAND_FILE = cfg.PROBLEM_DIR / "demands.csv"
-    cfg.PARAMETER_FILE = cfg.PROBLEM_DIR / "parameters.csv"
-    cfg.SHARED_RESOURCE_FILE = cfg.PROBLEM_DIR / "shared_resources.csv"
-    cfg.RESOURCE_REQUIREMENT_FILE = cfg.RMT_TABLE_PATH / "resource_requirements.csv"
+    cfg.LOCATION_NAME = args.location_name
+    cfg.RMT_TABLE_NAME = args.rmt_table_name
+    cfg.DEMAND_NAME = args.demand_name
+    cfg.PARAMETER_NAME = problem_name
+    cfg.SHARED_RESOURCE_NAME = args.shared_resource_name
+    cfg.LOCATION_FILE = cfg.LOCATION_DIR / f"{cfg.LOCATION_NAME}.csv"
+    cfg.CONFIGURATION_FILE = cfg.RMT_TABLE_DIR / cfg.RMT_TABLE_NAME / "configurations.csv"
+    cfg.PRODUCTION_RATE_FILE = cfg.RMT_TABLE_DIR / cfg.RMT_TABLE_NAME / "production_rates.csv"
+    cfg.DEMAND_FILE = cfg.DEMAND_DIR / problem_name / f"{cfg.DEMAND_NAME}.csv"
+    cfg.PARAMETER_FILE = cfg.PARAMETER_DIR / f"{cfg.PARAMETER_NAME}.csv"
+    cfg.SHARED_RESOURCE_FILE = cfg.SHARED_RESOURCE_DIR / f"{cfg.SHARED_RESOURCE_NAME}.csv"
+    cfg.RESOURCE_REQUIREMENT_FILE = cfg.RMT_TABLE_DIR / cfg.RMT_TABLE_NAME / "resource_requirements.csv"
     cfg.TIME_LIMIT = args.time_limit
     cfg.MIP_GAP = args.mip_gap
     cfg.OUTPUT_FLAG = args.output_flag
     cfg.USE_SHARED_RESOURCES = True
     cfg.USE_WARM_START = bool(args.use_warm_start and problem_name == "multi_part")
-    cfg.WARM_START_DIR = cfg.PROBLEM_DIR / "warm_start_paper"
+    cfg.WARM_START_DIR = cfg.WARM_START_BASE_DIR / problem_name / "paper_table_1"
     return cfg
 
 

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from collections import defaultdict
+import math
 from dataclasses import dataclass, field
 from typing import Any
 
@@ -389,9 +390,11 @@ def _extract_solution(
     )
 
 
-def _clean_float(value: float, integer_tolerance: float = 1e-3) -> float:
+def _clean_float(value: float, integer_tolerance: float = 1e-3) -> float | None:
     """Gurobi numerical noise를 사람이 읽기 좋은 값으로 정리한다."""
     value = float(value)
+    if not math.isfinite(value):
+        return None
     nearest_integer = round(value)
     if abs(value - nearest_integer) <= integer_tolerance:
         return float(nearest_integer)
@@ -441,6 +444,7 @@ def _safe_model_attr(model, name: str):
         value = getattr(model, name)
     except (AttributeError, gp.GurobiError):
         return None
-    if value in {GRB.INFINITY, -GRB.INFINITY}:
+    value = float(value)
+    if not math.isfinite(value) or abs(value) >= GRB.INFINITY:
         return None
     return _clean_float(value)

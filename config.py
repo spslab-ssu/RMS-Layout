@@ -3,30 +3,40 @@ from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent
 DATA_DIR = BASE_DIR / "Data"
-DATASET_DIR = DATA_DIR / "datasets"
+
+LOCATION_DIR = DATA_DIR / "locations"
 RMT_TABLE_DIR = DATA_DIR / "rmt_tables"
+PARAMETER_DIR = DATA_DIR / "parameters"
+DEMAND_DIR = DATA_DIR / "demands"
+SHARED_RESOURCE_DIR = DATA_DIR / "shared_resources"
+WARM_START_BASE_DIR = DATA_DIR / "warm_starts"
 
-# 실행할 데이터셋을 선택한다.
-# - "single_part": 메인논문 Example 1 단일부품 문제
-# - "multi_part": 메인논문 Example 2 다중부품 문제
-PROBLEM_NAME = "single_part"
-PROBLEM_DIR = DATASET_DIR / PROBLEM_NAME
+# 실행할 문제와 입력 조합을 선택한다.
+# - PROBLEM_TYPE: "single_part" / "multi_part"
+# - LOCATION_NAME: "layout_18" / "layout_22"
+# - RMT_TABLE_NAME: "table_1" / "table_2"
+# - DEMAND_NAME: "demand_1" / "demand_2" / ...
+PROBLEM_TYPE = "single_part"
+LOCATION_NAME = "layout_22"
+RMT_TABLE_NAME = "table_2"
+DEMAND_NAME = "demand_2"
+PARAMETER_NAME = PROBLEM_TYPE
+SHARED_RESOURCE_NAME = "shared_resources_2"
+RESOURCE_CAPACITY_NAME = "resource_capacities_2"
 
-# 사용할 RMT table을 선택한다.
-# 새 논문 table을 CSV로 추가하면 Data/rmt_tables/<name>/ 아래에 둔다.
-RMT_TABLE_NAME = "goyal_saffar"
-RMT_TABLE_PATH = RMT_TABLE_DIR / RMT_TABLE_NAME
+# 기존 코드 호환용 이름. 내부 모델에서는 problem_name으로 사용한다.
+PROBLEM_NAME = PROBLEM_TYPE
 
-# 결과는 문제별로 나누어 저장한다. (예: Result/single_part, Result/multi_part)
-RESULT_DIR = BASE_DIR / "Result" / PROBLEM_NAME
+RESULT_DIR = BASE_DIR / "Result" / PROBLEM_TYPE / RMT_TABLE_NAME / DEMAND_NAME
 
-LOCATION_FILE = PROBLEM_DIR / "locations.csv"
-CONFIGURATION_FILE = RMT_TABLE_PATH / "configurations.csv"
-PRODUCTION_RATE_FILE = RMT_TABLE_PATH / "production_rates.csv"
-DEMAND_FILE = PROBLEM_DIR / "demands.csv"
-PARAMETER_FILE = PROBLEM_DIR / "parameters.csv"
-SHARED_RESOURCE_FILE = PROBLEM_DIR / "shared_resources.csv"
-RESOURCE_REQUIREMENT_FILE = RMT_TABLE_PATH / "resource_requirements.csv"
+LOCATION_FILE = LOCATION_DIR / f"{LOCATION_NAME}.csv"
+CONFIGURATION_FILE = RMT_TABLE_DIR / RMT_TABLE_NAME / "configurations.csv"
+PRODUCTION_RATE_FILE = RMT_TABLE_DIR / RMT_TABLE_NAME / "production_rates.csv"
+DEMAND_FILE = DEMAND_DIR / PROBLEM_TYPE / f"{DEMAND_NAME}.csv"
+PARAMETER_FILE = PARAMETER_DIR / f"{PARAMETER_NAME}.csv"
+SHARED_RESOURCE_FILE = SHARED_RESOURCE_DIR / f"{SHARED_RESOURCE_NAME}.csv"
+RESOURCE_CAPACITY_FILE = SHARED_RESOURCE_DIR / f"{RESOURCE_CAPACITY_NAME}.csv"
+RESOURCE_REQUIREMENT_FILE = RMT_TABLE_DIR / RMT_TABLE_NAME / "resource_requirements.csv"
 
 TIME_LIMIT = 100
 MIP_GAP = 0.0
@@ -38,7 +48,8 @@ COMPUTE_LP_RELAXATION_BOUND = True
 # 논문 Figure 4 등 기존 해를 Gurobi MIP start로 넣을지 여부.
 # multi_part에서 논문 해를 기준으로 시작하려면 아래 두 값을 켠다.
 USE_WARM_START = False
-WARM_START_DIR = PROBLEM_DIR / "warm_start_paper"
+WARM_START_NAME = "paper_table_1"
+WARM_START_DIR = WARM_START_BASE_DIR / PROBLEM_TYPE / WARM_START_NAME
 
 # warm start objective보다 나쁜 해를 탐색에서 제외하고 싶을 때만 사용한다.
 USE_OBJECTIVE_CUTOFF = False
