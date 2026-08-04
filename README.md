@@ -47,6 +47,29 @@ RMS_Layout/
 
 > `Result/`는 실행할 때 생성되는 산출물입니다. GitHub에는 기본적으로 올리지 않습니다.
 
+### 싱글파트 모듈 중복률 실험
+
+원본 싱글파트 모델에서 보조 모듈 중복률을 0%, 25%, 50%, 75%, 100%로 바꾸고
+재구성비용을 비교하려면 프로젝트 루트에서 다음을 실행합니다.
+
+```bash
+python run_single_part_module_overlap.py
+```
+
+원본 `Data/single_part` 파일은 수정하지 않습니다. 생성된 시나리오와 해, 비교표,
+보고서 및 그래프는 `Result_module_overlap/`에 저장됩니다. 주요 산출물은 다음과 같습니다.
+
+- `module_overlap_sensitivity.csv`: 중복 지표, 재구성비용, 감소액·감소율, 목적함수
+- `module_overlap_sensitivity.png`: 중복률에 따른 재구성비용 그래프
+- `REPORT.md`: 실험 조건과 핵심 결과 요약
+- `scenarios/`: 각 시나리오의 복제 configuration 데이터와 상세 최적해
+
+다른 구간을 실험하려면 예를 들어 다음처럼 지정합니다.
+
+```bash
+python run_single_part_module_overlap.py --levels 0 0.1 0.2 0.4 0.6 0.8 1 --time-limit 300
+```
+
 ---
 
 ## 2. 데이터 흐름

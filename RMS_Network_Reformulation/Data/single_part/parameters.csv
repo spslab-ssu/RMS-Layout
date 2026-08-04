@@ -1,0 +1,7 @@
+parameter,value
+period_count,4
+material_handling_cost,4
+start_location,17
+end_location,18
+add_module_cost,50
+remove_module_cost,25
