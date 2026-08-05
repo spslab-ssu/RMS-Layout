@@ -21,7 +21,7 @@ PARAMETER_FILE = PROBLEM_DIR / "parameters.csv"
 SHARED_RESOURCE_FILE = PROBLEM_DIR / "shared_resources.csv"
 RESOURCE_REQUIREMENT_FILE = PROBLEM_DIR / "resource_requirements.csv"
 
-TIME_LIMIT = 100
+TIME_LIMIT = 600
 MIP_GAP = 0.0
 
 # formulation 비교용 pure LP relaxation bound를 기록할지 여부.
@@ -56,15 +56,13 @@ SHARED_RESOURCE_MODE = "variable"
 #   - None이면 상한 없음(진짜 최소 사이징 탐색, S3).
 #   - 아래 값은 min-cost(22,910) 최소 사이징(총 76)으로 고정 → 빠른 확인용 실험.
 CAP_UPPER_BOUNDS = {
-    11: 5, 12: 5, 13: 5, 14: 5, 15: 0, 16: 8, 17: 10, 18: 5,
-    19: 10, 20: 12, 21: 0, 22: 4, 23: 0, 24: 2, 25: 5,
 }
 
 # adaptive layout: 기간 경계에서 기계 relocation(이동) 허용 정책. (milp_adaptive에서 사용)
 #   "off"      : 위치 고정 (base와 동등)
 #   "separate" : 이동이면 config 유지, 재구성이면 제자리 (동시 금지)
 #   "joint"    : 이동 + 재구성 동시 허용
-ADAPTIVE_MODE = "joint"
+ADAPTIVE_MODE = "off"
 # 이동비 = 구매가 C_j * (ALPHA + BETA * 거리 D_kp)
 ALPHA = 0.0
 BETA = 0.0
