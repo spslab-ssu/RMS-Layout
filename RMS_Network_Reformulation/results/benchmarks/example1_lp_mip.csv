@@ -1,0 +1,5 @@
+problem,profile,paper_reported_objective,best_known_objective,pure_lp_bound,pure_lp_gap_percent,cuts_generated,cuts_added,cuts_pruned,lp_runtime_seconds,mip_objective,mip_bound,mip_gap,mip_status,mip_runtime_seconds
+single_part,network,23082.0,22910.0,22162.618038,3.262252,0,0,0,0.019176,22910.0,22910.0,0.0,OPTIMAL,2.658086
+single_part,network_counting,23082.0,22910.0,22612.662465,1.29785,12,12,0,0.0208,22910.0,22910.0,2.159603308827627e-14,OPTIMAL,1.271047
+single_part,network_theta,23082.0,22910.0,22619.8,1.266696,60,34,26,0.021603,22910.0,22910.0,0.0,OPTIMAL,0.891609
+single_part,network_mir,23082.0,22910.0,22674.8,1.026626,89,36,53,0.021514,22910.0,22910.0,0.0,OPTIMAL,1.019679

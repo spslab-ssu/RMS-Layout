@@ -1,0 +1,59 @@
+{
+  "problem_name": "multi_part",
+  "formulation": "machine_lifecycle_network",
+  "strengthening_profile": "network_mir",
+  "strengthening": {
+    "profile": "network_mir",
+    "families": [
+      "counting",
+      "theta",
+      "mir"
+    ],
+    "generated": 145,
+    "added": 50,
+    "pruned": 95,
+    "generated_by_family": {
+      "counting": 18,
+      "theta": 71,
+      "mir": 56
+    },
+    "added_by_family": {
+      "counting": 9,
+      "theta": 20,
+      "mir": 21
+    }
+  },
+  "lp_relaxation": false,
+  "status": 9,
+  "status_name": "TIME_LIMIT",
+  "periods": [
+    1,
+    2,
+    3,
+    4
+  ],
+  "operations": [
+    2,
+    8,
+    11,
+    12,
+    17
+  ],
+  "model_size": {
+    "variables": 13360,
+    "binary_variables": 1600,
+    "integer_variables": 1600,
+    "continuous_variables": 11760,
+    "constraints": 3698
+  },
+  "objective": 35791.0,
+  "runtime_seconds": 30.0022931098938,
+  "solution_count": 10,
+  "node_count": 4003.0,
+  "optimization_mode": "system_cost",
+  "upper_bound": 35791.0,
+  "lower_bound": 35207.365676,
+  "absolute_gap": 583.634324,
+  "mip_gap": 0.01630673420093985,
+  "resource_counting_mode": "disabled"
+}

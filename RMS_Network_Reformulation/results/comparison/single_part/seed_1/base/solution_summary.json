@@ -1,0 +1,35 @@
+{
+  "problem_name": "single_part",
+  "formulation": "base_implication",
+  "lp_relaxation": false,
+  "status": 2,
+  "status_name": "OPTIMAL",
+  "periods": [
+    1,
+    2,
+    3,
+    4
+  ],
+  "operations": [
+    1,
+    5,
+    17
+  ],
+  "model_size": {
+    "variables": 4096,
+    "binary_variables": 1856,
+    "integer_variables": 1856,
+    "continuous_variables": 2240,
+    "constraints": 3136
+  },
+  "objective": 22910.0,
+  "runtime_seconds": 6.506453037261963,
+  "solution_count": 10,
+  "node_count": 3062.0,
+  "optimization_mode": "system_cost",
+  "upper_bound": 22910.0,
+  "lower_bound": 22910.0,
+  "absolute_gap": 0.0,
+  "mip_gap": 0.0,
+  "resource_counting_mode": "disabled"
+}

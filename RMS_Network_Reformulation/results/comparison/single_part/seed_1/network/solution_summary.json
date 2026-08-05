@@ -1,0 +1,45 @@
+{
+  "problem_name": "single_part",
+  "formulation": "machine_lifecycle_network",
+  "strengthening_profile": "network",
+  "strengthening": {
+    "profile": "network",
+    "families": [],
+    "generated": 0,
+    "added": 0,
+    "pruned": 0,
+    "generated_by_family": {},
+    "added_by_family": {}
+  },
+  "lp_relaxation": false,
+  "status": 2,
+  "status_name": "OPTIMAL",
+  "periods": [
+    1,
+    2,
+    3,
+    4
+  ],
+  "operations": [
+    1,
+    5,
+    17
+  ],
+  "model_size": {
+    "variables": 4944,
+    "binary_variables": 832,
+    "integer_variables": 832,
+    "continuous_variables": 4112,
+    "constraints": 1856
+  },
+  "objective": 22910.0,
+  "runtime_seconds": 2.3377578258514404,
+  "solution_count": 9,
+  "node_count": 3300.0,
+  "optimization_mode": "system_cost",
+  "upper_bound": 22910.0,
+  "lower_bound": 22910.0,
+  "absolute_gap": 0.0,
+  "mip_gap": 0.0,
+  "resource_counting_mode": "disabled"
+}
