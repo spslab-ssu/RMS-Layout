@@ -7,7 +7,7 @@ DATA_DIR = BASE_DIR / "Data"
 # 실행할 데이터셋을 선택한다.
 # - "single_part": 메인논문 Example 1 단일부품 문제
 # - "multi_part": 메인논문 Example 2 다중부품 문제
-PROBLEM_NAME = "single_part"
+PROBLEM_NAME = "multi_part"
 PROBLEM_DIR = DATA_DIR / PROBLEM_NAME
 
 # 결과는 문제별로 나누어 저장한다. (예: Result/single_part, Result/multi_part)
@@ -21,7 +21,7 @@ PARAMETER_FILE = PROBLEM_DIR / "parameters.csv"
 SHARED_RESOURCE_FILE = PROBLEM_DIR / "shared_resources.csv"
 RESOURCE_REQUIREMENT_FILE = PROBLEM_DIR / "resource_requirements.csv"
 
-TIME_LIMIT = 600
+TIME_LIMIT = 100
 MIP_GAP = 0.0
 
 # formulation 비교용 pure LP relaxation bound를 기록할지 여부.
