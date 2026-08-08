@@ -16,8 +16,8 @@ WARM_START_BASE_DIR = DATA_DIR / "warm_starts"
 # - LOCATION_NAME: "layout_18" / "layout_22"
 # - RMT_TABLE_NAME: "table_1" / "table_2"
 # - DEMAND_NAME: "demand_1" / "demand_2" / ...
-PROBLEM_TYPE = "single_part" 
-LOCATION_NAME = "layout_18"
+PROBLEM_TYPE = "multi_part" 
+LOCATION_NAME = "layout_22"
 RMT_TABLE_NAME = "table_1"
 DEMAND_NAME = "demand_1"
 PARAMETER_NAME = PROBLEM_TYPE
