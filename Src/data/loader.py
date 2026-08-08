@@ -48,6 +48,21 @@ class RMSInstance:
     end_operation: int
 
 
+def resource_mode(config) -> str:
+    """shared resource 처리 방식을 반환한다: "off" | "fixed" | "variable".
+
+    SHARED_RESOURCE_MODE가 지정돼 있으면 그것을 우선 사용하고, 없으면 기존
+    USE_SHARED_RESOURCES 플래그를 fixed/off로 해석한다.
+    """
+    mode = getattr(config, "SHARED_RESOURCE_MODE", None)
+    if mode is not None:
+        mode = str(mode).strip().lower()
+        if mode not in {"off", "fixed", "variable"}:
+            raise ValueError(f"SHARED_RESOURCE_MODE must be one of off/fixed/variable, got {mode!r}")
+        return mode
+    return "fixed" if bool(getattr(config, "USE_SHARED_RESOURCES", False)) else "off"
+
+
 def load_instance(config) -> RMSInstance:
     """CSV 파일을 읽고 MILP 모델용 인스턴스로 전처리한다.
 
@@ -59,7 +74,7 @@ def load_instance(config) -> RMSInstance:
     configs_df = pd.read_csv(config.CONFIGURATION_FILE)
     rates_df = pd.read_csv(config.PRODUCTION_RATE_FILE)
     demand_df = pd.read_csv(config.DEMAND_FILE)
-    use_shared_resources = bool(getattr(config, "USE_SHARED_RESOURCES", False))
+    use_shared_resources = resource_mode(config) != "off"
     shared_resource_file = getattr(config, "SHARED_RESOURCE_FILE", None)
     resource_requirement_file = getattr(config, "RESOURCE_REQUIREMENT_FILE", None)
 
