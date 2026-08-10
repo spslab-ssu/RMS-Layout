@@ -44,8 +44,18 @@ Src/io/output.py
   ↓
 Src/viz/visualize.py
   ↓
-Result/
+Result/<model>/
 ```
+
+결과 폴더는 모델별로 분리됩니다.
+
+```text
+Result/<problem_type>/<rmt_table>/<demand>/base/
+Result/<problem_type>/<rmt_table>/<demand>/network/
+Result/<problem_type>/<rmt_table>/<demand>/network_adaptive/
+```
+
+`solution_summary.json`에는 `cost_consistency`가 함께 저장됩니다. 이 값으로 Result CSV 합계와 모델 objective가 같은지 확인합니다.
 
 더 자세히 쓰면 다음과 같습니다.
 
@@ -101,8 +111,9 @@ Src/viz/visualize.py
 ```python
 instance = load_instance(config)
 solution = solve_milp(instance, config)
-save_solution(solution, config.RESULT_DIR)
-draw_layouts(config.RESULT_DIR, instance)
+result_dir = config.RESULT_DIR / "base"
+save_solution(solution, result_dir)
+draw_layouts(result_dir, instance)
 ```
 
 이 네 줄이 전체 프로젝트의 실행 시퀀스입니다.
@@ -558,3 +569,22 @@ Src/models/milp.py
 Src/models/adaptive_shared_resource.py
 Src/milp_shared_resource.py
 ```
+
+
+---
+
+## Full adaptive network model
+
+`Src/models/network_adaptive.py`는 현재 `milp_network.py`를 확장한 모델입니다. 기존 network model은 같은 위치 안에서만 period 간 state가 이어지지만, full adaptive model은 transition arc에 이전 위치와 다음 위치를 모두 포함합니다.
+
+```text
+(p_prev, t-1, j_prev, l_prev) -> (p_next, t, j_next, l_next)
+```
+
+이때 `p_prev != p_next`이면 relocation으로 보고, 다음 비용을 목적함수에 추가합니다.
+
+```text
+relocation_cost = distance(p_prev, p_next) * RELOCATION_COST_PER_DISTANCE + RELOCATION_FIXED_COST
+```
+
+기본 실행 파일은 `run_network_adaptive.py`입니다.

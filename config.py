@@ -16,10 +16,10 @@ WARM_START_BASE_DIR = DATA_DIR / "warm_starts"
 # - LOCATION_NAME: "layout_18" / "layout_22"
 # - RMT_TABLE_NAME: "table_1" / "table_2"
 # - DEMAND_NAME: "demand_1" / "demand_2" / ...
-PROBLEM_TYPE = "single_part"
+PROBLEM_TYPE = "multi_part" 
 LOCATION_NAME = "layout_22"
-RMT_TABLE_NAME = "table_2"
-DEMAND_NAME = "demand_2"
+RMT_TABLE_NAME = "table_1"
+DEMAND_NAME = "demand_1"
 PARAMETER_NAME = PROBLEM_TYPE
 SHARED_RESOURCE_NAME = "shared_resources_2"
 RESOURCE_CAPACITY_NAME = "resource_capacities_2"
@@ -41,6 +41,10 @@ RESOURCE_REQUIREMENT_FILE = RMT_TABLE_DIR / RMT_TABLE_NAME / "resource_requireme
 TIME_LIMIT = 100
 MIP_GAP = 0.0
 
+# Adaptive layout relocation cost. MHC 단가보다는 크고 구매비보다는 작게 둔다.
+RELOCATION_COST_PER_DISTANCE = 1.0
+RELOCATION_FIXED_COST = 0.0
+
 # formulation 비교용 pure LP relaxation bound를 기록할지 여부.
 # True이면 MIP solve 전에 LP relaxation을 한 번 더 풀기 때문에 실행시간이 추가된다.
 COMPUTE_LP_RELAXATION_BOUND = True
@@ -59,8 +63,19 @@ OBJECTIVE_CUTOFF = None
 # M1 -> M2 불가
 SAME_MACHINE_RECONFIG_ONLY = True
 
-# auxiliary module을 한정된 shared resource로 볼지 여부.
+# auxiliary module을 한정된 shared resource로 볼지 여부. 하위호환용 플래그이다.
 USE_SHARED_RESOURCES = False
+
+# shared resource를 모델에서 어떻게 다룰지 선택한다.
+# - "off"      : 자원 제약 없음
+# - "fixed"    : resource_capacities.csv의 capacity를 상수 상한으로 사용
+# - "variable" : Cap_r을 정수 결정변수로 두고, 비용 최소 후 ΣCap_r을 최소화
+# SHARED_RESOURCE_MODE가 지정되면 USE_SHARED_RESOURCES보다 우선한다.
+SHARED_RESOURCE_MODE = "off"
+
+# variable 모드에서 각 resource의 Cap_r 상한을 개별로 낮춘다. {resource_id: upper_bound}
+# None 또는 빈 dict이면 resource별 상한은 설치 가능 위치 수까지 허용한다.
+CAP_UPPER_BOUNDS = {}
 
 # dummy start/end operation id. 실제 operation과 충돌하지 않게 둔다.
 START_OPERATION = 0

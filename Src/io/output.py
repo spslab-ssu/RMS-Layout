@@ -9,6 +9,7 @@ from pathlib import Path
 def save_solution(solution, result_dir: Path) -> None:
     """MILP 해를 Result/ 아래 표준 CSV/JSON 파일로 저장한다."""
     result_dir.mkdir(parents=True, exist_ok=True)
+    solution.summary["cost_consistency"] = _cost_consistency(solution)
     (result_dir / "solution_summary.json").write_text(json.dumps(solution.summary, ensure_ascii=False, indent=2), encoding="utf-8")
     _write_rows(result_dir / "purchased_machines.csv", solution.purchased_machines)
     _write_rows(result_dir / "machine_states.csv", solution.machine_states)
@@ -18,6 +19,28 @@ def save_solution(solution, result_dir: Path) -> None:
     _write_rows(result_dir / "cost_breakdown.csv", [solution.cost_breakdown] if solution.cost_breakdown else [])
     _write_rows(result_dir / "cost_by_period.csv", _cost_by_period(solution))
     _write_rows(result_dir / "cost_detail.csv", _cost_detail(solution))
+
+
+def _cost_consistency(solution) -> dict:
+    """저장될 row 합계와 모델 objective component가 일치하는지 기록한다."""
+    if not solution.cost_breakdown:
+        return {"checked": False}
+    purchase = sum(float(row.get("purchase_cost", 0.0)) for row in solution.purchased_machines)
+    reconfig = sum(float(row.get("reconfiguration_cost", 0.0)) for row in solution.reconfigurations)
+    relocation = sum(float(row.get("relocation_cost", 0.0)) for row in solution.reconfigurations)
+    handling = sum(float(row.get("flow_cost", 0.0)) for row in solution.material_flows)
+    row_total = purchase + reconfig + relocation + handling
+    model_total = float(solution.cost_breakdown.get("total_objective", 0.0))
+    return {
+        "checked": True,
+        "row_purchase_cost": round(purchase, 6),
+        "row_reconfiguration_cost": round(reconfig, 6),
+        "row_relocation_cost": round(relocation, 6),
+        "row_material_handling_cost": round(handling, 6),
+        "row_total": round(row_total, 6),
+        "model_total_objective": round(model_total, 6),
+        "difference": round(row_total - model_total, 6),
+    }
 
 
 def _cost_by_period(solution) -> list[dict]:
@@ -33,30 +56,36 @@ def _cost_by_period(solution) -> list[dict]:
 
     purchase: dict[int, float] = defaultdict(float)
     reconfig: dict[int, float] = defaultdict(float)
+    relocation: dict[int, float] = defaultdict(float)
     handling: dict[int, float] = defaultdict(float)
 
     for row in solution.purchased_machines:
         purchase[first_period] += float(row["purchase_cost"])
     for row in solution.reconfigurations:
-        reconfig[int(row["period"])] += float(row["reconfiguration_cost"])
+        reconfig[int(row["period"])] += float(row.get("reconfiguration_cost", 0.0))
+        relocation[int(row["period"])] += float(row.get("relocation_cost", 0.0))
     for row in solution.material_flows:
         handling[int(row["period"])] += float(row["flow_cost"])
 
     rows: list[dict] = []
     for t in periods:
-        p, r, h = purchase.get(t, 0.0), reconfig.get(t, 0.0), handling.get(t, 0.0)
-        rows.append(_cost_row(t, p, r, h))
-    rows.append(_cost_row("total", sum(purchase.values()), sum(reconfig.values()), sum(handling.values())))
+        p = purchase.get(t, 0.0)
+        r = reconfig.get(t, 0.0)
+        m = relocation.get(t, 0.0)
+        h = handling.get(t, 0.0)
+        rows.append(_cost_row(t, p, r, h, m))
+    rows.append(_cost_row("total", sum(purchase.values()), sum(reconfig.values()), sum(handling.values()), sum(relocation.values())))
     return rows
 
 
-def _cost_row(period, purchase: float, reconfig: float, handling: float) -> dict:
+def _cost_row(period, purchase: float, reconfig: float, handling: float, relocation: float = 0.0) -> dict:
     return {
         "period": period,
         "purchase_cost": round(purchase, 6),
         "reconfiguration_cost": round(reconfig, 6),
+        "relocation_cost": round(relocation, 6),
         "material_handling_cost": round(handling, 6),
-        "period_total": round(purchase + reconfig + handling, 6),
+        "period_total": round(purchase + reconfig + relocation + handling, 6),
     }
 
 
@@ -78,13 +107,24 @@ def _cost_detail(solution) -> list[dict]:
             "detail": f"위치 {row['location']}에 {row['machine']}({row['configuration']}) 구매, 초기 op{row['initial_operation']}",
         })
     for row in solution.reconfigurations:
-        rows.append({
-            "period": int(row["period"]),
-            "cost_type": "reconfiguration",
-            "location": row["location"],
-            "amount": round(float(row["reconfiguration_cost"]), 6),
-            "detail": f"위치 {row['location']}: {row['from_configuration']}→{row['to_configuration']} 재구성 (op{row['operation']})",
-        })
+        reconfig_cost = float(row.get("reconfiguration_cost", 0.0))
+        relocation_cost = float(row.get("relocation_cost", 0.0))
+        if reconfig_cost:
+            rows.append({
+                "period": int(row["period"]),
+                "cost_type": "reconfiguration",
+                "location": row["location"],
+                "amount": round(reconfig_cost, 6),
+                "detail": f"위치 {row['location']}: {row['from_configuration']}→{row['to_configuration']} 재구성 (op{row['operation']})",
+            })
+        if relocation_cost:
+            rows.append({
+                "period": int(row["period"]),
+                "cost_type": "relocation",
+                "location": f"{row.get('from_location', row['location'])}->{row.get('to_location', row['location'])}",
+                "amount": round(relocation_cost, 6),
+                "detail": f"위치 {row.get('from_location', row['location'])}→{row.get('to_location', row['location'])} 이동, 거리 {row.get('relocation_distance', 0)}",
+            })
     for row in solution.material_flows:
         rows.append({
             "period": int(row["period"]),

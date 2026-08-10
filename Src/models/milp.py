@@ -9,6 +9,7 @@ import gurobipy as gp
 from gurobipy import GRB
 
 from Src.warm_start.mip_start import apply_warm_start
+from Src.data.loader import resource_mode
 
 
 @dataclass
@@ -133,17 +134,11 @@ def solve_milp(instance, config) -> RMSSolution:
         model.addConstr(y[p, j_prev, j_next, l, t] <= previous_state)
         model.addConstr(y[p, j_prev, j_next, l, t] <= s[p, j_next, l, t])
 
-    # RMT capacity 제약.
     # shared resource 사용량은 a_rj * state로 계산한다.
-    for resource, capacity in instance.shared_resource_capacity.items():
-        for t in T:
-            usage = gp.quicksum(
-                instance.resource_requirement[j, resource] * s[p, j, l, t]
-                for p in P
-                for j, l in feasible_pairs
-                if (j, resource) in instance.resource_requirement and (p, j, l, t) in s
-            )
-            model.addConstr(usage <= capacity, name=f"shared_resource[{resource},{t}]")
+    # 모드에 따라 제약을 끄거나, 상수 capacity를 쓰거나, capacity 자체를 결정변수로 둔다.
+    mode = resource_mode(config)
+    cap_ub = getattr(config, "CAP_UPPER_BOUNDS", None)
+    cap_vars = _add_shared_resource_constraints(model, instance, P, T, feasible_pairs, s, mode, cap_ub)
 
     for p in P:
         for l in L:
@@ -195,8 +190,15 @@ def solve_milp(instance, config) -> RMSSolution:
         for p, left, q, right, t in flow_keys
     )
 
-    model.setObjective(purchase_cost + reconfiguration_cost + handling_cost, GRB.MINIMIZE)
+    cost_expr = purchase_cost + reconfiguration_cost + handling_cost
+    model.setObjective(cost_expr, GRB.MINIMIZE)
     lp_relaxation_bound = _compute_lp_relaxation_bound(model, config)
+
+    if cap_vars is not None:
+        # variable 모드: 1순위 총비용 최소화, 2순위 shared resource capacity 합 최소화.
+        model.ModelSense = GRB.MINIMIZE
+        model.setObjectiveN(cost_expr, index=0, priority=1, name="cost")
+        model.setObjectiveN(gp.quicksum(cap_vars[r] for r in cap_vars), index=1, priority=0, name="sizing")
 
     if bool(getattr(config, "USE_WARM_START", False)):
         warm_start_dir = getattr(config, "WARM_START_DIR", None)
@@ -212,10 +214,49 @@ def solve_milp(instance, config) -> RMSSolution:
 
     model.optimize()
 
-    return _extract_solution(model, instance, x, s, y, v, f, purchase_cost, reconfiguration_cost, handling_cost, lp_relaxation_bound)
+    return _extract_solution(model, instance, x, s, y, v, f, purchase_cost, reconfiguration_cost, handling_cost, lp_relaxation_bound, cap_vars)
 
 
-def _extract_solution(model, instance, x, s, y, v, f, purchase_cost, reconfiguration_cost, handling_cost, lp_relaxation_bound) -> RMSSolution:
+def _add_shared_resource_constraints(model, instance, locations, periods, feasible_pairs, s, mode, cap_ub=None):
+    """shared resource 사용량 제약을 모드별로 추가한다.
+
+    off      : shared resource 제약 없음
+    fixed    : resource_capacities.csv의 capacity를 상수 상한으로 사용
+    variable : Cap_r을 정수 결정변수로 두고, 비용 최소 후 ΣCap_r을 최소화
+    """
+    if mode == "off":
+        return None
+
+    if mode == "variable":
+        resources = sorted({resource for (_config, resource) in instance.resource_requirement})
+    else:
+        resources = sorted(instance.shared_resource_capacity)
+
+    if not resources:
+        return None
+
+    cap_vars = None
+    if mode == "variable":
+        cap_vars = model.addVars(resources, vtype=GRB.INTEGER, lb=0, ub=len(locations), name="cap")
+        if cap_ub:
+            for r in resources:
+                if r in cap_ub:
+                    cap_vars[r].ub = int(cap_ub[r])
+
+    for resource in resources:
+        for t in periods:
+            usage = gp.quicksum(
+                instance.resource_requirement[j, resource] * s[p, j, l, t]
+                for p in locations
+                for j, l in feasible_pairs
+                if (j, resource) in instance.resource_requirement and (p, j, l, t) in s
+            )
+            upper = cap_vars[resource] if mode == "variable" else instance.shared_resource_capacity[resource]
+            model.addConstr(usage <= upper, name=f"shared_resource[{resource},{t}]")
+    return cap_vars
+
+
+def _extract_solution(model, instance, x, s, y, v, f, purchase_cost, reconfiguration_cost, handling_cost, lp_relaxation_bound, cap_vars=None) -> RMSSolution:
     """Gurobi 변수값을 output.py가 저장하기 쉬운 row list로 변환한다."""
     status_name = {
         GRB.OPTIMAL: "OPTIMAL",
@@ -233,17 +274,25 @@ def _extract_solution(model, instance, x, s, y, v, f, purchase_cost, reconfigura
     }
     summary.update(_solver_metrics(model))
     summary["lp_relaxation_bound"] = lp_relaxation_bound
+    summary["num_cap_vars"] = len(cap_vars) if cap_vars is not None else 0
 
     if not model.SolCount:
         return RMSSolution(summary=summary)
 
+    total_cost = _clean_float(
+        purchase_cost.getValue() + reconfiguration_cost.getValue() + handling_cost.getValue()
+    )
     cost_breakdown = {
         "purchase_cost": _clean_float(purchase_cost.getValue()),
         "reconfiguration_cost": _clean_float(reconfiguration_cost.getValue()),
         "material_handling_cost": _clean_float(handling_cost.getValue()),
-        "total_objective": _clean_float(model.ObjVal),
+        "total_objective": total_cost,
     }
-    summary.update({"objective": _clean_float(model.ObjVal)})
+    summary.update({"objective": total_cost})
+    if cap_vars is not None:
+        sizing = {int(resource): int(round(var.X)) for resource, var in cap_vars.items()}
+        summary["shared_resource_sizing"] = sizing
+        summary["total_sizing"] = sum(sizing.values())
 
     purchased = []
     for (p, j, l), var in sorted(x.items()):
@@ -269,7 +318,13 @@ def _extract_solution(model, instance, x, s, y, v, f, purchase_cost, reconfigura
             flows.append({"period": t, "from_location": p, "from_operation": left, "to_location": q, "to_operation": right, "flow": round(var.X, 6), "distance": distance, "mhc": mhc, "flow_cost": round(var.X * distance * mhc, 6)})
 
     resource_usage = []
-    for resource, capacity in sorted(instance.shared_resource_capacity.items()):
+    usage_resources = sorted(cap_vars) if cap_vars is not None else sorted(instance.shared_resource_capacity)
+    for resource in usage_resources:
+        capacity = (
+            int(round(cap_vars[resource].X))
+            if cap_vars is not None
+            else instance.shared_resource_capacity[resource]
+        )
         for t in instance.periods:
             usage = sum(
                 instance.resource_requirement[j, resource] * var.X
