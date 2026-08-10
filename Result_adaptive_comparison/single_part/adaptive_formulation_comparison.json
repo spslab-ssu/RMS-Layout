@@ -1,0 +1,38 @@
+[
+  {
+    "formulation": "paper_adaptive",
+    "status": "TIME_LIMIT",
+    "objective": 23378.0,
+    "best_bound": 22341.392459,
+    "mip_gap": 0.04434115583326031,
+    "runtime_seconds": 120.00389909744263,
+    "nodes": 544.0,
+    "variables": 29424,
+    "binary_variables": 27184,
+    "constraints": 39470,
+    "purchase_cost": 11025.0,
+    "reconfiguration_cost": 1925.0,
+    "relocation_cost": 8.0,
+    "material_handling_cost": 10420.0,
+    "relocation_count": 6,
+    "reconfiguration_count": 9
+  },
+  {
+    "formulation": "network_adaptive",
+    "status": "TIME_LIMIT",
+    "objective": 22897.0,
+    "best_bound": 22629.998288,
+    "mip_gap": 0.011660989374491657,
+    "runtime_seconds": 120.0015459060669,
+    "nodes": 3143.0,
+    "variables": 33024,
+    "binary_variables": 30784,
+    "constraints": 1920,
+    "purchase_cost": 11025.0,
+    "reconfiguration_cost": 1925.0,
+    "relocation_cost": 3.0,
+    "material_handling_cost": 9944.0,
+    "relocation_count": 1,
+    "reconfiguration_count": 9
+  }
+]

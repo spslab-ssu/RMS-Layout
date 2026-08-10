@@ -20,6 +20,7 @@ class RMSSolution:
     material_flows: list[dict[str, Any]] = field(default_factory=list)
     resource_usage: list[dict[str, Any]] = field(default_factory=list)
     shared_resource_capacities: list[dict[str, Any]] = field(default_factory=list)
+    period_costs: list[dict[str, Any]] = field(default_factory=list)
     cost_breakdown: dict[str, float] = field(default_factory=dict)
 
 

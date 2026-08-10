@@ -1,0 +1,232 @@
+{
+  "problem_name": "single_part",
+  "formulation": "online_myopic_paper_adaptive",
+  "policy": "current-period demand only",
+  "status_name": "PERIOD_OPTIMAL_POLICY",
+  "policy_periods_completed": 4,
+  "periods": [
+    1,
+    2,
+    3,
+    4
+  ],
+  "operations": [
+    1,
+    5,
+    17
+  ],
+  "objective": 26997.0,
+  "purchase_count": 14,
+  "final_owned_rmt_count": 14,
+  "relocation_count": 12,
+  "reconfiguration_count": 3,
+  "information_available_by_period": {
+    "1": {
+      "revealed_periods": [
+        1
+      ],
+      "future_demand_used": false
+    },
+    "2": {
+      "revealed_periods": [
+        2
+      ],
+      "future_demand_used": false
+    },
+    "3": {
+      "revealed_periods": [
+        3
+      ],
+      "future_demand_used": false
+    },
+    "4": {
+      "revealed_periods": [
+        4
+      ],
+      "future_demand_used": false
+    }
+  },
+  "period_solves": [
+    {
+      "problem_name": "single_part",
+      "formulation": "online_period_implication_adaptive",
+      "status": 2,
+      "status_name": "OPTIMAL",
+      "periods": [
+        1
+      ],
+      "operations": [
+        1,
+        5,
+        17
+      ],
+      "runtime_seconds": 1.641610860824585,
+      "solution_count": 10,
+      "node_count": 3426.0,
+      "model_size": {
+        "variables": 768,
+        "binary_variables": 208,
+        "integer_variables": 208,
+        "continuous_variables": 560,
+        "constraints": 164
+      },
+      "objective": 10325.0,
+      "upper_bound": 10325.0,
+      "lower_bound": 10325.0,
+      "mip_gap": 0.0,
+      "capacity_tie_break": {
+        "status_name": "OPTIMAL",
+        "installed_capacity": 150.0,
+        "primary_cost_ceiling": 10325.0,
+        "rule": "maximize current-operation installed capacity among period-cost-optimal solutions"
+      },
+      "period": 1,
+      "revealed_arc_demand": {
+        "0->5": 50.0,
+        "1->17": 50.0,
+        "5->1": 50.0,
+        "17->999": 50.0
+      },
+      "future_demand_used": false,
+      "existing_rmt_count_before_decision": 0,
+      "owned_rmt_count_after_decision": 7,
+      "purchased_rmt_count": 7
+    },
+    {
+      "problem_name": "single_part",
+      "formulation": "online_period_implication_adaptive",
+      "status": 2,
+      "status_name": "OPTIMAL",
+      "periods": [
+        2
+      ],
+      "operations": [
+        1,
+        5,
+        17
+      ],
+      "runtime_seconds": 2.4182679653167725,
+      "solution_count": 6,
+      "node_count": 4393.0,
+      "model_size": {
+        "variables": 1056,
+        "binary_variables": 496,
+        "integer_variables": 496,
+        "continuous_variables": 560,
+        "constraints": 171
+      },
+      "objective": 4560.0,
+      "upper_bound": 4560.0,
+      "lower_bound": 4560.0,
+      "mip_gap": 0.0,
+      "capacity_tie_break": {
+        "status_name": "OPTIMAL",
+        "installed_capacity": 196.0,
+        "primary_cost_ceiling": 4560.0,
+        "rule": "maximize current-operation installed capacity among period-cost-optimal solutions"
+      },
+      "period": 2,
+      "revealed_arc_demand": {
+        "0->5": 60.0,
+        "1->17": 60.0,
+        "5->1": 60.0,
+        "17->999": 60.0
+      },
+      "future_demand_used": false,
+      "existing_rmt_count_before_decision": 7,
+      "owned_rmt_count_after_decision": 9,
+      "purchased_rmt_count": 2
+    },
+    {
+      "problem_name": "single_part",
+      "formulation": "online_period_implication_adaptive",
+      "status": 2,
+      "status_name": "OPTIMAL",
+      "periods": [
+        3
+      ],
+      "operations": [
+        1,
+        5,
+        17
+      ],
+      "runtime_seconds": 6.485799074172974,
+      "solution_count": 10,
+      "node_count": 6333.0,
+      "model_size": {
+        "variables": 1152,
+        "binary_variables": 592,
+        "integer_variables": 592,
+        "continuous_variables": 560,
+        "constraints": 173
+      },
+      "objective": 5615.0,
+      "upper_bound": 5615.0,
+      "lower_bound": 5615.0,
+      "mip_gap": 0.0,
+      "capacity_tie_break": {
+        "status_name": "OPTIMAL",
+        "installed_capacity": 246.0,
+        "primary_cost_ceiling": 5615.0,
+        "rule": "maximize current-operation installed capacity among period-cost-optimal solutions"
+      },
+      "period": 3,
+      "revealed_arc_demand": {
+        "0->5": 80.0,
+        "1->17": 80.0,
+        "5->1": 80.0,
+        "17->999": 80.0
+      },
+      "future_demand_used": false,
+      "existing_rmt_count_before_decision": 9,
+      "owned_rmt_count_after_decision": 12,
+      "purchased_rmt_count": 3
+    },
+    {
+      "problem_name": "single_part",
+      "formulation": "online_period_implication_adaptive",
+      "status": 2,
+      "status_name": "OPTIMAL",
+      "periods": [
+        4
+      ],
+      "operations": [
+        1,
+        5,
+        17
+      ],
+      "runtime_seconds": 26.079388856887817,
+      "solution_count": 10,
+      "node_count": 19688.0,
+      "model_size": {
+        "variables": 1248,
+        "binary_variables": 688,
+        "integer_variables": 688,
+        "continuous_variables": 560,
+        "constraints": 176
+      },
+      "objective": 6497.0,
+      "upper_bound": 6497.0,
+      "lower_bound": 6497.0,
+      "mip_gap": 0.0,
+      "capacity_tie_break": {
+        "status_name": "OPTIMAL",
+        "installed_capacity": 301.0,
+        "primary_cost_ceiling": 6497.0,
+        "rule": "maximize current-operation installed capacity among period-cost-optimal solutions"
+      },
+      "period": 4,
+      "revealed_arc_demand": {
+        "0->5": 100.0,
+        "1->17": 100.0,
+        "5->1": 100.0,
+        "17->999": 100.0
+      },
+      "future_demand_used": false,
+      "existing_rmt_count_before_decision": 12,
+      "owned_rmt_count_after_decision": 14,
+      "purchased_rmt_count": 2
+    }
+  ],
+  "optimality_note": "Every period subproblem was solved optimally. This does not make the sequential policy a perfect-information global optimum."
+}

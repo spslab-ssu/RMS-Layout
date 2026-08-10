@@ -387,16 +387,57 @@ __pycache__/
 
 ---
 
-## 11. 확장 방향
+## 11. Adaptive layout formulations
 
-현재 기본 모델이 안정되면 다음 기능을 추가할 수 있습니다.
+Period 경계에서 RMT location 이동을 허용하는 두 formulation을 분리해 구현합니다.
 
-- adaptive layout
-- shared resource
-- stochastic demand
+- `Src/adaptive_milp.py`: 논문의 implication MILP을 기반으로 한 non-network adaptive model. 실제 RMT를 asset index `k`로 추적합니다.
+- `Src/network_adaptive.py`: main branch와 동일한 cross-location lifecycle transition arc를 사용하는 network + adaptive 비교 모델입니다.
+
+두 모델에서 adaptive mechanism의 물리적 가정은 동일합니다.
+
+- RMT는 Period 1에 구매되고 전체 기간 보존됩니다.
+- Period 사이에 location과 configuration을 동시에 변경할 수 있습니다.
+- 서로 다른 machine type 간 configuration 변경은 금지됩니다.
+- 한 period의 한 location에는 최대 한 대의 RMT만 있을 수 있습니다.
+- `p_prev != p_next`이면 `fixed cost + distance cost`를 부과합니다.
+- 이동 후 location을 기준으로 해당 period의 material handling cost를 계산합니다.
+
+논문 싱글파트에 non-network adaptive model을 실행합니다.
+
+```bash
+python run_adaptive.py --problem single_part --time-limit 300
+```
+
+두 formulation을 동일 seed, thread, 이동비용으로 비교합니다.
+
+```bash
+python compare_adaptive_formulations.py \
+  --problem single_part \
+  --time-limit 300 \
+  --relocation-cost-per-distance 1 \
+  --relocation-fixed-cost 0
+```
+
+결과는 `Result_adaptive/` 또는 `Result_adaptive_comparison/`에 저장됩니다. 현재 adaptive는 전체 period 수요를 미리 아는 deterministic layout-adaptive model이며, period별로 수요가 공개되는 online demand-adaptive model은 아닙니다.
+
+### Online demand-adaptive single-part policy
+
+`Src/online_adaptive.py`는 Period 1→4 수요를 순서대로 한 기간씩만 공개합니다. 각 period에서 이미 실행한 RMT 구매·location·configuration을 상태로 인계하고, 현재 period 수요만으로 추가구매·재구성·이동·배치를 최적화합니다.
+
+```bash
+python run_online_adaptive.py \
+  --problem single_part \
+  --time-limit 120 \
+  --relocation-cost-per-distance 1
+```
+
+결과는 `Result_online_adaptive/single_part/`에 저장되며 `cost_by_period.csv`에 period별 수요, 구매대수, 보유대수, 재구성, 이동, 비용이 기록됩니다. 현재 정책은 미래 예측을 사용하지 않는 myopic policy이며 RMT 폐기·매각과 구매 lead time은 아직 포함하지 않습니다.
+
+## 12. 추가 확장 방향
+
+- stochastic / rolling-horizon demand
+- relocation crew, downtime, move-count capacity
 - robust layout
-- part-specific flow tracking
+- part-specific multi-commodity flow
 - sensitivity analysis용 데이터 생성
-
-초기에는 `Src/milp.py` 하나에서 옵션 형태로 확장합니다.  
-코드가 커지고 모델 간 차이가 명확해지면 그때 `milp_adaptive.py`, `milp_shared_resource.py`처럼 분리합니다.

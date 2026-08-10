@@ -1,0 +1,34 @@
+{
+  "problem_name": "single_part",
+  "formulation": "machine_lifecycle_network_adaptive",
+  "status": 9,
+  "status_name": "TIME_LIMIT",
+  "periods": [
+    1,
+    2,
+    3,
+    4
+  ],
+  "operations": [
+    1,
+    5,
+    17
+  ],
+  "runtime_seconds": 120.0015459060669,
+  "solution_count": 8,
+  "node_count": 3143.0,
+  "model_size": {
+    "variables": 33024,
+    "binary_variables": 30784,
+    "integer_variables": 30784,
+    "continuous_variables": 2240,
+    "constraints": 1920
+  },
+  "objective": 22897.0,
+  "upper_bound": 22897.0,
+  "lower_bound": 22629.998288,
+  "mip_gap": 0.011660989374491657,
+  "adaptive_mechanism": "cross-location lifecycle transition arcs",
+  "relocation_count": 1,
+  "reconfiguration_count": 9
+}

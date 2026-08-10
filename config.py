@@ -23,6 +23,24 @@ TIME_LIMIT = 3600
 # 0.001 = 0.1% relative MIP gap
 MIP_GAP = 0.001
 
+# Period-boundary RMT relocation cost. These defaults intentionally match the
+# current main-branch network-adaptive implementation for a formulation-fair
+# comparison. They are experimental coefficients, not calibrated real costs.
+RELOCATION_COST_PER_DISTANCE = 1.0
+RELOCATION_FIXED_COST = 0.0
+
+# The paper-style adaptive formulation tracks physical RMTs with asset IDs.
+# None uses the number of install locations as the natural upper bound.
+ADAPTIVE_MAX_ASSETS = None
+
+# main's run_network_adaptive.py uses binary lifecycle transition arcs.
+NETWORK_BINARY_ARCS = True
+
+# Online myopic policy: after minimizing the revealed period's cost, maximize
+# installed capacity without worsening that optimal cost.
+ONLINE_CAPACITY_TIE_BREAK = True
+ONLINE_PRIMARY_COST_TOLERANCE = 1e-4
+
 # 논문 Example에서는 같은 machine type 안에서만 configuration 변경을 허용한다.
 SAME_MACHINE_RECONFIG_ONLY = True
 
