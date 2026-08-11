@@ -13,7 +13,7 @@ from Src.viz.visualize import draw_layouts
 
 
 # network model 전용 옵션.
-# overview의 모델 A처럼 node occupancy w만 binary로 두고,
+# overview의 모델 A처럼 node occupancy s만 binary로 두고,
 # transition/sink arc z는 continuous로 둔다.
 NETWORK_BINARY_ARCS = False
 COMPUTE_LP_RELAXATION_BOUND = True
