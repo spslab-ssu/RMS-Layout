@@ -47,7 +47,7 @@ def solve_milp(instance, config) -> RMSSolution:
         feasible_by_op[l].append(j)
         feasible_by_config[j].append(l)
 
-    node_keys = [(p, t, j, l) for p in P for t in T for (j, l) in feasible_pairs]
+    node_keys = [(p, j, l, t) for p in P for (j, l) in feasible_pairs for t in T]
     purchase_arc_keys = [(p, j, l) for p in P for (j, l) in feasible_pairs]
     transition_arc_keys = _build_transition_arc_keys(instance, P, T, feasible_pairs)
     sink_arc_keys = [(p, j, l) for p in P for (j, l) in feasible_pairs]
@@ -55,25 +55,25 @@ def solve_milp(instance, config) -> RMSSolution:
     v_keys = [(p, l, t) for p in P for l in L for t in T]
     flow_keys = _build_flow_keys(instance, P, T, route_arcs)
 
-    w = model.addVars(node_keys, vtype=GRB.BINARY, name="w")
-    z_purchase = model.addVars(purchase_arc_keys, vtype=GRB.BINARY, name="z_purchase")
+    s = model.addVars(node_keys, vtype=GRB.BINARY, name="s")
+    x = model.addVars(purchase_arc_keys, vtype=GRB.BINARY, name="x")
 
     transition_vtype = GRB.BINARY if bool(getattr(config, "NETWORK_BINARY_ARCS", True)) else GRB.CONTINUOUS
-    z_transition = model.addVars(transition_arc_keys, lb=0.0, ub=1.0, vtype=transition_vtype, name="z_transition")
-    z_sink = model.addVars(sink_arc_keys, lb=0.0, ub=1.0, vtype=transition_vtype, name="z_sink")
+    z = model.addVars(transition_arc_keys, lb=0.0, ub=1.0, vtype=transition_vtype, name="z")
+    e = model.addVars(sink_arc_keys, lb=0.0, ub=1.0, vtype=transition_vtype, name="e")
 
     v = model.addVars(v_keys, lb=0.0, name="v")
     f = model.addVars(flow_keys, lb=0.0, name="f")
 
-    _add_fixed_purchase_constraints(model, z_purchase, purchase_arc_keys, config)
-    _add_network_constraints(model, P, T, feasible_pairs, w, z_purchase, z_transition, z_sink)
-    _add_shared_resource_constraints(model, instance, P, T, feasible_pairs, w)
-    _add_capacity_constraints(model, instance, P, L, T, feasible_by_op, w, v)
+    _add_fixed_purchase_constraints(model, x, purchase_arc_keys, config)
+    _add_network_constraints(model, P, T, feasible_pairs, s, x, z, e)
+    _add_shared_resource_constraints(model, instance, P, T, feasible_pairs, s)
+    _add_capacity_constraints(model, instance, P, L, T, feasible_by_op, s, v)
     _add_flow_constraints(model, instance, P, L, T, route_arcs, flow_keys, v, f)
 
-    purchase_cost = gp.quicksum(instance.cost[j] * z_purchase[p, j, l] for p, j, l in purchase_arc_keys)
+    purchase_cost = gp.quicksum(instance.cost[j] * x[p, j, l] for p, j, l in purchase_arc_keys)
     reconfiguration_cost = gp.quicksum(
-        instance.reconfiguration_cost[j_prev, j_next] * z_transition[p, t, j_prev, l_prev, j_next, l_next]
+        instance.reconfiguration_cost[j_prev, j_next] * z[p, t, j_prev, l_prev, j_next, l_next]
         for p, t, j_prev, l_prev, j_next, l_next in transition_arc_keys
     )
     handling_cost = gp.quicksum(
@@ -97,9 +97,9 @@ def solve_milp(instance, config) -> RMSSolution:
     return _extract_solution(
         model=model,
         instance=instance,
-        w=w,
-        z_purchase=z_purchase,
-        z_transition=z_transition,
+        s=s,
+        x=x,
+        z=z,
         v=v,
         f=f,
         purchase_cost=purchase_cost,
@@ -144,7 +144,7 @@ def _build_flow_keys(instance, locations, periods, route_arcs):
     return flow_keys
 
 
-def _add_fixed_purchase_constraints(model, z_purchase, purchase_arc_keys, config) -> None:
+def _add_fixed_purchase_constraints(model, x, purchase_arc_keys, config) -> None:
     """논문 Figure 해와 비교할 때 purchase arc를 강제로 고정한다."""
     fixed_purchases = getattr(config, "FIXED_PURCHASES", None)
     if fixed_purchases is None:
@@ -154,59 +154,59 @@ def _add_fixed_purchase_constraints(model, z_purchase, purchase_arc_keys, config
     if invalid:
         raise ValueError(f"Invalid fixed purchase keys for network model: {invalid}")
     for key in purchase_arc_keys:
-        model.addConstr(z_purchase[key] == (1 if key in fixed_set else 0), name=f"fixed_purchase[{key}]")
+        model.addConstr(x[key] == (1 if key in fixed_set else 0), name=f"fixed_purchase[{key}]")
 
 
-def _add_network_constraints(model, locations, periods, feasible_pairs, w, z_purchase, z_transition, z_sink) -> None:
+def _add_network_constraints(model, locations, periods, feasible_pairs, s, x, z, e) -> None:
     """각 location의 machine lifecycle을 time-expanded network path로 강제한다."""
     first_period = periods[0]
     last_period = periods[-1]
 
     for p in locations:
         model.addConstr(
-            gp.quicksum(z_purchase[p, j, l] for j, l in feasible_pairs) <= 1,
+            gp.quicksum(x[p, j, l] for j, l in feasible_pairs) <= 1,
             name=f"one_path_per_location[{p}]",
         )
 
     incoming_transition = defaultdict(list)
     outgoing_transition = defaultdict(list)
-    for key in z_transition.keys():
+    for key in z.keys():
         p, t, j_prev, l_prev, j_next, l_next = key
-        outgoing_transition[(p, t - 1, j_prev, l_prev)].append(key)
-        incoming_transition[(p, t, j_next, l_next)].append(key)
+        outgoing_transition[(p, j_prev, l_prev, t - 1)].append(key)
+        incoming_transition[(p, j_next, l_next, t)].append(key)
 
     for p in locations:
         for t in periods:
             for j, l in feasible_pairs:
-                node = (p, t, j, l)
+                node = (p, j, l, t)
                 if t == first_period:
-                    incoming = z_purchase[p, j, l]
+                    incoming = x[p, j, l]
                 else:
-                    incoming = gp.quicksum(z_transition[key] for key in incoming_transition[node])
+                    incoming = gp.quicksum(z[key] for key in incoming_transition[node])
 
                 if t == last_period:
-                    outgoing = z_sink[p, j, l]
+                    outgoing = e[p, j, l]
                 else:
-                    outgoing = gp.quicksum(z_transition[key] for key in outgoing_transition[node])
+                    outgoing = gp.quicksum(z[key] for key in outgoing_transition[node])
 
-                model.addConstr(incoming == w[node], name=f"node_in[{p},{t},{j},{l}]")
-                model.addConstr(w[node] == outgoing, name=f"node_out[{p},{t},{j},{l}]")
+                model.addConstr(incoming == s[node], name=f"node_in[{p},{j},{l},{t}]")
+                model.addConstr(s[node] == outgoing, name=f"node_out[{p},{j},{l},{t}]")
 
 
-def _add_shared_resource_constraints(model, instance, locations, periods, feasible_pairs, w) -> None:
-    """shared resource 사용량 제약. base의 s 대신 network node occupancy w를 사용한다."""
+def _add_shared_resource_constraints(model, instance, locations, periods, feasible_pairs, s) -> None:
+    """shared resource 사용량 제약. network state 변수 s를 사용한다."""
     for resource, capacity in instance.shared_resource_capacity.items():
         for t in periods:
             usage = gp.quicksum(
-                instance.resource_requirement[j, resource] * w[p, t, j, l]
+                instance.resource_requirement[j, resource] * s[p, j, l, t]
                 for p in locations
                 for j, l in feasible_pairs
-                if (j, resource) in instance.resource_requirement and (p, t, j, l) in w
+                if (j, resource) in instance.resource_requirement and (p, j, l, t) in s
             )
             model.addConstr(usage <= capacity, name=f"shared_resource[{resource},{t}]")
 
 
-def _add_capacity_constraints(model, instance, locations, operations, periods, feasible_by_op, w, v) -> None:
+def _add_capacity_constraints(model, instance, locations, operations, periods, feasible_by_op, s, v) -> None:
     """location-operation 처리량은 해당 period state의 생산률 합 이하로 제한한다."""
     for p in locations:
         for l in operations:
@@ -214,9 +214,9 @@ def _add_capacity_constraints(model, instance, locations, operations, periods, f
                 model.addConstr(
                     v[p, l, t]
                     <= gp.quicksum(
-                        instance.production_rate[j, l] * w[p, t, j, l]
+                        instance.production_rate[j, l] * s[p, j, l, t]
                         for j in feasible_by_op[l]
-                        if (p, t, j, l) in w
+                        if (p, j, l, t) in s
                     ),
                     name=f"capacity[{p},{l},{t}]",
                 )
@@ -253,9 +253,9 @@ def _add_flow_constraints(model, instance, locations, operations, periods, route
 def _extract_solution(
     model,
     instance,
-    w,
-    z_purchase,
-    z_transition,
+    s,
+    x,
+    z,
     v,
     f,
     purchase_cost,
@@ -297,7 +297,7 @@ def _extract_solution(
     )
 
     purchased = []
-    for (p, j, l), var in sorted(z_purchase.items()):
+    for (p, j, l), var in sorted(x.items()):
         if var.X > 0.5:
             purchased.append(
                 {
@@ -311,7 +311,7 @@ def _extract_solution(
 
     flow_by_node = {(p, l, t): var.X for (p, l, t), var in v.items()}
     states = []
-    for (p, t, j, l), var in sorted(w.items(), key=lambda item: (item[0][1], item[0][0], item[0][2], item[0][3])):
+    for (p, j, l, t), var in sorted(s.items(), key=lambda item: (item[0][3], item[0][0], item[0][1], item[0][2])):
         if var.X > 0.5:
             states.append(
                 {
@@ -326,7 +326,7 @@ def _extract_solution(
 
     reconfigs = []
     for (p, t, j_prev, _l_prev, j_next, l_next), var in sorted(
-        z_transition.items(), key=lambda item: (item[0][1], item[0][0], item[0][2], item[0][4], item[0][5])
+        z.items(), key=lambda item: (item[0][1], item[0][0], item[0][2], item[0][4], item[0][5])
     ):
         if var.X > 0.5 and j_prev != j_next:
             reconfigs.append(
@@ -366,7 +366,7 @@ def _extract_solution(
         for t in instance.periods:
             usage = sum(
                 instance.resource_requirement[j, resource] * var.X
-                for (p, period, j, l), var in w.items()
+                for (p, j, l, period), var in s.items()
                 if period == t and (j, resource) in instance.resource_requirement
             )
             resource_usage.append(

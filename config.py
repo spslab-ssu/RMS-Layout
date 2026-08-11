@@ -13,7 +13,7 @@ WARM_START_BASE_DIR = DATA_DIR / "warm_starts"
 
 # 실행할 문제와 입력 조합을 선택한다.
 # - PROBLEM_TYPE: "single_part" / "multi_part"
-# - LOCATION_NAME: "layout_18" / "layout_22"
+# - LOCATION_NAME: "layout_18" / "layout_22" / "layout_30"
 # - RMT_TABLE_NAME: "table_1" / "table_2"
 # - DEMAND_NAME: "demand_1" / "demand_2" / ...
 PROBLEM_TYPE = "multi_part" 
