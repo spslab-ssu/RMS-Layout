@@ -44,12 +44,13 @@ def _refresh_resource_requirements(table_dir: Path) -> None:
 
 
 def _write_similar_table_data() -> None:
-    """유사 데이터 table 1/2를 table_2와 demand_2로 저장한다."""
-    rmt_dir = DATA_DIR / "rmt_tables" / "table_2"
-    rmt_dir.mkdir(parents=True, exist_ok=True)
-    _write_configurations(rmt_dir / "configurations.csv", SIMILAR_TABLE_CONFIGS)
-    _write_production_rates(rmt_dir / "production_rates.csv", SIMILAR_TABLE_CONFIGS)
-    _write_resource_requirements(rmt_dir / "configurations.csv", rmt_dir / "resource_requirements.csv")
+    """유사 데이터 table을 table_2/table_3 RMT 입력으로 저장한다."""
+    for table_name in ["table_2", "table_3"]:
+        rmt_dir = DATA_DIR / "rmt_tables" / table_name
+        rmt_dir.mkdir(parents=True, exist_ok=True)
+        _write_configurations(rmt_dir / "configurations.csv", SIMILAR_TABLE_CONFIGS)
+        _write_production_rates(rmt_dir / "production_rates.csv", SIMILAR_TABLE_CONFIGS)
+        _write_resource_requirements(rmt_dir / "configurations.csv", rmt_dir / "resource_requirements.csv")
     _write_similar_problem_inputs()
 
 
