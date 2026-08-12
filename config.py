@@ -42,7 +42,7 @@ TIME_LIMIT = 100
 MIP_GAP = 0.0
 
 # Adaptive layout relocation cost. MHC 단가보다는 크고 구매비보다는 작게 둔다.
-RELOCATION_COST_PER_DISTANCE = 1.0
+RELOCATION_COST_PER_DISTANCE = 12.0
 RELOCATION_FIXED_COST = 0.0
 
 # formulation 비교용 pure LP relaxation bound를 기록할지 여부.
