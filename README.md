@@ -21,13 +21,18 @@ RMS-Layout/
 │   ├── locations/               # layout 좌표만 관리
 │   │   ├── layout_18.csv
 │   │   ├── layout_22.csv
+│   │   ├── layout_26.csv
 │   │   └── layout_30.csv
 │   ├── rmt_tables/              # RMT configuration table만 관리
 │   │   ├── table_1/
 │   │   │   ├── configurations.csv
 │   │   │   ├── production_rates.csv
 │   │   │   └── resource_requirements.csv
-│   │   └── table_2/
+│   │   ├── table_2/
+│   │   │   ├── configurations.csv
+│   │   │   ├── production_rates.csv
+│   │   │   └── resource_requirements.csv
+│   │   └── table_3/
 │   │       ├── configurations.csv
 │   │       ├── production_rates.csv
 │   │       └── resource_requirements.csv
@@ -151,7 +156,8 @@ config.py -> Src/data/loader.py  ->  Src/models/milp.py  ->  Src/io/output.py  -
 현재 데이터는 논문명 대신 번호로 관리합니다.
 
 - `1`: 메인논문 데이터. `single_part`, `multi_part` 문제를 포함합니다.
-- `2`: `papers/layout/메인논문/유사 데이터 table`의 table 1/2 기반 신규 데이터. 현재는 `single_part` 예제를 포함합니다.
+- `2`: `papers/layout/메인논문/유사 데이터 table` 기반 신규 데이터. 현재는 `single_part` 예제를 포함합니다.
+- `3`: 유사 데이터 `table 2_1`, `table 2_2`를 메인논문 Table 2 형식으로 정리한 RMT table입니다.
 
 `config.py`에서 `PROBLEM_TYPE`, `LOCATION_NAME`, `RMT_TABLE_NAME`, `DEMAND_NAME`을 바꾸면 실행할 입력 조합을 선택할 수 있습니다.
 

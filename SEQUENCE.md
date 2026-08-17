@@ -62,8 +62,8 @@ Result/<problem_type>/<rmt_table>/<demand>/network_adaptive/
 ```text
 config.py
   - PROBLEM_TYPE = single_part / multi_part
-  - LOCATION_NAME = layout_18 / layout_22 / layout_30
-  - RMT_TABLE_NAME = table_1 / table_2
+  - LOCATION_NAME = layout_18 / layout_22 / layout_26 / layout_30
+  - RMT_TABLE_NAME = table_1 / table_2 / table_3
   - DEMAND_NAME = demand_1 / demand_2 / ...
   - 파일 경로, solver 옵션 지정
 
@@ -182,7 +182,7 @@ DEMAND_NAME = "demand_1"
 ```python
 PROBLEM_TYPE = "single_part"
 LOCATION_NAME = "layout_22"
-RMT_TABLE_NAME = "table_2"
+RMT_TABLE_NAME = "table_2"  # 또는 "table_3"
 DEMAND_NAME = "demand_2"
 ```
 
@@ -206,6 +206,7 @@ python Data/generate_data.py
 Data/locations/
 Data/rmt_tables/table_1/
 Data/rmt_tables/table_2/
+Data/rmt_tables/table_3/
 Data/parameters/
 Data/demands/single_part/
 Data/demands/multi_part/
@@ -226,7 +227,7 @@ Data/shared_resources/
 
 현재 Data는 두 층으로 나뉩니다.
 
-- `Data/locations/`: 18칸/22칸/30칸 layout 좌표
+- `Data/locations/`: 18칸/22칸/26칸/30칸 layout 좌표
 - `Data/rmt_tables/<rmt_table_name>/`: RMT configuration, production rate, resource requirement
 - `Data/parameters/`: single/multi별 모델 파라미터
 - `Data/demands/<problem_type>/`: demand scenario
