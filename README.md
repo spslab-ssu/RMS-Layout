@@ -21,6 +21,7 @@ RMS-Layout/
 │   ├── locations/               # layout 좌표만 관리
 │   │   ├── layout_18.csv
 │   │   ├── layout_22.csv
+│   │   ├── layout_26.csv
 │   │   └── layout_30.csv
 │   ├── rmt_tables/              # RMT configuration table만 관리
 │   │   ├── table_1/

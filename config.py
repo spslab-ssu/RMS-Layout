@@ -13,7 +13,7 @@ WARM_START_BASE_DIR = DATA_DIR / "warm_starts"
 
 # 실행할 문제와 입력 조합을 선택한다.
 # - PROBLEM_TYPE: "single_part" / "multi_part"
-# - LOCATION_NAME: "layout_18" / "layout_22" / "layout_30"
+# - LOCATION_NAME: "layout_18" / "layout_22" / "layout_26" / "layout_30"
 # - RMT_TABLE_NAME: "table_1" / "table_2"
 # - DEMAND_NAME: "demand_1" / "demand_2" / ...
 PROBLEM_TYPE = "multi_part" 
@@ -38,11 +38,11 @@ SHARED_RESOURCE_FILE = SHARED_RESOURCE_DIR / f"{SHARED_RESOURCE_NAME}.csv"
 RESOURCE_CAPACITY_FILE = SHARED_RESOURCE_DIR / f"{RESOURCE_CAPACITY_NAME}.csv"
 RESOURCE_REQUIREMENT_FILE = RMT_TABLE_DIR / RMT_TABLE_NAME / "resource_requirements.csv"
 
-TIME_LIMIT = 100
+TIME_LIMIT = 300
 MIP_GAP = 0.0
 
 # Adaptive layout relocation cost. MHC 단가보다는 크고 구매비보다는 작게 둔다.
-RELOCATION_COST_PER_DISTANCE = 12.0
+RELOCATION_COST_PER_DISTANCE = 40.0
 RELOCATION_FIXED_COST = 0.0
 
 # formulation 비교용 pure LP relaxation bound를 기록할지 여부.
