@@ -200,6 +200,7 @@ def solve_milp(instance, config) -> RMSSolution:
         model.ModelSense = GRB.MINIMIZE
         model.setObjectiveN(cost_expr, index=0, priority=1, name="cost")
         model.setObjectiveN(gp.quicksum(cap_vars[r] for r in cap_vars), index=1, priority=0, name="sizing")
+        _apply_stage_time_limits(model, config)
 
     if bool(getattr(config, "USE_WARM_START", False)):
         warm_start_dir = getattr(config, "WARM_START_DIR", None)
@@ -270,6 +271,8 @@ def _extract_solution(model, instance, x, s, y, v, f, purchase_cost, reconfigura
         GRB.TIME_LIMIT: "TIME_LIMIT",
         GRB.INFEASIBLE: "INFEASIBLE",
         GRB.INF_OR_UNBD: "INF_OR_UNBD",
+        # multi-objective에서 일부 pass가 시간 초과로 미증명이면 SUBOPTIMAL이 나온다.
+        GRB.SUBOPTIMAL: "SUBOPTIMAL",
     }.get(model.Status, str(model.Status))
     summary: dict[str, Any] = {
         "problem_name": instance.problem_name,
@@ -378,6 +381,24 @@ def _compute_lp_relaxation_bound(model, config) -> tuple[float | None, float | N
     if relaxation.Status != GRB.OPTIMAL:
         return None, seconds
     return _clean_float(relaxation.ObjVal), seconds
+
+
+def _apply_stage_time_limits(model, config) -> None:
+    """variable 모드 lexicographic 2목적에 목적별 시간 예산을 건다.
+
+    STAGE1_TIME_LIMIT이 설정되면 1단계(비용)는 그 시간 안에 최적 증명을 못 해도
+    그 시점의 incumbent를 채택하고 2단계(사이징)로 넘어간다. 전역 TimeLimit은
+    총량 기준이라 1단계가 다 쓰면 2단계가 아예 안 돌기 때문에 두 단계 합으로 늘린다.
+    주의: 1단계 미증명이면 2단계 결과는 "비용 ≤ incumbent 조건의 최소 Cap"이다.
+    """
+    stage1 = getattr(config, "STAGE1_TIME_LIMIT", None)
+    if stage1 is None:
+        return
+    stage2 = getattr(config, "STAGE2_TIME_LIMIT", None)
+    stage2 = float(config.TIME_LIMIT if stage2 is None else stage2)
+    model.Params.TimeLimit = float(stage1) + stage2
+    model.getMultiobjEnv(0).setParam("TimeLimit", float(stage1))
+    model.getMultiobjEnv(1).setParam("TimeLimit", stage2)
 
 
 def _solver_metrics(model) -> dict[str, float | int | None]:

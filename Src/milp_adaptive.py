@@ -13,6 +13,7 @@ from Src.milp import (
     _solver_metrics,
     _compute_lp_relaxation_bound,
     _add_shared_resource_constraints,
+    _apply_stage_time_limits,
 )
 
 
@@ -195,6 +196,7 @@ def solve_milp(instance, config) -> RMSSolution:
         model.ModelSense = GRB.MINIMIZE
         model.setObjectiveN(cost_expr, index=0, priority=1, name="cost")
         model.setObjectiveN(gp.quicksum(cap_vars[r] for r in cap_vars), index=1, priority=0, name="sizing")
+        _apply_stage_time_limits(model, config)
 
     if bool(getattr(config, "USE_OBJECTIVE_CUTOFF", False)):
         cutoff = getattr(config, "OBJECTIVE_CUTOFF", None)
@@ -235,6 +237,8 @@ def _extract_solution(
         GRB.TIME_LIMIT: "TIME_LIMIT",
         GRB.INFEASIBLE: "INFEASIBLE",
         GRB.INF_OR_UNBD: "INF_OR_UNBD",
+        # multi-objective에서 일부 pass가 시간 초과로 미증명이면 SUBOPTIMAL이 나온다.
+        GRB.SUBOPTIMAL: "SUBOPTIMAL",
     }.get(model.Status, str(model.Status))
     summary: dict[str, Any] = {
         "problem_name": instance.problem_name,

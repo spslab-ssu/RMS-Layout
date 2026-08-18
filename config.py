@@ -58,6 +58,15 @@ SHARED_RESOURCE_MODE = "variable"
 CAP_UPPER_BOUNDS = {
 }
 
+# variable 모드(lexicographic 2단계)의 목적별 시간 예산.
+#   STAGE1_TIME_LIMIT: 1단계(비용 최소화) 시간(초). 초과하면 최적 증명을 못 했어도
+#                      그 시점의 incumbent를 채택하고 2단계(ΣCap 최소화)로 넘어간다.
+#                      이때 2단계 결과는 "비용 ≤ incumbent 조건의 최소 Cap"으로 해석해야 한다.
+#   STAGE2_TIME_LIMIT: 2단계 시간(초). None이면 TIME_LIMIT을 사용.
+#   STAGE1_TIME_LIMIT = None이면 기존 동작(전역 TIME_LIMIT 하나, 1단계가 다 쓰면 2단계 생략).
+STAGE1_TIME_LIMIT = 100
+STAGE2_TIME_LIMIT = None
+
 # adaptive layout: 기간 경계에서 기계 relocation(이동) 허용 정책. (milp_adaptive에서 사용)
 #   "off"      : 위치 고정 (base와 동등)
 #   "separate" : 이동이면 config 유지, 재구성이면 제자리 (동시 금지)
