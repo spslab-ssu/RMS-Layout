@@ -1,443 +1,151 @@
-# RMS Layout 연구 코드
+# RMS Network Reformulation
 
-> 이 폴더는 **RMS Layout 연구용 최적화 코드**입니다.  
+Saffar et al.의 dynamic RMS layout model을 machine-lifecycle network로 재정식화하고,
+세미나 자료의 counting, theta, MIR valid inequalities까지 재현하는 연구 코드입니다.
 
+## 무엇이 달라졌나
 
----
+Base model은 구매 `x`, 기간 상태 `s`, 재구성 `y`를 implication 제약으로 연결합니다.
+이 프로젝트는 각 위치의 전체 기간 상태를 `w` node와 `z` transition arc로 연결한
+하나의 source-sink path로 표현합니다.
 
-## 1. 한눈에 보는 디렉토리 구조
+| 항목 | Base model | Network reformulation |
+|---|---|---|
+| 기계 상태 | `x`, `s`, `y` 이진변수 | `w` 이진 node + `z` 연속 arc |
+| 기간 연결 | implication | exact flow conservation |
+| Example 1 이진변수 | 1,856 | 832 |
+| pure LP bound | 20,925 | 22,162.618 |
+| 가장 강한 compact bound | - | 22,674.8 (`network_mir`) |
+| 확장성 | 전이변수 증가와 약한 LP | relocation/resource arc 확장에 적합 |
 
-```text
-RMS_Layout/
-├── main.py              # 진입점: 전체 단계를 순서대로 호출만 함
-├── config.py            # 데이터셋 선택, solver 옵션, 공통 상수 설정
-├── requirements.txt     # Python package 의존성
-├── README.md            # 프로젝트 개요, 실행 방법, 구조 설명
-├── SEQUENCE.md          # 실행 시퀀스와 파일별 역할 상세 설명
-├── .gitignore           # Git에서 제외할 생성 파일 목록
-│
-├── Data/
-│   ├── generate_data.py         # 논문 재현용 CSV 데이터 생성/복사
-│   ├── single_part/             # 메인논문 Example 1 단일부품 데이터
-│   │   ├── locations.csv        # 위치 좌표, start/end, install location 정보
-│   │   ├── configurations.csv   # RMT configuration, 비용, module 정보
-│   │   ├── production_rates.csv # configuration별 operation 생산률
-│   │   ├── demands.csv          # part별 period demand와 operation sequence
-│   │   ├── parameters.csv       # MHC, add/remove module cost 등 scalar parameter
-│   │   ├── shared_resources.csv # shared resource별 보유량
-│   │   └── resource_requirements.csv # configuration별 shared resource 요구 여부
-│   └── multi_part/              # 메인논문 Example 2 다중부품 데이터
-│       ├── locations.csv
-│       ├── configurations.csv
-│       ├── production_rates.csv
-│       ├── demands.csv
-│       ├── parameters.csv
-│       ├── shared_resources.csv
-│       └── resource_requirements.csv
-│
-├── Src/
-│   ├── __init__.py
-│   ├── data.py          # ① CSV 입력 + MILP parameter 전처리
-│   ├── milp.py          # ② Gurobi MILP 모델 생성 및 solve
-│   ├── output.py        # ③ 해를 CSV/JSON 결과 파일로 저장
-│   └── visualize.py     # ④ 결과 CSV를 layout 이미지로 시각화
-│
-└── Result/              # 실행 결과 CSV, summary, figure 저장
-```
+자세한 수식은 [NETWORK_FORMULATION.md](NETWORK_FORMULATION.md), 코드 구성은
+[ARCHITECTURE.md](ARCHITECTURE.md), 후속 연구 순서는 [ROADMAP.md](ROADMAP.md)를
+참고하세요.
 
-> `Result/`는 실행할 때 생성되는 산출물입니다. GitHub에는 기본적으로 올리지 않습니다.
+## 강화 프로필
 
-### 싱글파트 모듈 중복률 실험
+- `network`: lifecycle network만 사용
+- `network_counting`: operation별 최소 기계 수 cut 추가
+- `network_theta`: operation별 서로 다른 생산률을 divisor로 한 CG rounding 추가
+- `network_mir`: counting + theta + MIR, 기본값이자 가장 강한 compact 모델
 
-원본 싱글파트 모델에서 보조 모듈 중복률을 0%, 25%, 50%, 75%, 100%로 바꾸고
-재구성비용을 비교하려면 프로젝트 루트에서 다음을 실행합니다.
+cut 후보는 `Src/strengthening.py`에서 만들고, 같은 operation-period 안에서
+정규화 계수 기준으로 중복되거나 지배되는 cut을 제거합니다.
+
+## 실행
 
 ```bash
-python run_single_part_module_overlap.py
-```
-
-원본 `Data/single_part` 파일은 수정하지 않습니다. 생성된 시나리오와 해, 비교표,
-보고서 및 그래프는 `Result_module_overlap/`에 저장됩니다. 주요 산출물은 다음과 같습니다.
-
-- `module_overlap_sensitivity.csv`: 중복 지표, 재구성비용, 감소액·감소율, 목적함수
-- `module_overlap_sensitivity.png`: 중복률에 따른 재구성비용 그래프
-- `REPORT.md`: 실험 조건과 핵심 결과 요약
-- `scenarios/`: 각 시나리오의 복제 configuration 데이터와 상세 최적해
-
-다른 구간을 실험하려면 예를 들어 다음처럼 지정합니다.
-
-```bash
-python run_single_part_module_overlap.py --levels 0 0.1 0.2 0.4 0.6 0.8 1 --time-limit 300
-```
-
----
-
-## 2. 데이터 흐름
-
-```text
-설정          데이터 입력/전처리            MILP 모델             결과 저장             시각화
-config.py -> Src/data.py        ->    Src/milp.py   ->   Src/output.py  ->  Src/visualize.py
-            RMSInstance              RMSSolution        Result/*.csv       Result/figures/*.png
-```
-
-각 단계는 앞 단계의 결과만 입력으로 받습니다.
-
-예를 들어 `Src/milp.py`는 CSV 파일명을 직접 알 필요가 없습니다.  
-`Src/data.py`가 CSV를 읽고 `RMSInstance` 객체를 만들어주면, 모델 코드는 그 객체의 속성만 사용합니다.
-
-이렇게 나누면 CSV 형식이 바뀌어도 `Src/data.py`만 수정하면 되고, MILP 수식이 바뀌어도 `Src/milp.py`만 수정하면 됩니다.
-
----
-
-## 3. 코드 읽는 순서
-
-처음 코드를 보는 사람은 아래 순서대로 보면 됩니다.
-
-1. **`README.md`**  
-   전체 구조, 실행 흐름, 실행 방법을 먼저 확인합니다.
-
-2. **`main.py`**  
-   가장 먼저 볼 코드입니다.  
-   `load_instance -> solve_milp -> save_solution -> draw_layouts` 순서만 보면 전체 흐름이 파악됩니다.
-
-3. **`config.py`**  
-   어떤 문제를 풀지, 어떤 데이터 폴더를 쓸지, Gurobi 옵션이 무엇인지 확인합니다.
-
-4. **`Data/*.csv`**  
-   모델의 원시 입력 데이터입니다.  
-   single/multi는 같은 파일 schema를 사용합니다.
-
-5. **`Src/data.py`**  
-   CSV가 모델용 parameter로 바뀌는 과정입니다.  
-   여기서 `RMSInstance`가 만들어집니다.
-
-6. **`Src/milp.py`**  
-   핵심 최적화 모델입니다.  
-   변수, 제약식, 목적함수, 해 추출이 들어 있습니다.
-
-7. **`Src/output.py`**  
-   Gurobi 해가 어떤 CSV/JSON으로 저장되는지 확인합니다.
-
-8. **`Src/visualize.py`**  
-   저장된 결과를 period별 layout 그림으로 변환합니다.
-
----
-
-## 4. 각 파일의 책임
-
-| 단계 | 파일 | 책임 | 핵심 포인트 |
-|---|---|---|---|
-| 조립 | `main.py` | 전체 실행 순서 호출 | 계산 로직 없이 모듈만 연결 |
-| 설정 | `config.py` | 데이터셋, 경로, solver 옵션 정의 | `PROBLEM_NAME`만 바꿔 single/multi 선택 |
-| 입력 생성 | `Data/generate_data.py` | 논문 재현용 CSV 생성/복사 | 기존 검증 데이터를 새 구조로 이동 |
-| 데이터 | `Src/data.py` | CSV 읽기 및 MILP parameter화 | `RMSInstance` 생성, single/multi 표준화 |
-| 모델 | `Src/milp.py` | Gurobi MILP 생성 및 solve | 구매/상태/재구성/flow 변수와 제약 정의 |
-| 출력 | `Src/output.py` | 결과 CSV/JSON 저장 | 결과 schema 고정 |
-| 시각화 | `Src/visualize.py` | period별 layout 이미지 생성 | Figure 2 스타일 결과 확인 |
-
----
-
-## 5. 입력 데이터 설명
-
-### `locations.csv`
-
-위치 좌표와 위치 유형을 저장합니다.
-
-```text
-location,x,y,type
-1,0,0,install
-...
-17,-2,1.5,start
-18,5,1.5,end
-```
-
-- `install`: RMT 설치 가능 위치
-- `start`: inbound dummy location
-- `end`: outbound dummy location
-
-### `configurations.csv`
-
-RMT configuration 정보입니다.
-
-주요 컬럼:
-
-- `machine`: machine type
-- `configuration`: configuration id
-- `op1` ~ `op20`: 해당 operation 생산률. 빈 칸이면 수행 불가
-- `cost`: 구매비
-- `basic_modules`: basic module set
-- `auxiliary_modules`: auxiliary module set
-
-### `production_rates.csv`
-
-configuration별 operation 생산률을 long format으로 저장합니다.
-
-```text
-machine,configuration,operation,production_rate
-M5,mc52,5,20
-```
-
-MILP에서는 이 파일을 주로 사용합니다.
-
-### `demands.csv`
-
-part별 period demand와 operation sequence를 저장합니다.
-
-```text
-part,period1,period2,period3,period4,operation_sequence
-A,50,60,80,100,5>1>17
-```
-
-다중부품도 같은 형식입니다.
-
-### `parameters.csv`
-
-모델 scalar parameter입니다.
-
-```text
-parameter,value
-period_count,4
-material_handling_cost,4
-start_location,17
-end_location,18
-add_module_cost,50
-remove_module_cost,25
-```
-
----
-
-## 6. 단일/다중부품 통합 방식
-
-현재 구조에서는 단일부품과 다중부품 MILP를 분리하지 않습니다.
-
-이유는 다음과 같습니다.
-
-- layout 위치 선택 수식은 동일합니다.
-- RMT 구매, state, reconfiguration 수식은 동일합니다.
-- capacity 제약도 동일합니다.
-- material flow 구조도 operation arc 기준으로 보면 동일합니다.
-- 차이는 part 수와 route/demand 집계 방식뿐입니다.
-
-따라서 `Src/data.py`에서 다음과 같이 전처리합니다.
-
-```text
-part별 demand + operation sequence
-        ↓
-period별 route arc demand
-        ↓
-arc_demand[(t, left_operation, right_operation)]
-```
-
-예를 들어 단일부품은 다음 route만 있습니다.
-
-```text
-A: START -> 5 -> 1 -> 17 -> END
-```
-
-다중부품은 여러 route를 모두 arc demand로 합칩니다.
-
-```text
-A: START -> 2 -> 12 -> 17 -> END
-B: START -> 2 -> 12 -> 11 -> END
-C: START -> 2 -> 12 -> 11 -> 8 -> END
-```
-
-MILP는 part 개수를 직접 보지 않고, 집계된 arc demand만 사용합니다.
-
----
-
-## 7. MILP 모델 개요
-
-### 주요 변수
-
-```text
-x[p,j,l]
-```
-
-위치 `p`에 configuration `j`의 RMT를 구매하고 초기 operation `l` 상태로 두면 1.
-
-```text
-s[p,j,l,t]
-```
-
-period `t`에 위치 `p`의 RMT가 configuration `j`로 operation `l`을 수행하면 1.
-
-```text
-y[p,j_prev,j_next,l,t]
-```
-
-period `t` 시작 시 위치 `p`의 RMT가 `j_prev`에서 `j_next`로 재구성되고 operation `l`을 수행하면 1.
-
-```text
-v[p,l,t]
-```
-
-period `t`에 위치 `p`에서 operation `l`을 처리하는 총 flow.
-
-```text
-f[p,l,q,l2,t]
-```
-
-period `t`에 위치 `p`의 operation `l`에서 위치 `q`의 operation `l2`로 이동하는 material flow.
-
-### 목적함수
-
-```text
-min 구매비 + 재구성비 + material handling cost
-```
-
-### 주요 제약
-
-- 위치 하나에는 최대 하나의 RMT만 설치
-- 구매된 RMT는 각 period에 하나의 state를 가짐
-- 첫 period state는 구매 결정과 연결
-- 이후 period state는 configuration 유지 또는 재구성으로만 가능
-- 처리량은 configuration별 production rate 이하
-- 각 RMT에서 incoming flow = processing flow = outgoing flow
-- route arc별 총 flow는 demand와 같음
-
----
-
-## 8. 실행 방법
-
-상위 연구 폴더의 공용 가상환경을 사용합니다.
-
-```bash
-cd /Users/miles/Documents/02_학부연구생
 source .venv/bin/activate
-cd 01_RMS/03_Development/RMS_Layout
-pip install -r requirements.txt
-```
 
-논문 재현 데이터를 생성/복사합니다.
-
-```bash
-python Data/generate_data.py
-```
-
-단일부품 문제를 풉니다.
-
-```bash
+# 기본: Example 1, network_mir
 python main.py
+
+# formulation과 문제 선택
+python main.py --problem multi_part --profile network --time-limit 100
+
+# 논문 pure LP bound 재현
+python -m experiments.reproduce_paper
+
+# 기존 논문 base와 network 최적해·성능 직접 비교
+python -m experiments.compare_formulations --problem single_part --time-limit 120
+
+# 멀티파트 Network-MIR와 Schedule-DW를 formulation별 600초 비교
+python -m experiments.compare_network_dw
+
+# Example 1 회귀검사
+python -m unittest \
+  tests/test_network_reformulation.py \
+  tests/test_formulation_comparison.py
 ```
 
-다중부품 문제를 풀려면 `config.py`에서 다음 값을 바꿉니다.
+결과는 기본적으로 `results/<problem>/<profile>/`에 저장됩니다.
 
-```python
-PROBLEM_NAME = "multi_part"
-```
+## 검증 기준
 
-그리고 다시 실행합니다.
+Example 1의 best-known objective `22,910`을 기준으로 다음 pure LP bound를
+자동검사합니다.
+
+| profile | pure LP bound | gap |
+|---|---:|---:|
+| network | 22,162.618 | 3.262% |
+| network_counting | 22,612.662 | 1.298% |
+| network_theta | 22,619.800 | 1.267% |
+| network_mir | 22,674.800 | 1.027% |
+
+`network_mir`의 integer model도 objective `22,910`, binary `832`를 검사합니다.
+
+## 기존 논문 formulation과 직접 비교
+
+`experiments.compare_formulations`는 동일한 데이터, seed, thread 설정, time limit,
+MIP gap에서 다음 세 formulation을 각각 pure LP와 MIP로 풉니다.
+
+- `base`: 기존 논문의 `x-s-y` implication formulation
+- `network`: machine lifecycle network
+- `network_mir`: network + counting + theta + MIR
+
+각 formulation의 해는 `results/comparison/<problem>/seed_<seed>/`에 저장하며,
+목적값, bound, gap, 이진변수, 탐색 node, 실행시간, 비용 구성과 선택 상태 차이를
+CSV·JSON·Markdown으로 함께 기록합니다.
+
+## Network-MIR와 Schedule Dantzig–Wolfe 비교
+
+`experiments.compare_network_dw`는 멀티파트 문제에서 다음 두 모델을 같은 seed,
+thread 수, MIR cut, 600초 제한으로 비교합니다.
+
+- `network_mir`: compact machine-lifecycle node-arc formulation
+- `schedule_dw`: 한 column이 한 RMT의 4기간 전체 상태경로인 full-enumeration DW master
+
+기본 실행은 다음과 같습니다.
 
 ```bash
-python main.py
+python -m experiments.compare_network_dw
 ```
 
----
+결과는 `results/network_vs_schedule_dw/multi_part/seed_1/`에 저장됩니다.
+`comparison_summary.csv`는 최종 objective·bound·gap, root LP, 변수·제약 수,
+최초 incumbent 시간, gap 기준별 도달시간과 gap integral을 제공합니다.
+`gap_progress.csv`, `mip_gap_progress.png`, `bound_progress.png`에서는 두 모델이
+시간에 따라 gap과 bound를 줄이는 과정을 직접 비교할 수 있습니다.
 
-## 9. 결과 파일
-
-실행 후 `Result/`에 다음 파일이 생성됩니다.
-
-```text
-solution_summary.json       # solver status, objective, runtime, gap
-cost_breakdown.csv          # 구매비, 재구성비, MHC, 총 목적함수값
-purchased_machines.csv      # 구매된 RMT와 초기 configuration/operation
-machine_states.csv          # period별 위치/configuration/operation/flow
-reconfigurations.csv        # period별 configuration 변경 내역
-material_flows.csv          # arc별 material flow와 flow cost
-posthoc_shared_resource_counts.csv # 최종 해에서 계산한 resource별 peak 사용량
-resource_usage.csv          # period/resource별 사용량, capacity, slack
-figures/layout_period_1.png
-figures/layout_period_2.png
-figures/layout_period_3.png
-figures/layout_period_4.png
-figures/layout_all_periods.png
-```
-
----
-
-## 10. GitHub 관리 원칙
-
-Git에 올릴 파일:
-
-```text
-main.py
-config.py
-requirements.txt
-README.md
-SEQUENCE.md
-Data/*.csv
-Data/generate_data.py
-Src/*.py
-```
-
-Git에서 제외할 파일:
-
-```text
-Result*/
-__pycache__/
-.DS_Store
-*.lp
-*.log
-*.ilp
-```
-
-`Result/`는 실행할 때 다시 만들 수 있는 산출물이므로 기본적으로 commit하지 않습니다.
-
----
-
-## 11. Adaptive layout formulations
-
-Period 경계에서 RMT location 이동을 허용하는 두 formulation을 분리해 구현합니다.
-
-- `Src/adaptive_milp.py`: 논문의 implication MILP을 기반으로 한 non-network adaptive model. 실제 RMT를 asset index `k`로 추적합니다.
-- `Src/network_adaptive.py`: main branch와 동일한 cross-location lifecycle transition arc를 사용하는 network + adaptive 비교 모델입니다.
-
-두 모델에서 adaptive mechanism의 물리적 가정은 동일합니다.
-
-- RMT는 Period 1에 구매되고 전체 기간 보존됩니다.
-- Period 사이에 location과 configuration을 동시에 변경할 수 있습니다.
-- 서로 다른 machine type 간 configuration 변경은 금지됩니다.
-- 한 period의 한 location에는 최대 한 대의 RMT만 있을 수 있습니다.
-- `p_prev != p_next`이면 `fixed cost + distance cost`를 부과합니다.
-- 이동 후 location을 기준으로 해당 period의 material handling cost를 계산합니다.
-
-논문 싱글파트에 non-network adaptive model을 실행합니다.
+## 시각적 실험 화면
 
 ```bash
-python run_adaptive.py --problem single_part --time-limit 300
+.venv/bin/python -m streamlit run app.py
 ```
 
-두 formulation을 동일 seed, thread, 이동비용으로 비교합니다.
+웹 화면에서 다음을 직접 조작할 수 있습니다.
+
+- Single-part / Multi-part 전환
+- 원점은 `(0, 0)`으로 고정하고 `m × n`과 좌표 사이 거리만 설정
+- 생성된 각 설치위치와 Start/End 좌표는 표에서 추가 수정
+- 기간 수, part, 기간별 수요, operation sequence 편집
+- relocation 비용·크루 상한·맞교환 금지 설정
+- Stage 1의 동일 최적 시스템 비용 configuration 후보를 최대 6개까지 탐색
+- Stage 2의 최소 relocation 해와 period별 레이아웃을 양쪽에서 비교
+- 위치 이동비용, configuration 변경비용, `m × n × 거리` 민감도 분석
+
+편집한 입력은 원본 `Data/`를 덮어쓰지 않고
+`results/interactive/<scenario>_<timestamp>/input/`에 복사됩니다. Stage 1 후보는
+`stage_1_system_cost/candidates/`, Stage 2 결과는 `stage_2_min_relocation/`에 보존됩니다.
+민감도 결과는 `results/sensitivity/`에 실험별 CSV와 각 후보의 입력·해를 함께 저장합니다.
+
+## 범위
+
+핵심 baseline에서는 shared resource와 relocation을 끕니다. 기존 shared-resource
+제약은 `--shared-resources`, relocation은 `--relocation`으로 켤 수 있으며 논문
+baseline과 확장 실험의 결과 경로를 분리해야 합니다.
 
 ```bash
-python compare_adaptive_formulations.py \
-  --problem single_part \
-  --time-limit 300 \
-  --relocation-cost-per-distance 1 \
-  --relocation-fixed-cost 0
+python main.py --problem single_part --profile network_mir --relocation \
+  --relocation-distance-cost 1 \
+  --relocation-downtime 0.25 \
+  --relocation-crew-capacity 2 \
+  --forbid-reverse-swaps
 ```
 
-결과는 `Result_adaptive/` 또는 `Result_adaptive_comparison/`에 저장됩니다. 현재 adaptive는 전체 period 수요를 미리 아는 deterministic layout-adaptive model이며, period별로 수요가 공개되는 online demand-adaptive model은 아닙니다.
+`--relocation`을 켜면 기본적으로 시스템 비용을 먼저 최소화하고, 같은 시스템 비용
+안에서 relocation 횟수를 최소화하는 2단계 풀이를 수행합니다. 결과에는
+`primary_stage`, `relocation_stage`, `minimum_relocation_count`, `relocations.csv`가
+저장됩니다. 수식과 옵션 해석은 `RELOCATION_DESIGN.md`에 정리했습니다.
 
-### Online demand-adaptive single-part policy
-
-`Src/online_adaptive.py`는 Period 1→4 수요를 순서대로 한 기간씩만 공개합니다. 각 period에서 이미 실행한 RMT 구매·location·configuration을 상태로 인계하고, 현재 period 수요만으로 추가구매·재구성·이동·배치를 최적화합니다.
-
-```bash
-python run_online_adaptive.py \
-  --problem single_part \
-  --time-limit 120 \
-  --relocation-cost-per-distance 1
-```
-
-결과는 `Result_online_adaptive/single_part/`에 저장되며 `cost_by_period.csv`에 period별 수요, 구매대수, 보유대수, 재구성, 이동, 비용이 기록됩니다. 현재 정책은 미래 예측을 사용하지 않는 myopic policy이며 RMT 폐기·매각과 구매 lead time은 아직 포함하지 않습니다.
-
-## 12. 추가 확장 방향
-
-- stochastic / rolling-horizon demand
-- relocation crew, downtime, move-count capacity
-- robust layout
-- part-specific multi-commodity flow
-- sensitivity analysis용 데이터 생성
+원본 세미나 자료는 `docs/reference/seminar_RMS_reformulation.pdf`에 보관했습니다.

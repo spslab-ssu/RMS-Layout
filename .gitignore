@@ -1,0 +1,10 @@
+.venv/
+__pycache__/
+*.py[cod]
+Result/
+Result_*/
+results/
+
+# Local safety backup created during the repository cleanup. The legacy files
+# are intentionally removed from Git but remain recoverable in this workspace.
+/archive/legacy_root/

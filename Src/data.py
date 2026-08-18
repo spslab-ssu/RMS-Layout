@@ -40,6 +40,7 @@ class RMSInstance:
     reconfiguration_cost: dict[tuple[str, str], float]
     distance: dict[tuple[int, int], float]
     arc_demand: dict[tuple[int, int, int], float]
+    operation_demand: dict[tuple[int, int], float]
     parameters: dict[str, float]
 
     start_location: int
@@ -92,11 +93,14 @@ def load_instance(config) -> RMSInstance:
         if use_shared_resources and shared_resource_file is not None and Path(shared_resource_file).exists()
         else {}
     )
-    resource_requirement = (
-        _read_resource_requirement(resource_requirement_file)
-        if use_shared_resources and resource_requirement_file is not None and Path(resource_requirement_file).exists()
-        else _build_default_resource_requirement(auxiliary_modules)
-    )
+    if use_shared_resources:
+        resource_requirement = (
+            _read_resource_requirement(resource_requirement_file)
+            if resource_requirement_file is not None and Path(resource_requirement_file).exists()
+            else _build_default_resource_requirement(auxiliary_modules)
+        )
+    else:
+        resource_requirement = {}
     production_rate = {
         (str(row.configuration), int(row.operation)): float(row.production_rate)
         for row in rates_df.itertuples(index=False)
@@ -108,6 +112,15 @@ def load_instance(config) -> RMSInstance:
         start_operation=start_operation,
         end_operation=end_operation,
     )
+    operation_demand = {
+        (period, operation): sum(
+            demand
+            for (arc_period, left_operation, _), demand in arc_demand.items()
+            if arc_period == period and left_operation == operation
+        )
+        for period in periods
+        for operation in operations
+    }
 
     feasible_pairs = sorted(
         (cfg, op)
@@ -138,7 +151,7 @@ def load_instance(config) -> RMSInstance:
         demand_file=config.DEMAND_FILE,
         parameter_file=config.PARAMETER_FILE,
         shared_resource_file=shared_resource_file if shared_resource_capacity else None,
-        resource_requirement_file=resource_requirement_file if shared_resource_capacity else None,
+        resource_requirement_file=resource_requirement_file if use_shared_resources else None,
         periods=periods,                                #생산기간 T
         install_locations=install_locations,            #RMT 설치 가능한 위치 P
         all_locations=all_locations, 
@@ -158,6 +171,7 @@ def load_instance(config) -> RMSInstance:
         reconfiguration_cost=reconfiguration_cost,      #configuration 변경비용 r_ij
         distance=distance,                              #location별 Manhattan distance D_pp'    
         arc_demand=arc_demand,                          #period별 arc demand d_tll' (t,l,l')   
+        operation_demand=operation_demand,              #period-operation별 총수요 d_tl
         parameters=params,                              #MHC, add/remove module cost, start/end location, period count 등
         start_location=start_location,
         end_location=end_location,

@@ -8,15 +8,38 @@ from PIL import Image, ImageDraw, ImageFont
 
 def draw_layouts(result_dir: Path, instance) -> None:
     """Result CSV를 읽어서 논문 Figure 2 스타일의 period별 layout 그림을 만든다."""
+    _draw_layout_directory(result_dir, instance, "Final")
+    stage_one_dir = result_dir / "stage_1_system_cost"
+    stage_two_dir = result_dir / "stage_2_min_relocation"
+    if stage_one_dir.exists() and stage_two_dir.exists():
+        stage_one_images = _draw_layout_directory(stage_one_dir, instance, "Stage 1 · system cost")
+        stage_two_images = _draw_layout_directory(stage_two_dir, instance, "Stage 2 · minimum relocation")
+        comparison_dir = result_dir / "figures" / "stage_comparison"
+        comparison_dir.mkdir(parents=True, exist_ok=True)
+        comparisons = []
+        for period, left, right in zip(instance.periods, stage_one_images, stage_two_images):
+            comparison = _combine_side_by_side(left, right)
+            comparison.save(comparison_dir / f"stage_comparison_period_{period}.png")
+            comparisons.append(comparison)
+        _combine_images(comparisons, comparison_dir / "stage_comparison_all_periods.png")
+        candidates_dir = stage_one_dir / "candidates"
+        if candidates_dir.exists():
+            for candidate_dir in sorted(candidates_dir.glob("configuration_*")):
+                _draw_layout_directory(candidate_dir, instance, candidate_dir.name)
+
+
+def _draw_layout_directory(result_dir: Path, instance, stage_label: str) -> list[Image.Image]:
     states_path = result_dir / "machine_states.csv"
     flows_path = result_dir / "material_flows.csv"
     reconfigs_path = result_dir / "reconfigurations.csv"
+    relocations_path = result_dir / "relocations.csv"
     if not states_path.exists() or states_path.stat().st_size == 0:
-        return
+        return []
 
     states = pd.read_csv(states_path)
     flows = pd.read_csv(flows_path) if flows_path.exists() and flows_path.stat().st_size else pd.DataFrame()
     reconfigs = pd.read_csv(reconfigs_path) if reconfigs_path.exists() and reconfigs_path.stat().st_size else pd.DataFrame()
+    relocations = pd.read_csv(relocations_path) if relocations_path.exists() and relocations_path.stat().st_size else pd.DataFrame()
 
     figure_dir = result_dir / "figures"
     figure_dir.mkdir(parents=True, exist_ok=True)
@@ -28,11 +51,13 @@ def draw_layouts(result_dir: Path, instance) -> None:
             states=states[states["period"] == period],
             flows=flows[flows["period"] == period] if not flows.empty else flows,
             reconfigs=reconfigs[reconfigs["period"] == period] if not reconfigs.empty else reconfigs,
-            title=f"RMS layout - {instance.problem_name} - period {period}",
+            relocations=relocations[relocations["period"] == period] if not relocations.empty else relocations,
+            title=f"{stage_label} - {instance.problem_name} - period {period}",
         )
         image.save(figure_dir / f"layout_period_{period}.png")
         images.append(image)
     _combine_images(images, figure_dir / "layout_all_periods.png")
+    return images
 
 
 class _LayoutRenderer:
@@ -58,13 +83,23 @@ class _LayoutRenderer:
         y = self.height - (self.margin + (float(loc["y"]) - self.min_y) * self.scale)
         return x, y
 
-    def render(self, states: pd.DataFrame, flows: pd.DataFrame, reconfigs: pd.DataFrame, title: str) -> Image.Image:
+    def render(self, states: pd.DataFrame, flows: pd.DataFrame, reconfigs: pd.DataFrame, relocations: pd.DataFrame, title: str) -> Image.Image:
         image = Image.new("RGB", (self.width, self.height), "white")
         draw = ImageDraw.Draw(image)
         draw.text((35, 30), title, fill="#111111", font=self.font)
 
         for idx, row in enumerate(flows.itertuples(index=False)):
             self._draw_arrow(draw, self.xy(int(row.from_location)), self.xy(int(row.to_location)), f"{float(row.flow):g}", idx, max(1, min(5, int(1 + float(row.flow) / 20))))
+        for idx, row in enumerate(relocations.itertuples(index=False)):
+            self._draw_arrow(
+                draw,
+                self.xy(int(row.from_location)),
+                self.xy(int(row.to_location)),
+                "MOVE",
+                idx,
+                4,
+                color="#c0392b",
+            )
 
         state_by_location = {int(row.location): row for row in states.itertuples(index=False)}
         reconfigured = {int(row.location) for row in reconfigs.itertuples(index=False)} if not reconfigs.empty else set()
@@ -108,7 +143,7 @@ class _LayoutRenderer:
             draw.line((x1, y, x1, min(y + dash, y2)), fill="#777777", width=2)
             draw.line((x2, y, x2, min(y + dash, y2)), fill="#777777", width=2)
 
-    def _draw_arrow(self, draw: ImageDraw.ImageDraw, start: tuple[float, float], end: tuple[float, float], label: str, offset_idx: int, width_px: int) -> None:
+    def _draw_arrow(self, draw: ImageDraw.ImageDraw, start: tuple[float, float], end: tuple[float, float], label: str, offset_idx: int, width_px: int, color: str = "#555555") -> None:
         x1, y1 = start
         x2, y2 = end
         dx, dy = x2 - x1, y2 - y1
@@ -121,13 +156,13 @@ class _LayoutRenderer:
         ux, uy = dx / length, dy / length
         start = (x1 + ux * pad + nx * offset, y1 + uy * pad + ny * offset)
         end = (x2 - ux * pad + nx * offset, y2 - uy * pad + ny * offset)
-        draw.line((*start, *end), fill="#555555", width=width_px)
-        self._draw_arrow_head(draw, start, end)
+        draw.line((*start, *end), fill=color, width=width_px)
+        self._draw_arrow_head(draw, start, end, color)
         mx, my = (start[0] + end[0]) / 2 + nx * 10, (start[1] + end[1]) / 2 + ny * 10
-        draw.text((mx, my), label, fill="#111111", font=self.font)
+        draw.text((mx, my), label, fill=color, font=self.font)
 
     @staticmethod
-    def _draw_arrow_head(draw: ImageDraw.ImageDraw, start: tuple[float, float], end: tuple[float, float]) -> None:
+    def _draw_arrow_head(draw: ImageDraw.ImageDraw, start: tuple[float, float], end: tuple[float, float], color: str = "#555555") -> None:
         x1, y1 = start
         x2, y2 = end
         dx, dy = x2 - x1, y2 - y1
@@ -140,7 +175,7 @@ class _LayoutRenderer:
         p1 = (x2, y2)
         p2 = (x2 - ux * size + left[0] * size * 0.55, y2 - uy * size + left[1] * size * 0.55)
         p3 = (x2 - ux * size - left[0] * size * 0.55, y2 - uy * size - left[1] * size * 0.55)
-        draw.polygon([p1, p2, p3], fill="#555555")
+        draw.polygon([p1, p2, p3], fill=color)
 
 
 def _combine_images(images: list[Image.Image], output_path: Path) -> None:
@@ -156,3 +191,15 @@ def _combine_images(images: list[Image.Image], output_path: Path) -> None:
         combined.paste(img, (0, y))
         y += img.height + gap
     combined.save(output_path)
+
+
+def _combine_side_by_side(left: Image.Image, right: Image.Image) -> Image.Image:
+    gap = 24
+    combined = Image.new(
+        "RGB",
+        (left.width + gap + right.width, max(left.height, right.height)),
+        "white",
+    )
+    combined.paste(left, (0, 0))
+    combined.paste(right, (left.width + gap, 0))
+    return combined

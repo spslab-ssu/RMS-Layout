@@ -1,3 +1,0 @@
-formulation,status,objective,best_bound,mip_gap,runtime_seconds,nodes,variables,binary_variables,constraints,purchase_cost,reconfiguration_cost,relocation_cost,material_handling_cost,relocation_count,reconfiguration_count
-paper_adaptive,TIME_LIMIT,23378.0,22341.392459,0.04434115583326031,120.00389909744263,544.0,29424,27184,39470,11025.0,1925.0,8.0,10420.0,6,9
-network_adaptive,TIME_LIMIT,22897.0,22629.998288,0.011660989374491657,120.0015459060669,3143.0,33024,30784,1920,11025.0,1925.0,3.0,9944.0,1,9
