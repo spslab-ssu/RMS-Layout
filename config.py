@@ -19,6 +19,8 @@ SAME_MACHINE_RECONFIG_ONLY = True
 PRUNE_DOMINATED_CUTS = True
 THETA_VALUES = None
 LP_RELAXATION = False
+# Optional directory containing saved machine_states/material_flows CSVs.
+MIP_START_DIR = None
 
 # Extensions are disabled in the main-paper baseline.
 USE_SHARED_RESOURCES = False
@@ -32,10 +34,19 @@ RELOCATION_DISTANCE_COST = 1.0
 RELOCATION_FIXED_COST = 0.0
 RELOCATION_DOWNTIME_FRACTION = 0.0
 RELOCATION_CREW_CAPACITY = None
+# Optional global cap used to build the relocation-count Pareto frontier.
+MAX_TOTAL_RELOCATIONS = None
 FORBID_REVERSE_SWAPS = False
 # Exact lexicographic policy: system cost first, relocation count second.
 MINIMIZE_RELOCATIONS_SECONDARY = True
-RELOCATION_SECONDARY_RESERVED_SECONDS = 60
+# Optional anytime heuristic: if Stage 1 reaches its time limit with a feasible
+# incumbent, Stage 2 may minimize moves under that incumbent's cost ceiling.
+# The resulting solution is provisional, not a proven lexicographic optimum.
+ALLOW_PROVISIONAL_RELOCATION_AFTER_TIME_LIMIT = False
+# Stage 2 can only run after Stage 1 is proven optimal. Reserving time in
+# advance can waste the reserved budget when Stage 1 times out, so Stage 1
+# receives the full limit and Stage 2 uses whatever time remains after proof.
+RELOCATION_SECONDARY_RESERVED_SECONDS = 0
 RELOCATION_PRIMARY_COST_TOLERANCE = 1e-4
 # A strict hierarchy requires the primary system cost to be proven exactly.
 LEXICOGRAPHIC_PRIMARY_MIP_GAP = 0.0

@@ -10,16 +10,18 @@
 ## 정식화
 
 기존 동일 위치 transition을 `(p,p,j,l,j',l',t)`로 유지하고, relocation을 켜면
-`p != q`인 cross-location arc를 추가한다. 상세 transition arc는 연속변수다.
-대신 실제 이동 여부 `u[p,q,t]`를 binary로 두고 다음처럼 정확히 연결한다.
+`p != q`인 cross-location arc를 추가한다. 상세 transition arc는 연속변수로 두되,
+물리적 machine path를 보장하기 위해 configuration 집계 transition
+`a[p,q,j,j',t]`를 binary로 둔다.
 
 ```text
-u[p,q,t] = sum_(j,l,j',l') z[p,q,j,l,j',l',t]
+a[p,q,j,j',t] = sum_(l,l') z[p,q,j,l,j',l',t]
 ```
 
-한 위치에는 한 기간에 기계가 최대 한 대이므로 이 집계는 이동 대수와 정확히 같다.
-이 방식은 모든 6-index arc를 binary로 만드는 BR식 폭증을 피하면서, 크루 제약 때문에
-깨질 수 있는 연속 network의 정수성을 보완한다.
+모든 기간에 `sum_(j,l) w[p,j,l,t] <= 1`을 강제한다. 이 점유 제약과
+configuration 집계 binary가 함께 있어야 하나의 기계가 여러 전이로 분할되거나,
+두 기계가 같은 위치로 합쳐지는 현상을 막을 수 있다. 이 방식은 operation 조합까지
+모두 binary로 만드는 기존 adaptive 모델보다 이진변수를 줄인다.
 
 물리 제약은 다음과 같다.
 
@@ -28,9 +30,9 @@ capacity[p,l,t]
   = sum_j B[j,l] * w[p,j,l,t]
     - alpha * sum_(q != p,j_prev,l_prev,j) B[j,l] * z[q,p,j_prev,l_prev,j,l,t]
 
-sum_(p != q) u[p,q,t] <= R_t
+sum_(p != q,j,j') a[p,q,j,j',t] <= R_t
 
-u[p,q,t] + u[q,p,t] <= 1
+sum_(j,j') a[p,q,j,j',t] + sum_(j,j') a[q,p,j,j',t] <= 1
 ```
 
 마지막 식은 2-cycle인 직접 맞교환만 금지한다. 더 긴 cycle까지 금지하려면 임시 위치를
@@ -58,18 +60,15 @@ Stage 1은 `LEXICOGRAPHIC_PRIMARY_MIP_GAP=0`으로 먼저 정확히 증명한다
 증명하지 못하면 Stage 2를 실행하지 않으므로, 미완료 incumbent를 최적 구조라고 잘못
 표현하지 않는다. `epsilon`의 기본값은 수치오차용 `1e-4`이다.
 
-Example 1에서 `gamma=0`으로 정확히 실행한 결과는 다음과 같다.
+실용적인 제한시간 실험에서는 `ALLOW_PROVISIONAL_RELOCATION_AFTER_TIME_LIMIT=True`로
+잠정 Stage 2를 선택할 수 있다. 이때 Stage 1 incumbent를 `Z_hat`으로 두고
+`C_system <= Z_hat + epsilon` 안에서 이동을 줄인다. 이 결과는
+`provisional_relocation_stage=True`, `lexicographic_optimal=False`로 기록하며, Stage 2도
+시간초과라면 이동 횟수는 `best_relocation_count`일 뿐 최솟값으로 표현하지 않는다.
 
-| 정책 | 목적값 | 물류비 | 이동 수 |
-|---|---:|---:|---:|
-| 위치 고정 | 22,910 | 9,960 | 0 |
-| Stage 1만 실행한 과거 해 | 22,514 | 9,564 | 23 |
-| 무료 이동, `R_t=2` | 22,514 | 9,564 | 6 |
-| 정확한 Stage 1→2 | 22,514 | 9,564 | **5** |
-| 다운타임 `alpha=0.25` | 22,534 | 9,584 | 10 |
-
-2단계 결과는 Stage 1 gap 0, Stage 2 gap 0으로 증명됐다. 최소 이동은 기간별로
-`3 / 1 / 1`, 총 5회다.
+초기 relocation 결과는 첫 기간을 제외한 위치별 점유 제약이 누락된 모델에서
+생성되었으므로 폐기한다. 특히 Example 1의 `22,514 / 5회` 결과는 정확한
+물리 모델의 결과로 인용하면 안 된다. 수정 후 동일 조건의 재실험이 필요하다.
 
 ordered crew slot 체증비용은 코드에 남아 있지만 향후 크루 초과근무 민감도 분석용이다.
 주 결과의 불필요한 이동 판정에는 사용하지 않는다.
@@ -93,6 +92,6 @@ network+MIR 데이터와 구현은 396을 보인다. 이 차이를 덮고 넘어
 - 기존 6개 baseline/DW 회귀검사 통과
 - relocation 및 2단계 사전식 최적화 검사 통과
 - 비용 중립 이동이 존재하는 인스턴스에서 Stage 2가 이동 0회를 선택함을 확인
-- Example 1에서 시스템 비용 22,514를 보존하면서 최소 이동 5회를 gap 0으로 증명
-- `R_t=2`에서 기간별 이동 수가 정확히 2 이하임을 실제 Example 1로 확인
+- 모든 기간의 위치별 점유 제약 추가
+- `main` 전체 이진 transition 모델에 수정 해를 고정했을 때 동일 objective로 feasible·optimal임을 확인
 - 출력: `primary_stage`, `relocation_stage`, `minimum_relocation_count`, `relocations.csv`

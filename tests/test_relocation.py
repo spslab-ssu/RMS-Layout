@@ -24,6 +24,10 @@ class RelocationPolicyTest(unittest.TestCase):
         self.assertAlmostEqual(solution.summary["primary_stage"]["objective"], 26.0)
         self.assertEqual(solution.summary["relocation_stage"]["objective"], 2.0)
         self.assertTrue(solution.summary["lexicographic_optimal"])
+        occupied = [
+            (row["period"], row["location"]) for row in solution.machine_states
+        ]
+        self.assertEqual(len(occupied), len(set(occupied)))
 
     def test_secondary_stage_removes_cost_neutral_moves(self) -> None:
         instance = _tiny_relocation_instance()
@@ -79,6 +83,12 @@ class RelocationPolicyTest(unittest.TestCase):
     def test_reverse_swap_constraint_blocks_direct_exchange(self) -> None:
         solution = _solve(FORBID_REVERSE_SWAPS=True)
         self.assertEqual(solution.summary["relocation_count"], 0)
+
+    def test_total_relocation_cap_is_enforced(self) -> None:
+        solution = _solve(MAX_TOTAL_RELOCATIONS=0)
+        self.assertEqual(solution.summary["status_name"], "OPTIMAL")
+        self.assertEqual(solution.summary["relocation_count"], 0)
+        self.assertAlmostEqual(solution.summary["objective"], 44.0)
 
     def test_convex_crew_slots_remove_the_bang_bang_move(self) -> None:
         low_friction = _solve(RELOCATION_CONGESTION_COST_STEP=1.0)

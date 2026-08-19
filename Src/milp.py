@@ -1,7 +1,9 @@
 from __future__ import annotations
 
+import csv
 from collections import defaultdict
 from dataclasses import dataclass, field
+from pathlib import Path
 from time import monotonic
 from typing import Any
 
@@ -145,6 +147,12 @@ def solve_milp(instance, config) -> RMSSolution:
             gp.quicksum(w[p, j, l, first_period] for j, l in feasible_pairs) <= 1,
             name=f"network_source[{p}]",
         )
+        if relocation_policy.enabled:
+            for t in T[1:]:
+                model.addConstr(
+                    gp.quicksum(w[p, j, l, t] for j, l in feasible_pairs) <= 1,
+                    name=f"one_machine_per_location_period[{p},{t}]",
+                )
 
     # 각 state node에서 incoming = occupancy = outgoing이 되도록 한다.
     # 이 제약으로 한 위치의 machine lifecycle이 하나의 source-sink path가 된다.
@@ -264,18 +272,33 @@ def solve_milp(instance, config) -> RMSSolution:
         if relocation_policy.downtime_fraction > 0
         else "not_applicable"
     )
+    max_total_relocations = getattr(config, "MAX_TOTAL_RELOCATIONS", None)
+    if max_total_relocations is not None:
+        max_total_relocations = int(max_total_relocations)
+        if max_total_relocations < 0:
+            raise ValueError("MAX_TOTAL_RELOCATIONS must be nonnegative or None")
     optimization_metadata: dict[str, Any] = {
         "strengthening": strengthening_metadata,
         "strengthening_profile": profile,
         "lp_relaxation": lp_relaxation,
         "relocation_policy": relocation_policy.to_dict(),
+        "maximum_total_relocations": max_total_relocations,
     }
     total_move_count = gp.quicksum(moves_by_period.values())
+    if max_total_relocations is not None:
+        model.addConstr(
+            total_move_count <= max_total_relocations,
+            name="maximum_total_relocations",
+        )
     total_resource_capacity = (
         gp.quicksum(resource_capacity[resource] for resource in resources)
         if resource_capacity is not None
         else None
     )
+    mip_start_dir = getattr(config, "MIP_START_DIR", None)
+    if mip_start_dir is not None and not lp_relaxation:
+        _apply_saved_mip_start(Path(mip_start_dir), instance, w, z, v, f)
+        optimization_metadata["mip_start_dir"] = str(mip_start_dir)
     hierarchy_metadata, primary_snapshots = _run_objective_hierarchy(
             model=model,
             config=config,
@@ -308,6 +331,66 @@ def solve_milp(instance, config) -> RMSSolution:
         moves_by_period,
         primary_snapshots,
     )
+
+
+def _apply_saved_mip_start(directory: Path, instance, w, z, v, f) -> None:
+    """Apply a saved feasible solution as a partial Gurobi MIP start."""
+    state_file = directory / "machine_states.csv"
+    flow_file = directory / "material_flows.csv"
+    if not state_file.exists() or not flow_file.exists():
+        raise FileNotFoundError(
+            f"MIP_START_DIR must contain machine_states.csv and material_flows.csv: {directory}"
+        )
+
+    for variables in (w, z, v, f):
+        for variable in variables.values():
+            variable.Start = 0.0
+
+    state_by_location_period: dict[tuple[int, int], tuple[str, int]] = {}
+    with state_file.open(newline="", encoding="utf-8") as handle:
+        for row in csv.DictReader(handle):
+            p = int(row["location"])
+            j = row["configuration"]
+            operation = int(row["operation"])
+            period = int(row["period"])
+            w[p, j, operation, period].Start = 1.0
+            v[p, operation, period].Start = float(row["flow"])
+            state_by_location_period[p, period] = (j, operation)
+
+    relocation_predecessor: dict[tuple[int, int], int] = {}
+    relocation_file = directory / "relocations.csv"
+    if relocation_file.exists():
+        with relocation_file.open(newline="", encoding="utf-8") as handle:
+            for row in csv.DictReader(handle):
+                relocation_predecessor[int(row["to_location"]), int(row["period"])] = int(
+                    row["from_location"]
+                )
+
+    for next_period in instance.periods[1:]:
+        previous_period = instance.periods[instance.periods.index(next_period) - 1]
+        for p_next in instance.install_locations:
+            p_prev = relocation_predecessor.get((p_next, next_period), p_next)
+            previous = state_by_location_period.get((p_prev, previous_period))
+            following = state_by_location_period.get((p_next, next_period))
+            if previous is None or following is None:
+                continue
+            j_prev, l_prev = previous
+            j_next, l_next = following
+            key = (p_prev, p_next, j_prev, l_prev, j_next, l_next, next_period)
+            if key in z:
+                z[key].Start = 1.0
+
+    with flow_file.open(newline="", encoding="utf-8") as handle:
+        for row in csv.DictReader(handle):
+            key = (
+                int(row["from_location"]),
+                int(row["from_operation"]),
+                int(row["to_location"]),
+                int(row["to_operation"]),
+                int(row["period"]),
+            )
+            if key in f:
+                f[key].Start = float(row["flow"])
 
 
 def _capture_variable_snapshot(
@@ -422,7 +505,14 @@ def _run_objective_hierarchy(
     metadata["primary_cost_ceiling"] = primary_value + primary_tolerance
     metadata["primary_cost_tolerance"] = primary_tolerance
 
-    if model.Status != GRB.OPTIMAL:
+    primary_proven_optimal = model.Status == GRB.OPTIMAL
+    provisional_secondary = bool(
+        relocation_secondary
+        and model.Status == GRB.TIME_LIMIT
+        and getattr(config, "ALLOW_PROVISIONAL_RELOCATION_AFTER_TIME_LIMIT", False)
+    )
+    metadata["provisional_relocation_stage"] = provisional_secondary
+    if not primary_proven_optimal and not provisional_secondary:
         metadata["secondary_skip_reason"] = (
             "primary_system_cost_not_proven_optimal"
         )
@@ -448,7 +538,9 @@ def _run_objective_hierarchy(
         relocation_stage_optimal = model.Status == GRB.OPTIMAL
         if model.SolCount:
             minimum_moves = float(total_move_count.getValue())
-            metadata["minimum_relocation_count"] = _clean_float(minimum_moves)
+            metadata["best_relocation_count"] = _clean_float(minimum_moves)
+            if relocation_stage_optimal:
+                metadata["minimum_relocation_count"] = _clean_float(minimum_moves)
             if relocation_stage_optimal and resource_requested:
                 model.addConstr(
                     total_move_count <= round(minimum_moves) + 1e-6,
@@ -565,12 +657,17 @@ def _extract_solution(
     lexicographic_optimal = all(
         stage.get("status") == GRB.OPTIMAL for stage in required_stages
     )
+    provisional_relocation_stage = bool(
+        optimization_metadata.get("provisional_relocation_stage", False)
+    )
     completed_stages = [
         stage for stage in (primary, relocation_stage, resource_stage) if stage
     ]
     final_stage = completed_stages[-1] if completed_stages else {}
     overall_status = (
-        GRB.OPTIMAL
+        GRB.TIME_LIMIT
+        if provisional_relocation_stage
+        else GRB.OPTIMAL
         if lexicographic_optimal
         else final_stage.get("status", model.Status)
     )
@@ -610,10 +707,17 @@ def _extract_solution(
             "primary_cost_tolerance": optimization_metadata.get(
                 "primary_cost_tolerance", 0.0
             ),
+            "maximum_total_relocations": optimization_metadata.get(
+                "maximum_total_relocations"
+            ),
             "minimum_relocation_count": optimization_metadata.get(
                 "minimum_relocation_count"
             ),
+            "best_relocation_count": optimization_metadata.get(
+                "best_relocation_count"
+            ),
             "lexicographic_optimal": lexicographic_optimal,
+            "provisional_relocation_stage": provisional_relocation_stage,
             "secondary_skip_reason": optimization_metadata.get(
                 "secondary_skip_reason"
             ),
@@ -633,6 +737,8 @@ def _extract_solution(
             "optimality_note": (
                 "Every requested objective priority was proven optimal."
                 if lexicographic_optimal
+                else "Relocation was minimized under a time-limited primary incumbent cost ceiling; the result is provisional."
+                if provisional_relocation_stage
                 else "At least one requested objective priority was not proven optimal."
             ),
         }

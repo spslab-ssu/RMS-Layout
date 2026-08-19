@@ -8,6 +8,7 @@ from being mixed with experimental physical-policy assumptions.
 from __future__ import annotations
 
 from dataclasses import dataclass
+from collections import defaultdict
 from math import isfinite
 from typing import Any, Mapping
 
@@ -151,31 +152,39 @@ def add_relocation_policy(
     lp_relaxation: bool,
 ) -> tuple[gp.LinExpr, gp.LinExpr, dict[int, gp.LinExpr]]:
     """Add layer-(ii) physical constraints and return relocation cost terms."""
-    direction_keys = sorted({(key[0], key[1], key[-1]) for key in move_keys})
+    if not policy.enabled:
+        return gp.LinExpr(0.0), gp.LinExpr(0.0), {
+            t: gp.LinExpr(0.0) for t in instance.periods[1:]
+        }
+
+    # A binary choice at (origin, destination, previous configuration,
+    # next configuration, period) prevents continuous detailed arcs from
+    # splitting one physical machine across multiple transitions. Operation
+    # indices remain continuous and are pinned by the binary occupied states.
+    grouped_arcs: dict[tuple[int, int, str, str, int], list[TransitionKey]] = defaultdict(list)
+    for key in z:
+        p, q, j_prev, _l_prev, j_next, _l_next, t = key
+        grouped_arcs[p, q, j_prev, j_next, t].append(key)
+    transition_keys = sorted(grouped_arcs)
     indicator_type = GRB.CONTINUOUS if lp_relaxation else GRB.BINARY
-    move_indicator = model.addVars(
-        direction_keys,
+    transition_choice = model.addVars(
+        transition_keys,
         lb=0.0,
         ub=1.0,
         vtype=indicator_type,
-        name="relocation_direction",
+        name="physical_transition_choice",
     )
-    for p, q, t in direction_keys:
+    for key in transition_keys:
         model.addConstr(
-            move_indicator[p, q, t]
-            == gp.quicksum(
-                z[key]
-                for key in move_keys
-                if key[0] == p and key[1] == q and key[-1] == t
-            ),
-            name=f"relocation_direction_link[{p},{q},{t}]",
+            transition_choice[key] == gp.quicksum(z[arc] for arc in grouped_arcs[key]),
+            name=f"physical_transition_link[{','.join(map(str, key))}]",
         )
 
     moves_by_period = {
         t: gp.quicksum(
-            move_indicator[p, q, period]
-            for p, q, period in direction_keys
-            if period == t
+            transition_choice[key]
+            for key in transition_keys
+            if key[0] != key[1] and key[-1] == t
         )
         for t in instance.periods[1:]
     }
@@ -189,14 +198,23 @@ def add_relocation_policy(
         for t in instance.periods[1:]:
             for index, p in enumerate(instance.install_locations):
                 for q in instance.install_locations[index + 1 :]:
-                    forward = move_indicator[p, q, t]
-                    reverse = move_indicator[q, p, t]
+                    forward = gp.quicksum(
+                        transition_choice[key]
+                        for key in transition_keys
+                        if key[0] == p and key[1] == q and key[-1] == t
+                    )
+                    reverse = gp.quicksum(
+                        transition_choice[key]
+                        for key in transition_keys
+                        if key[0] == q and key[1] == p and key[-1] == t
+                    )
                     model.addConstr(forward + reverse <= 1, name=f"no_reverse_swap[{p},{q},{t}]")
 
     direct_cost = gp.quicksum(
         (policy.distance_cost * instance.distance[p, q] + policy.fixed_cost)
-        * move_indicator[p, q, t]
-        for p, q, t in direction_keys
+        * transition_choice[p, q, j_prev, j_next, t]
+        for p, q, j_prev, j_next, t in transition_keys
+        if p != q
     )
 
     # Breakthrough extension: an ordered set of increasingly expensive crew
