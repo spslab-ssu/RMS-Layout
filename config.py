@@ -67,6 +67,12 @@ CAP_UPPER_BOUNDS = {
 STAGE1_TIME_LIMIT = 100
 STAGE2_TIME_LIMIT = None
 
+# variable 모드에서 2단계(ΣCap 최소화)를 수행할지 여부.
+#   True (기본) : 비용 최소화 후 ΣCap을 최소화하는 lexicographic 2단계.
+#   False       : 1단계(비용)만 단일 목적으로 푼다. Cap_r은 줄이는 압력을 안 받으므로
+#                 "비용만 최소화했을 때 Cap이 어디에 남는지"를 보는 대조군이 된다.
+MINIMIZE_SIZING = True
+
 # adaptive layout: 기간 경계에서 기계 relocation(이동) 허용 정책. (milp_adaptive에서 사용)
 #   "off"      : 위치 고정 (base와 동등)
 #   "separate" : 이동이면 config 유지, 재구성이면 제자리 (동시 금지)

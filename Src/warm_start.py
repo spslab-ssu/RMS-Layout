@@ -23,7 +23,8 @@ def apply_warm_start(model_vars: dict[str, Any], warm_start_dir: Path) -> dict[s
 
     x = model_vars["x"]
     s = model_vars["s"]
-    y = model_vars["y"]
+    # adaptive(z) 정식화에는 y가 없다. 없으면 재구성 start만 건너뛰고 나머지는 그대로 적용한다.
+    y = model_vars.get("y")
     v = model_vars["v"]
     f = model_vars["f"]
 
@@ -36,7 +37,8 @@ def apply_warm_start(model_vars: dict[str, Any], warm_start_dir: Path) -> dict[s
     state_counts = _apply_machine_states(warm_start_dir / "machine_states.csv", s, v)
     assigned["s"] += state_counts["s"]
     assigned["v"] += state_counts["v"]
-    assigned["y"] += _apply_reconfigurations(warm_start_dir / "reconfigurations.csv", y)
+    if y is not None:
+        assigned["y"] += _apply_reconfigurations(warm_start_dir / "reconfigurations.csv", y)
     assigned["f"] += _apply_material_flows(warm_start_dir / "material_flows.csv", f)
     return assigned
 

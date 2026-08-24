@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import math
 from collections import defaultdict
 from dataclasses import dataclass, field
 from typing import Any
@@ -32,6 +33,10 @@ def solve_milp(instance, config) -> RMSSolution:
     model.Params.MIPGap = config.MIP_GAP
     if hasattr(config, "OUTPUT_FLAG"):
         model.Params.OutputFlag = int(config.OUTPUT_FLAG)
+    mip_focus = getattr(config, "MIP_FOCUS", None)
+    if mip_focus is not None:
+        model.Params.MIPFocus = int(mip_focus)
+    _apply_gurobi_params(model, config)
 
     P = instance.install_locations
     J = instance.configurations
@@ -195,7 +200,7 @@ def solve_milp(instance, config) -> RMSSolution:
     # LP bound는 항상 단일 비용 목적 기준으로 측정한다(아래 multi-objective 전환 전에 계산).
     lp_relaxation_bound, lp_relaxation_seconds = _compute_lp_relaxation_bound(model, config)
 
-    if cap_vars is not None:
+    if cap_vars is not None and _minimize_sizing(config):
         # variable 모드: lexicographic 2목적 — 1순위 비용, 2순위 ΣCap_r(최소 사이징).
         model.ModelSense = GRB.MINIMIZE
         model.setObjectiveN(cost_expr, index=0, priority=1, name="cost")
@@ -381,6 +386,72 @@ def _compute_lp_relaxation_bound(model, config) -> tuple[float | None, float | N
     if relaxation.Status != GRB.OPTIMAL:
         return None, seconds
     return _clean_float(relaxation.ObjVal), seconds
+
+
+def _add_min_machine_cuts(model, instance, locations, periods, feasible_pairs, s, config) -> int:
+    """최소 기계 대수 valid cut을 추가한다 (문제를 바꾸지 않는 순수 강화).
+
+    근거: 수요식 Σ_p v_plt >= d_l^t 와 용량식 v_plt <= Σ_j s_pjlt B_jl 를 결합하면
+          Σ_{p,j} s_pjlt >= d_l^t / Bmax_l.
+    s가 이진이므로 좌변은 정수 -> 우변을 올림해도 유효하다:
+          Σ_{p,j} s_pjlt >= ceil(d_l^t / Bmax_l).
+    이 올림이 LP 완화에는 없는 정보라서 bound가 조여진다.
+    """
+    if not bool(getattr(config, "USE_MIN_MACHINE_CUTS", False)):
+        return 0
+
+    # operation별 기간 수요: 그 operation에서 나가는 route arc 수요의 합.
+    demand: dict[tuple[int, int], float] = defaultdict(float)
+    for (t, left, right), value in instance.arc_demand.items():
+        if left != instance.start_operation:
+            demand[(left, t)] += value
+
+    best_rate: dict[int, float] = defaultdict(float)
+    for (j, l), rate in instance.production_rate.items():
+        if rate > best_rate[l]:
+            best_rate[l] = rate
+
+    count = 0
+    for (l, t), required in sorted(demand.items()):
+        rate = best_rate.get(l, 0.0)
+        if required <= 0 or rate <= 0:
+            continue
+        minimum = math.ceil(required / rate - 1e-9)
+        if minimum <= 0:
+            continue
+        model.addConstr(
+            gp.quicksum(
+                s[p, j, l2, t] for p in locations for (j, l2) in feasible_pairs if l2 == l
+            )
+            >= minimum,
+            name=f"min_machines[{l},{t}]",
+        )
+        count += 1
+    return count
+
+
+def _apply_gurobi_params(model, config) -> None:
+    """config.GUROBI_PARAMS의 임의 Gurobi 파라미터를 그대로 전달한다.
+
+    실험 기록용으로 유용한 것들:
+      LogFile  : Gurobi 로그를 파일로도 남긴다(bound 궤적 보존).
+      SolFiles : 개선된 incumbent가 나올 때마다 .sol 파일로 저장한다(중간 layout 보존).
+    """
+    params = getattr(config, "GUROBI_PARAMS", None)
+    if not params:
+        return
+    for name, value in params.items():
+        model.setParam(name, value)
+
+
+def _minimize_sizing(config) -> bool:
+    """variable 모드에서 2단계(ΣCap 최소화)를 수행할지 여부.
+
+    False면 1단계(비용)만 단일 목적으로 풀고, Cap_r은 최소화 압력을 받지 않는다.
+    이때 보고되는 사이징은 "비용만 최소화했을 때 Cap이 남는 위치"이므로
+    2단계의 효과(사이징이 얼마나 줄어드는지)를 측정하는 대조군으로 쓴다.
+    """
+    return bool(getattr(config, "MINIMIZE_SIZING", True))
 
 
 def _apply_stage_time_limits(model, config) -> None:

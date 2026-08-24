@@ -7,6 +7,7 @@ import gurobipy as gp
 from gurobipy import GRB
 
 from Src.data import resource_mode
+from Src.warm_start import apply_warm_start
 from Src.milp import (
     RMSSolution,
     _clean_float,
@@ -14,6 +15,9 @@ from Src.milp import (
     _compute_lp_relaxation_bound,
     _add_shared_resource_constraints,
     _apply_stage_time_limits,
+    _minimize_sizing,
+    _add_min_machine_cuts,
+    _apply_gurobi_params,
 )
 
 
@@ -33,6 +37,11 @@ def solve_milp(instance, config) -> RMSSolution:
     model.Params.MIPGap = config.MIP_GAP
     if hasattr(config, "OUTPUT_FLAG"):
         model.Params.OutputFlag = int(config.OUTPUT_FLAG)
+    # MIPFocus=3은 탐색을 bound 개선에 집중시킨다(최적성 증명용).
+    mip_focus = getattr(config, "MIP_FOCUS", None)
+    if mip_focus is not None:
+        model.Params.MIPFocus = int(mip_focus)
+    _apply_gurobi_params(model, config)
 
     P = instance.install_locations
     J = instance.configurations
@@ -134,6 +143,10 @@ def solve_milp(instance, config) -> RMSSolution:
     # shared resource (선택; s 기반 기존 구현 재사용)
     res_mode = resource_mode(config)
     cap_ub = getattr(config, "CAP_UPPER_BOUNDS", None)
+    n_cuts = _add_min_machine_cuts(model, instance, P, T, feasible_pairs, s, config)
+    if n_cuts:
+        print(f"[cut] 최소 기계 대수 valid cut {n_cuts}개 추가")
+
     cap_vars = _add_shared_resource_constraints(model, instance, P, T, feasible_pairs, s, res_mode, cap_ub)
 
     # capacity
@@ -192,11 +205,19 @@ def solve_milp(instance, config) -> RMSSolution:
     cost_expr = purchase_cost + reconfiguration_cost + handling_cost + move_cost
     model.setObjective(cost_expr, GRB.MINIMIZE)
     lp_relaxation_bound, lp_relaxation_seconds = _compute_lp_relaxation_bound(model, config)
-    if cap_vars is not None:
+    if cap_vars is not None and _minimize_sizing(config):
         model.ModelSense = GRB.MINIMIZE
         model.setObjectiveN(cost_expr, index=0, priority=1, name="cost")
         model.setObjectiveN(gp.quicksum(cap_vars[r] for r in cap_vars), index=1, priority=0, name="sizing")
         _apply_stage_time_limits(model, config)
+
+    if bool(getattr(config, "USE_WARM_START", False)):
+        warm_start_dir = getattr(config, "WARM_START_DIR", None)
+        if warm_start_dir is None:
+            raise ValueError("USE_WARM_START=True이면 config.WARM_START_DIR를 지정해야 한다.")
+        # z 정식화에는 y가 없으므로 x/s/v/f만 넣고 나머지는 Gurobi가 보완하게 둔다.
+        assigned = apply_warm_start({"x": x, "s": s, "v": v, "f": f}, warm_start_dir)
+        print(f"Applied warm start from {warm_start_dir}: {assigned}")
 
     if bool(getattr(config, "USE_OBJECTIVE_CUTOFF", False)):
         cutoff = getattr(config, "OBJECTIVE_CUTOFF", None)
