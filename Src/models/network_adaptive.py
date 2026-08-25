@@ -50,7 +50,14 @@ def solve_milp(instance, config) -> RMSSolution:
 
     node_keys = [(p, j, l, t) for p in P for (j, l) in feasible_pairs for t in T]
     purchase_arc_keys = [(p, j, l) for p in P for (j, l) in feasible_pairs]
-    transition_arc_keys = _build_transition_arc_keys(instance, P, T, feasible_pairs)
+    max_relocation_distance = _read_max_relocation_distance(config)
+    transition_arc_keys, transition_arc_stats = _build_transition_arc_keys(
+        instance,
+        P,
+        T,
+        feasible_pairs,
+        max_relocation_distance=max_relocation_distance,
+    )
     sink_arc_keys = [(p, j, l) for p in P for (j, l) in feasible_pairs]
 
     v_keys = [(p, l, t) for p in P for l in L for t in T]
@@ -87,6 +94,8 @@ def solve_milp(instance, config) -> RMSSolution:
     )
     model._relocation_cost_per_distance = relocation_unit_cost
     model._relocation_fixed_cost = relocation_fixed_cost
+    model._max_relocation_distance = max_relocation_distance
+    model._transition_arc_stats = transition_arc_stats
     handling_cost = gp.quicksum(
         instance.parameters["material_handling_cost"] * instance.distance[p, q] * f[p, left, q, right, t]
         for p, left, q, right, t in flow_keys
@@ -121,13 +130,32 @@ def solve_milp(instance, config) -> RMSSolution:
     )
 
 
-def _build_transition_arc_keys(instance, locations, periods, feasible_pairs):
+def _read_max_relocation_distance(config) -> float | None:
+    """config의 distance limit을 읽는다. None이면 full adaptive 이동을 허용한다."""
+    value = getattr(config, "MAX_RELOCATION_DISTANCE", None)
+    if value in {None, ""}:
+        return None
+    value = float(value)
+    if value < 0:
+        raise ValueError(f"MAX_RELOCATION_DISTANCE must be nonnegative or None, got {value}")
+    return value
+
+
+def _build_transition_arc_keys(instance, locations, periods, feasible_pairs, max_relocation_distance=None):
     """period 사이 위치 이동까지 포함한 가능한 state 전이 arc를 만든다."""
     if len(periods) <= 1:
-        return []
+        return [], {
+            "max_relocation_distance": max_relocation_distance,
+            "allowed_transition_arc_count": 0,
+            "blocked_transition_arc_count": 0,
+        }
     keys = []
+    blocked = 0
     for p_prev in locations:
         for p_next in locations:
+            if max_relocation_distance is not None and instance.distance[p_prev, p_next] > max_relocation_distance:
+                blocked += _transition_pair_count(periods, feasible_pairs, instance)
+                continue
             for t in periods:
                 if t == periods[0]:
                     continue
@@ -138,7 +166,27 @@ def _build_transition_arc_keys(instance, locations, periods, feasible_pairs):
                         if (j_prev, j_next) not in instance.reconfiguration_cost:
                             continue
                         keys.append((p_prev, p_next, t, j_prev, l_prev, j_next, l_next))
-    return keys
+    return keys, {
+        "max_relocation_distance": max_relocation_distance,
+        "allowed_transition_arc_count": len(keys),
+        "blocked_transition_arc_count": blocked,
+    }
+
+
+def _transition_pair_count(periods, feasible_pairs, instance) -> int:
+    """하나의 위치쌍에서 만들 수 있는 transition arc 수를 계산한다."""
+    count = 0
+    for t in periods:
+        if t == periods[0]:
+            continue
+        for j_prev, _l_prev in feasible_pairs:
+            for j_next, _l_next in feasible_pairs:
+                if instance.machine[j_prev] != instance.machine[j_next]:
+                    continue
+                if (j_prev, j_next) not in instance.reconfiguration_cost:
+                    continue
+                count += 1
+    return count
 
 def _build_flow_keys(instance, locations, periods, route_arcs):
     """기존 base MILP와 동일한 material flow key를 만든다."""
@@ -301,6 +349,7 @@ def _extract_solution(
     }
     summary.update(_solver_metrics(model))
     summary["lp_relaxation_bound"] = lp_relaxation_bound
+    summary.update(getattr(model, "_transition_arc_stats", {}))
 
     if not model.SolCount:
         return RMSSolution(summary=summary)

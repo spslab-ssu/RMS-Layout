@@ -17,6 +17,7 @@ from Src.models.network_adaptive import solve_milp
 
 
 DEFAULT_LEVELS = "0,1,2,3,4,5,6,7,8,9,10,12,14,16,18,20,25,30,50,100"
+DEFAULT_DISTANCE_LIMITS = "none"
 DEFAULT_LOCATION_BY_PROBLEM = {
     "single_part": "layout_18",
     "multi_part": "layout_22",
@@ -29,6 +30,11 @@ def main() -> None:
     )
     parser.add_argument("--problems", nargs="+", default=["single_part", "multi_part"])
     parser.add_argument("--levels", default=DEFAULT_LEVELS, help="Comma-separated relocation distance costs.")
+    parser.add_argument(
+        "--distance-limits",
+        default=DEFAULT_DISTANCE_LIMITS,
+        help="Comma-separated relocation distance limits. Use 'none' for full adaptive.",
+    )
     parser.add_argument("--fixed-cost", type=float, default=0.0)
     parser.add_argument("--location-name", default="auto", help="'auto' uses layout_18 for single and layout_22 for multi.")
     parser.add_argument("--rmt-table-name", default="table_1")
@@ -47,6 +53,7 @@ def main() -> None:
     args = parser.parse_args()
 
     levels = _parse_levels(args.levels)
+    distance_limits = _parse_distance_limits(args.distance_limits)
     rows: list[dict[str, object]] = []
     for problem_name in args.problems:
         baseline = run_baseline(problem_name=problem_name, args=args)
@@ -57,22 +64,25 @@ def main() -> None:
             f"status={baseline.get('status_name')} obj={baseline.get('objective')}",
             flush=True,
         )
-        for level in levels:
-            row = run_case(
-                problem_name=problem_name,
-                relocation_distance_cost=level,
-                args=args,
-                baseline=baseline,
-            )
-            rows.append(row)
-            _write_rows(args.output, rows)
-            print(
-                f"{problem_name} gamma={_clean_number(level)} "
-                f"status={row.get('status_name')} obj={row.get('objective')} "
-                f"relocations={row.get('relocation_count')} "
-                f"improvement={row.get('objective_improvement')}",
-                flush=True,
-            )
+        for distance_limit in distance_limits:
+            for level in levels:
+                row = run_case(
+                    problem_name=problem_name,
+                    relocation_distance_cost=level,
+                    max_relocation_distance=distance_limit,
+                    args=args,
+                    baseline=baseline,
+                )
+                rows.append(row)
+                _write_rows(args.output, rows)
+                print(
+                    f"{problem_name} gamma={_clean_number(level)} "
+                    f"distance_limit={_format_distance_limit(distance_limit)} "
+                    f"status={row.get('status_name')} obj={row.get('objective')} "
+                    f"relocations={row.get('relocation_count')} "
+                    f"improvement={row.get('objective_improvement')}",
+                    flush=True,
+                )
 
     print(f"Wrote {len(rows)} sensitivity rows to {args.output}")
 
@@ -117,8 +127,14 @@ def run_baseline(problem_name: str, args) -> dict[str, object]:
     return row
 
 
-def run_case(problem_name: str, relocation_distance_cost: float, args, baseline: dict[str, object]) -> dict[str, object]:
-    cfg = _make_config(problem_name, relocation_distance_cost, args)
+def run_case(
+    problem_name: str,
+    relocation_distance_cost: float,
+    max_relocation_distance: float | None,
+    args,
+    baseline: dict[str, object],
+) -> dict[str, object]:
+    cfg = _make_config(problem_name, relocation_distance_cost, args, max_relocation_distance=max_relocation_distance)
     row: dict[str, object] = {
         "model_type": "network_adaptive",
         "problem_name": problem_name,
@@ -127,6 +143,7 @@ def run_case(problem_name: str, relocation_distance_cost: float, args, baseline:
         "demand_name": cfg.DEMAND_NAME,
         "relocation_cost_per_distance": _clean_number(relocation_distance_cost),
         "relocation_fixed_cost": _clean_number(args.fixed_cost),
+        "max_relocation_distance_limit": _format_distance_limit(max_relocation_distance),
         "time_limit": args.time_limit,
         "mip_gap_target": args.mip_gap,
         "network_binary_arcs": bool(args.binary_arcs),
@@ -162,6 +179,9 @@ def _add_solution_metrics(row: dict[str, object], solution) -> None:
             "num_vars": summary.get("num_vars"),
             "num_constraints": summary.get("num_constraints"),
             "node_count": summary.get("node_count"),
+            "max_relocation_distance": summary.get("max_relocation_distance"),
+            "allowed_transition_arc_count": summary.get("allowed_transition_arc_count"),
+            "blocked_transition_arc_count": summary.get("blocked_transition_arc_count"),
             "purchase_cost": costs.get("purchase_cost"),
             "reconfiguration_cost": costs.get("reconfiguration_cost"),
             "relocation_cost": costs.get("relocation_cost"),
@@ -206,7 +226,12 @@ def _add_baseline_comparison(row: dict[str, object], baseline: dict[str, object]
         row["net_saving_after_relocation"] = None
 
 
-def _make_config(problem_name: str, relocation_distance_cost: float, args) -> SimpleNamespace:
+def _make_config(
+    problem_name: str,
+    relocation_distance_cost: float,
+    args,
+    max_relocation_distance: float | None = None,
+) -> SimpleNamespace:
     cfg = SimpleNamespace(
         **{name: getattr(base_config, name) for name in dir(base_config) if name.isupper()}
     )
@@ -233,6 +258,7 @@ def _make_config(problem_name: str, relocation_distance_cost: float, args) -> Si
     cfg.NETWORK_BINARY_ARCS = bool(args.binary_arcs)
     cfg.RELOCATION_COST_PER_DISTANCE = relocation_distance_cost
     cfg.RELOCATION_FIXED_COST = args.fixed_cost
+    cfg.MAX_RELOCATION_DISTANCE = max_relocation_distance
     return cfg
 
 
@@ -269,6 +295,28 @@ def _relocation_metrics(reconfigurations: list[dict]) -> dict[str, object]:
 
 def _parse_levels(text: str) -> list[float]:
     return [float(token.strip()) for token in text.split(",") if token.strip()]
+
+
+def _parse_distance_limits(text: str) -> list[float | None]:
+    limits: list[float | None] = []
+    for token in text.split(","):
+        token = token.strip().lower()
+        if not token:
+            continue
+        if token in {"none", "null", "full"}:
+            limits.append(None)
+        else:
+            value = float(token)
+            if value < 0:
+                raise ValueError(f"distance limit must be nonnegative or none, got {token!r}")
+            limits.append(value)
+    return limits or [None]
+
+
+def _format_distance_limit(value: float | None) -> str | int | float:
+    if value is None:
+        return "none"
+    return _clean_number(value)
 
 
 def _clean_number(value: float) -> int | float:
