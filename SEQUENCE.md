@@ -62,7 +62,7 @@ Result/<problem_type>/<rmt_table>/<demand>/network_adaptive/
 ```text
 config.py
   - PROBLEM_TYPE = single_part / multi_part
-  - LOCATION_NAME = layout_18 / layout_22 / layout_26 / layout_30
+  - LOCATION_NAME = layout_18 / layout_22 / layout_23_3x7 / layout_26 / layout_30
   - RMT_TABLE_NAME = table_1 / table_2 / table_3
   - DEMAND_NAME = demand_1 / demand_2 / ...
   - 파일 경로, solver 옵션 지정
@@ -227,7 +227,7 @@ Data/shared_resources/
 
 현재 Data는 두 층으로 나뉩니다.
 
-- `Data/locations/`: 18칸/22칸/26칸/30칸 layout 좌표
+- `Data/locations/`: 18칸/22칸/23칸(3x7 세로형)/26칸/30칸 layout 좌표
 - `Data/rmt_tables/<rmt_table_name>/`: RMT configuration, production rate, resource requirement
 - `Data/parameters/`: single/multi별 모델 파라미터
 - `Data/demands/<problem_type>/`: demand scenario
@@ -587,5 +587,14 @@ Src/milp_shared_resource.py
 ```text
 relocation_cost = distance(p_prev, p_next) * RELOCATION_COST_PER_DISTANCE + RELOCATION_FIXED_COST
 ```
+
+거리 제한형 adaptive layout은 같은 모델에서 `MAX_RELOCATION_DISTANCE`만 지정해서 실행합니다.
+
+```python
+MAX_RELOCATION_DISTANCE = None  # full adaptive
+MAX_RELOCATION_DISTANCE = 2     # Manhattan distance 2 이하 이동만 허용
+```
+
+이 제한은 변수를 만든 뒤 제약으로 막는 방식이 아니라, transition arc 생성 단계에서 거리 초과 arc를 제외하는 방식입니다. 따라서 제한이 강해질수록 `allowed_transition_arc_count`는 줄고 `blocked_transition_arc_count`는 늘어납니다.
 
 기본 실행 파일은 `run_network_adaptive.py`입니다.

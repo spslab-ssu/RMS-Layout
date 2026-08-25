@@ -21,6 +21,7 @@ RMS-Layout/
 │   ├── locations/               # layout 좌표만 관리
 │   │   ├── layout_18.csv
 │   │   ├── layout_22.csv
+│   │   ├── layout_23_3x7.csv
 │   │   ├── layout_26.csv
 │   │   └── layout_30.csv
 │   ├── rmt_tables/              # RMT configuration table만 관리
@@ -433,9 +434,29 @@ python main.py
 ```python
 RELOCATION_COST_PER_DISTANCE = 100.0
 RELOCATION_FIXED_COST = 0.0
+MAX_RELOCATION_DISTANCE = None
+```
+
+`MAX_RELOCATION_DISTANCE = None`이면 모든 위치 이동을 허용하는 full adaptive model입니다. 숫자를 넣으면 period 사이 relocation arc 중 Manhattan distance가 해당 값 이하인 이동만 허용합니다.
+
+```python
+MAX_RELOCATION_DISTANCE = 2
 ```
 
 목적함수에는 기존 구매비, 재구성비, MHC에 `relocation_cost`가 추가됩니다. 결과는 `cost_breakdown.csv`, `cost_by_period.csv`, `cost_detail.csv`에서 확인할 수 있습니다.
+
+거리 제한 민감도 분석은 기존 relocation cost sensitivity 스크립트에 `--distance-limits`를 추가해서 실행합니다.
+
+```bash
+python3 experiments/relocation_cost_sensitivity.py \
+  --problems single_part \
+  --location-name layout_30 \
+  --levels 1,10,30 \
+  --distance-limits none,0,1,2,3,4 \
+  --time-limit 60 \
+  --mip-gap 0.05 \
+  --output Result/sensitivity/relocation_distance_limit_sensitivity.csv
+```
 
 ## 9. 결과 파일
 

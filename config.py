@@ -13,10 +13,10 @@ WARM_START_BASE_DIR = DATA_DIR / "warm_starts"
 
 # 실행할 문제와 입력 조합을 선택한다.
 # - PROBLEM_TYPE: "single_part" / "multi_part"
-# - LOCATION_NAME: "layout_18" / "layout_22" / "layout_26" / "layout_30"
+# - LOCATION_NAME: "layout_18" / "layout_22" / "layout_23_3x7" / "layout_26" / "layout_30"
 # - RMT_TABLE_NAME: "table_1" / "table_2"
 # - DEMAND_NAME: "demand_1" / "demand_2" / ...
-PROBLEM_TYPE = "multi_part" 
+PROBLEM_TYPE = "multi_part"
 LOCATION_NAME = "layout_22"
 RMT_TABLE_NAME = "table_1"
 DEMAND_NAME = "demand_1"
@@ -42,8 +42,12 @@ TIME_LIMIT = 300
 MIP_GAP = 0.0
 
 # Adaptive layout relocation cost. MHC 단가보다는 크고 구매비보다는 작게 둔다.
-RELOCATION_COST_PER_DISTANCE = 40.0
+RELOCATION_COST_PER_DISTANCE = 1.0
 RELOCATION_FIXED_COST = 0.0
+
+# Adaptive layout에서 period 사이 RMT 이동 가능 거리를 제한한다.
+# None이면 full adaptive처럼 모든 위치 이동을 허용하고, 숫자이면 Manhattan distance 상한으로 사용한다.
+MAX_RELOCATION_DISTANCE = None
 
 # formulation 비교용 pure LP relaxation bound를 기록할지 여부.
 # True이면 MIP solve 전에 LP relaxation을 한 번 더 풀기 때문에 실행시간이 추가된다.
