@@ -135,6 +135,12 @@ def load_instance(config) -> RMSInstance:
     if missing_ops:
         raise ValueError(f"처리 가능한 configuration이 없는 operation: {missing_ops}")
 
+    module_cost_file = getattr(config, "MODULE_COST_FILE", None)
+    module_costs = (
+        _read_module_costs(module_cost_file)
+        if module_cost_file is not None and Path(module_cost_file).exists()
+        else None
+    )
     reconfiguration_cost = _build_reconfiguration_cost(
         configurations=configurations,
         machine=machine,
@@ -142,6 +148,7 @@ def load_instance(config) -> RMSInstance:
         add_cost=params["add_module_cost"],
         remove_cost=params["remove_module_cost"],
         same_machine_only=bool(config.SAME_MACHINE_RECONFIG_ONLY),
+        module_costs=module_costs,
     )
     distance = {(p, q): _distance(locations, p, q) for p in all_locations for q in all_locations}
 
@@ -266,6 +273,19 @@ def _build_arc_demand(
     return sorted(operations), sorted(route_arcs), dict(arc_demand)
 
 
+def _read_module_costs(path: Path) -> dict[int, tuple[float, float]]:
+    """module,add_cost,remove_cost CSV를 module별 (추가단가, 제거단가) dict로 읽는다.
+
+    이 파일이 데이터셋에 있으면 재구성비를 module별 단가로 계산하고,
+    없으면 기존처럼 parameters.csv의 전역 add/remove_module_cost를 사용한다.
+    """
+    df = pd.read_csv(path)
+    return {
+        int(row.module): (float(row.add_cost), float(row.remove_cost))
+        for row in df.itertuples(index=False)
+    }
+
+
 def _build_reconfiguration_cost(
     configurations: list[str],
     machine: dict[str, str],
@@ -273,8 +293,13 @@ def _build_reconfiguration_cost(
     add_cost: float,
     remove_cost: float,
     same_machine_only: bool,
+    module_costs: dict[int, tuple[float, float]] | None = None,
 ) -> dict[tuple[str, str], float]:
-    """module 추가/제거 비용으로 r_jj'를 계산한다."""
+    """module 추가/제거 비용으로 r_jj'를 계산한다.
+
+    module_costs가 주어지면 module별 단가(예: 기계 타입마다 다른 spindle 가격)를 쓰고,
+    None이면 전역 단가 x 개수(기존 동작)로 계산한다.
+    """
     costs: dict[tuple[str, str], float] = {}
     for prev in configurations:
         for nxt in configurations:
@@ -282,7 +307,19 @@ def _build_reconfiguration_cost(
                 continue
             prev_modules = modules[prev]
             next_modules = modules[nxt]
-            costs[(prev, nxt)] = add_cost * len(next_modules - prev_modules) + remove_cost * len(prev_modules - next_modules)
+            added = next_modules - prev_modules
+            removed = prev_modules - next_modules
+            if module_costs is None:
+                costs[(prev, nxt)] = add_cost * len(added) + remove_cost * len(removed)
+            else:
+                missing = sorted(m for m in added | removed if m not in module_costs)
+                if missing:
+                    raise ValueError(
+                        f"module_costs.csv에 단가가 없는 module: {missing} ({prev} -> {nxt})"
+                    )
+                costs[(prev, nxt)] = sum(module_costs[m][0] for m in added) + sum(
+                    module_costs[m][1] for m in removed
+                )
     return costs
 
 

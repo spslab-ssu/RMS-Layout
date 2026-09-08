@@ -20,6 +20,9 @@ DEMAND_FILE = PROBLEM_DIR / "demands.csv"
 PARAMETER_FILE = PROBLEM_DIR / "parameters.csv"
 SHARED_RESOURCE_FILE = PROBLEM_DIR / "shared_resources.csv"
 RESOURCE_REQUIREMENT_FILE = PROBLEM_DIR / "resource_requirements.csv"
+# module별 재구성 단가 파일 (선택). 파일이 있으면 재구성비를 module별 단가로 계산하고,
+# 없으면 기존처럼 parameters.csv의 전역 add/remove_module_cost를 사용한다.
+MODULE_COST_FILE = PROBLEM_DIR / "module_costs.csv"
 
 TIME_LIMIT = 100
 MIP_GAP = 0.0
