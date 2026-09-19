@@ -10,6 +10,7 @@ from gurobipy import GRB
 
 from Src.warm_start import apply_warm_start
 from Src.data import resource_mode
+from Src.route_alternatives import add_route_demand_constraints, route_shares
 
 
 @dataclass
@@ -98,11 +99,13 @@ def solve_milp(instance, config) -> RMSSolution:
         purchased_at_p = gp.quicksum(x[p, j, l] for j, l in feasible_pairs)
         model.addConstr(purchased_at_p <= 1, name=f"one_rmt_per_location[{p}]")
         for t in T:
-            # 구매된 RMT는 매 period 하나의 상태를 가진다. flow=0이면 idle 상태다.
-            model.addConstr(
-                gp.quicksum(s[p, j, l, t] for j, l in feasible_pairs) == purchased_at_p,
-                name=f"one_state_if_purchased[{p},{t}]",
-            )
+            # 논문 식 (2): 한 위치의 상태 수 <= 구매 여부 (부등식). 구매된 RMT는 flow=0인 idle 상태를 갖거나
+            # 상태를 아예 갖지 않을 수 있다. STATE_EQUALS_PURCHASE=True면 등식으로 강화한다(우리 실험용 옵션).
+            state_count = gp.quicksum(s[p, j, l, t] for j, l in feasible_pairs)
+            if bool(getattr(config, "STATE_EQUALS_PURCHASE", False)):
+                model.addConstr(state_count == purchased_at_p, name=f"one_state_if_purchased[{p},{t}]")
+            else:
+                model.addConstr(state_count <= purchased_at_p, name=f"one_state_if_purchased[{p},{t}]")
 
     # 첫 period state는 구매 의사결정과 일치한다.
     for p, j, l in x_keys:
@@ -174,16 +177,8 @@ def solve_milp(instance, config) -> RMSSolution:
                 model.addConstr(gp.quicksum(f[key] for key in incoming[p, l, t]) == v[p, l, t])
                 model.addConstr(gp.quicksum(f[key] for key in outgoing[p, l, t]) == v[p, l, t])
 
-    # route arc별 총 flow는 해당 period의 집계 demand와 같아야 한다.
-    for t in T:
-        for left, right in route_arcs:
-            required = instance.arc_demand.get((t, left, right), 0.0)
-            if required <= 0:
-                continue
-            arc_flow = gp.quicksum(
-                f[key] for key in flow_keys if key[1] == left and key[3] == right and key[4] == t
-            )
-            model.addConstr(arc_flow == required, name=f"arc_demand[{t},{left},{right}]")
+    # route arc별 총 flow == 수요. 파트별 대안 라우트가 있으면 λ(배분 비율)로 솔버가 라우트를 고른다.
+    lam = add_route_demand_constraints(model, instance, flow_keys, f, force_lambda=bool(getattr(config, "FORCE_ROUTE_LAMBDA", False)))
 
     purchase_cost = gp.quicksum(instance.cost[j] * x[p, j, l] for p, j, l in x_keys)
     reconfiguration_cost = gp.quicksum(
@@ -221,7 +216,12 @@ def solve_milp(instance, config) -> RMSSolution:
 
     model.optimize()
 
-    return _extract_solution(model, instance, x, s, y, v, f, purchase_cost, reconfiguration_cost, handling_cost, lp_relaxation_bound, cap_vars, lp_relaxation_seconds)
+    solution = _extract_solution(model, instance, x, s, y, v, f, purchase_cost, reconfiguration_cost, handling_cost, lp_relaxation_bound, cap_vars, lp_relaxation_seconds)
+    if lam is not None:
+        solution.summary["num_route_alternatives"] = {part: len(r) for part, r in instance.part_routes.items()}
+        if model.SolCount:
+            solution.summary["route_shares"] = route_shares(instance, lam)
+    return solution
 
 
 def _add_shared_resource_constraints(model, instance, locations, periods, feasible_pairs, s, mode, cap_ub=None):
@@ -500,6 +500,6 @@ def _safe_model_attr(model, name: str):
         value = getattr(model, name)
     except (AttributeError, gp.GurobiError):
         return None
-    if value in {GRB.INFINITY, -GRB.INFINITY}:
-        return None
+    if value in {GRB.INFINITY, -GRB.INFINITY} or (isinstance(value, float) and math.isinf(value)):
+        return None  # incumbent가 없으면 MIPGap이 inf로 나온다
     return _clean_float(value)

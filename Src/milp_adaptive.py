@@ -49,6 +49,11 @@ def solve_milp(instance, config) -> RMSSolution:
     T = instance.periods
     feasible_pairs = instance.feasible_pairs
     route_arcs = instance.route_arcs
+    if getattr(instance, "has_route_alternatives", False):
+        raise ValueError(
+            "demands.csv에 파트별 대안 라우트(같은 part 이름의 행 여러 개)가 있습니다. "
+            "이 모델은 대안 선택을 지원하지 않으니 Src/milp_alt.py의 solve_milp를 사용하세요."
+        )
 
     mode_a = str(getattr(config, "ADAPTIVE_MODE", "separate")).lower()
     if mode_a not in {"off", "separate", "joint"}:

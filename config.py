@@ -40,6 +40,16 @@ WARM_START_DIR = PROBLEM_DIR / "warm_start_paper"
 USE_OBJECTIVE_CUTOFF = False
 OBJECTIVE_CUTOFF = None
 
+# 대안 라우트가 파트당 1개뿐이어도 λ(라우트 배분 비율) 경로로 모델을 만든다. λ≡1이라 결과는 동일해야 함(동일성 확인용).
+FORCE_ROUTE_LAMBDA = False
+
+# 재구성(configuration 변경) 허용 여부. False면 기계는 구매한 configuration을 끝까지 유지한다.
+ALLOW_RECONFIGURATION = True
+
+# 논문 식 (2)는 부등식(위치별 상태 수 <= 구매 여부). True로 두면 등식(Σs = Σx)으로 강화한다.
+# 최적값은 같고 LP relaxation만 달라진다. 기본은 논문 원형(False).
+STATE_EQUALS_PURCHASE = False
+
 # 논문 Example에서는 같은 machine type 안에서만 configuration 변경을 허용한다.
 # M1 -> M2 불가
 SAME_MACHINE_RECONFIG_ONLY = True

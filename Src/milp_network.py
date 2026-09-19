@@ -1,11 +1,16 @@
 from __future__ import annotations
 
+import math
+
 from collections import defaultdict
 from dataclasses import dataclass, field
 from typing import Any
 
 import gurobipy as gp
 from gurobipy import GRB
+
+from Src.milp import _apply_gurobi_params
+from Src.route_alternatives import add_route_demand_constraints, route_shares
 
 
 @dataclass
@@ -32,6 +37,7 @@ def solve_milp(instance, config) -> RMSSolution:
     model.Params.MIPGap = config.MIP_GAP
     if hasattr(config, "OUTPUT_FLAG"):
         model.Params.OutputFlag = int(config.OUTPUT_FLAG)
+    _apply_gurobi_params(model, config)  # GUROBI_PARAMS(Seed, LogFile 등) — base와 동일하게 전달
 
     P = instance.install_locations
     J = instance.configurations
@@ -68,7 +74,8 @@ def solve_milp(instance, config) -> RMSSolution:
     _add_network_constraints(model, P, T, feasible_pairs, w, z_purchase, z_transition, z_sink)
     _add_shared_resource_constraints(model, instance, P, T, feasible_pairs, w)
     _add_capacity_constraints(model, instance, P, L, T, feasible_by_op, w, v)
-    _add_flow_constraints(model, instance, P, L, T, route_arcs, flow_keys, v, f)
+    lam = _add_flow_constraints(model, instance, P, L, T, route_arcs, flow_keys, v, f,
+                                force_lambda=bool(getattr(config, "FORCE_ROUTE_LAMBDA", False)))
 
     purchase_cost = gp.quicksum(instance.cost[j] * z_purchase[p, j, l] for p, j, l in purchase_arc_keys)
     reconfiguration_cost = gp.quicksum(
@@ -93,7 +100,7 @@ def solve_milp(instance, config) -> RMSSolution:
 
     model.optimize()
 
-    return _extract_solution(
+    solution = _extract_solution(
         model=model,
         instance=instance,
         w=w,
@@ -106,6 +113,11 @@ def solve_milp(instance, config) -> RMSSolution:
         handling_cost=handling_cost,
         lp_relaxation_bound=lp_relaxation_bound,
     )
+    if lam is not None:
+        solution.summary["num_route_alternatives"] = {part: len(r) for part, r in instance.part_routes.items()}
+        if model.SolCount:
+            solution.summary["route_shares"] = route_shares(instance, lam)
+    return solution
 
 
 def _build_transition_arc_keys(instance, locations, periods, feasible_pairs):
@@ -221,7 +233,7 @@ def _add_capacity_constraints(model, instance, locations, operations, periods, f
                 )
 
 
-def _add_flow_constraints(model, instance, locations, operations, periods, route_arcs, flow_keys, v, f) -> None:
+def _add_flow_constraints(model, instance, locations, operations, periods, route_arcs, flow_keys, v, f, force_lambda: bool = False):
     """기존 base MILP와 동일한 flow balance와 route arc demand 제약을 추가한다."""
     incoming: dict[tuple[int, int, int], list[tuple[int, int, int, int, int]]] = defaultdict(list)
     outgoing: dict[tuple[int, int, int], list[tuple[int, int, int, int, int]]] = defaultdict(list)
@@ -238,15 +250,8 @@ def _add_flow_constraints(model, instance, locations, operations, periods, route
                 model.addConstr(gp.quicksum(f[key] for key in incoming[p, l, t]) == v[p, l, t])
                 model.addConstr(gp.quicksum(f[key] for key in outgoing[p, l, t]) == v[p, l, t])
 
-    for t in periods:
-        for left, right in route_arcs:
-            required = instance.arc_demand.get((t, left, right), 0.0)
-            if required <= 0:
-                continue
-            arc_flow = gp.quicksum(
-                f[key] for key in flow_keys if key[1] == left and key[3] == right and key[4] == t
-            )
-            model.addConstr(arc_flow == required, name=f"arc_demand[{t},{left},{right}]")
+    # route arc별 총 flow == 수요. 대안 라우트가 있으면 λ로 솔버가 라우트를 고른다 (base와 공용 헬퍼).
+    return add_route_demand_constraints(model, instance, flow_keys, f, force_lambda=force_lambda)
 
 
 def _extract_solution(
@@ -441,6 +446,6 @@ def _safe_model_attr(model, name: str):
         value = getattr(model, name)
     except (AttributeError, gp.GurobiError):
         return None
-    if value in {GRB.INFINITY, -GRB.INFINITY}:
-        return None
+    if value in {GRB.INFINITY, -GRB.INFINITY} or (isinstance(value, float) and math.isinf(value)):
+        return None  # incumbent가 없으면 MIPGap이 inf로 나온다
     return _clean_float(value)

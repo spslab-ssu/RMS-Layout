@@ -52,31 +52,33 @@ inst = load_instance(make_shim("youssef_2007", SHARED_RESOURCE_MODE="off"))
 
 check("install 위치 20개", len(inst.install_locations) == 20, f"{len(inst.install_locations)}")
 check("전체 위치 22개(start/end 포함)", len(inst.all_locations) == 22)
-check("기간 1..5", inst.periods == [1, 2, 3, 4, 5], f"{inst.periods}")
-check("operations 1..12", inst.operations == list(range(1, 13)), f"{inst.operations}")
+check("기간 1..4 (period_count=4)", inst.periods == [1, 2, 3, 4], f"{inst.periods}")
+check("operations = 단일 최적 라우트 {1,5,6,9,12,15,16,60}", inst.operations == [1, 5, 6, 9, 12, 15, 16, 60], f"{inst.operations}")
+check("대안 없음 (파트당 1행)", not inst.has_route_alternatives)
 check("configuration 9개", len(inst.configurations) == 9, f"{sorted(inst.configurations)}")
-check("feasible_pairs 56개", len(inst.feasible_pairs) == 56, f"{len(inst.feasible_pairs)}")
+check("feasible_pairs 36개", len(inst.feasible_pairs) == 36, f"{len(inst.feasible_pairs)}")
 check("공유자원 미로드", inst.shared_resource_file is None and not inst.shared_resource_capacity)
 
 # MC15 전용 op 4개 (급소)
-for op, rate in [(5, 60.0), (8, 180.0), (9, 90.0), (10, 200.0)]:
+for op, rate in [(5, 60.0), (9, 90.0), (16, 60.0)]:
     holders = [j for (j, l) in inst.feasible_pairs if l == op]
     check(f"op{op}은 MC15 전용 rate={rate:g}", holders == ["MC15"] and inst.production_rate[("MC15", op)] == rate,
           f"{holders}")
 
-# module별 재구성비 검산 (Youssef 내재 단가와 일치해야 함)
+# 재구성비 검산 — 전역 단가(add 50 / remove 25) x 모듈 개수 (module_costs.csv 비활성화 상태)
 expected = {
-    ("MC11", "MC12"): 280.0,   # 스핀들 1개 추가
-    ("MC12", "MC11"): 140.0,   # 스핀들 1개 제거
-    ("MC11", "MC15"): 150.0,   # 4축 추가
-    ("MC15", "MC11"): 75.0,    # 4축 제거
-    ("MC15", "MC14"): 915.0,   # 스핀들 3개 추가(840) + 4축 제거(75)
-    ("MC14", "MC15"): 570.0,   # 4축 추가(150) + 스핀들 3개 제거(420)
-    ("MC12", "MC15"): 290.0,   # 4축 추가(150) + 스핀들 제거(140)
-    ("MC21", "MC22"): 170.0,   # M2 스핀들 1개 추가
-    ("MC24", "MC21"): 255.0,   # M2 스핀들 3개 제거
-    ("MC11", "MC14"): 840.0,   # 스핀들 3개 추가
+    ("MC11", "MC12"): 50.0,    # 스핀들 1개 추가
+    ("MC12", "MC11"): 25.0,    # 스핀들 1개 제거
+    ("MC11", "MC15"): 50.0,    # 4축 추가
+    ("MC15", "MC11"): 25.0,    # 4축 제거
+    ("MC15", "MC14"): 175.0,   # 스핀들 3개 추가(150) + 4축 제거(25)
+    ("MC14", "MC15"): 125.0,   # 4축 추가(50) + 스핀들 3개 제거(75)
+    ("MC12", "MC15"): 75.0,    # 4축 추가(50) + 스핀들 제거(25)
+    ("MC21", "MC22"): 50.0,
+    ("MC24", "MC21"): 75.0,    # M2 스핀들 3개 제거
+    ("MC11", "MC14"): 150.0,   # 스핀들 3개 추가
 }
+check("module_costs.csv 비활성화 (fallback 사용)", not (config.DATA_DIR / "youssef_2007" / "module_costs.csv").exists())
 for pair, value in expected.items():
     actual = inst.reconfiguration_cost.get(pair)
     check(f"재구성비 {pair[0]}->{pair[1]} = {value:g}", actual == value, f"actual={actual}")
@@ -121,7 +123,11 @@ for (j, l), rate in inst.production_rate.items():
 import pandas as pd  # noqa: E402
 demand_df = pd.read_csv(config.DATA_DIR / "youssef_2007" / "demands.csv")
 op_demand: dict[tuple[int, int], float] = {}
+seen_parts: set[str] = set()
 for row in demand_df.itertuples(index=False):
+    if str(row.part) in seen_parts:  # 대안 행은 첫 행(싱글턴 라우트)만으로 보수적 하한 계산
+        continue
+    seen_parts.add(str(row.part))
     route = [int(op) for op in str(row.operation_sequence).split(">")]
     for t in inst.periods:
         d = float(getattr(row, f"period{t}"))

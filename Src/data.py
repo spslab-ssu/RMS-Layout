@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from collections import defaultdict
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 
 import pandas as pd
@@ -46,6 +46,12 @@ class RMSInstance:
     end_location: int
     start_operation: int
     end_operation: int
+
+    # 파트별 대안 라우트 (demands.csv에서 같은 part 이름의 행 여러 개 = 대안).
+    # part -> [full_route, ...] (start/end operation 포함). 대안이 1개면 기존 동작과 동일.
+    part_routes: dict[str, list[list[int]]] = field(default_factory=dict)
+    part_demand: dict[tuple[str, int], float] = field(default_factory=dict)   # (part, t) -> demand
+    has_route_alternatives: bool = False
 
 
 def resource_mode(config) -> str:
@@ -123,6 +129,13 @@ def load_instance(config) -> RMSInstance:
         start_operation=start_operation,
         end_operation=end_operation,
     )
+    part_routes, part_demand = _build_part_routes(
+        demand_df=demand_df,
+        periods=periods,
+        start_operation=start_operation,
+        end_operation=end_operation,
+    )
+    has_route_alternatives = any(len(routes) > 1 for routes in part_routes.values())
 
     feasible_pairs = sorted(
         (cfg, op)
@@ -150,6 +163,10 @@ def load_instance(config) -> RMSInstance:
         same_machine_only=bool(config.SAME_MACHINE_RECONFIG_ONLY),
         module_costs=module_costs,
     )
+    # 재구성 금지 옵션: config.ALLOW_RECONFIGURATION=False면 같은 configuration 유지(j->j)만 남긴다.
+    # base의 y 변수와 network의 config 변경 transition arc가 모두 사라진다 (op 재배정은 그대로 무료).
+    if not bool(getattr(config, "ALLOW_RECONFIGURATION", True)):
+        reconfiguration_cost = {(j1, j2): c for (j1, j2), c in reconfiguration_cost.items() if j1 == j2}
     distance = {(p, q): _distance(locations, p, q) for p in all_locations for q in all_locations}
 
     return RMSInstance(
@@ -185,6 +202,9 @@ def load_instance(config) -> RMSInstance:
         end_location=end_location,
         start_operation=start_operation,
         end_operation=end_operation,
+        part_routes=part_routes,
+        part_demand=part_demand,
+        has_route_alternatives=has_route_alternatives,
     )
 
 
@@ -271,6 +291,34 @@ def _build_arc_demand(
                 arc_demand[(t, left, right)] += demand_value
 
     return sorted(operations), sorted(route_arcs), dict(arc_demand)
+
+
+def _build_part_routes(
+    demand_df: pd.DataFrame,
+    periods: list[int],
+    start_operation: int,
+    end_operation: int,
+) -> tuple[dict[str, list[list[int]]], dict[tuple[str, int], float]]:
+    """demands.csv의 같은 part 이름 행들을 그 파트의 대안 라우트 목록으로 묶는다.
+
+    대안 행들의 period 수요는 서로 같아야 한다(파트 수요는 하나). 대안 중 어느 라우트에
+    수요를 얼마나 보낼지는 milp_alt(λ 변수)가 결정한다. base 모델은 대안이 1개일 때만 유효하다.
+    """
+    part_routes: dict[str, list[list[int]]] = defaultdict(list)
+    part_demand: dict[tuple[str, int], float] = {}
+    for row in demand_df.itertuples(index=False):
+        part = str(row.part)
+        route = [int(op) for op in str(row.operation_sequence).split(">")]
+        part_routes[part].append([start_operation] + route + [end_operation])
+        for t in periods:
+            value = float(getattr(row, f"period{t}"))
+            if (part, t) in part_demand and abs(part_demand[(part, t)] - value) > 1e-9:
+                raise ValueError(
+                    f"part {part!r}의 대안 행들의 period{t} 수요가 다릅니다 "
+                    f"({part_demand[(part, t)]} vs {value}). 대안 행은 같은 수요를 가져야 합니다."
+                )
+            part_demand[(part, t)] = value
+    return dict(part_routes), part_demand
 
 
 def _read_module_costs(path: Path) -> dict[int, tuple[float, float]]:
