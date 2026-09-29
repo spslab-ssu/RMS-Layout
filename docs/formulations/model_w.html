@@ -1,0 +1,816 @@
+<title>Adaptive Layout w 모델</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=Noto+Serif+KR:wght@400;600&display=swap">
+<style>
+  :root{
+    --ground:#f5f6f8; --panel:#ffffff; --ink:#18212e; --muted:#5c6a7a;
+    --head:#1e3a5f; --head-fg:#ffffff;
+    --note:#2563cf;
+    --chg:#c22f2f; --chg-bg:#fbeae8; --chg-line:#e2b4ae;
+    --opt:#8a5a00; --opt-bg:#fbf1da; --opt-line:#dcc089;
+    --keep-bg:#eef1f5;
+    --line:#dde2e9; --line-strong:#1e3a5f;
+    --code-bg:#f2f4f7; --code-ink:#202b3a;
+    --shadow:0 1px 2px rgba(24,33,46,.05), 0 8px 24px rgba(24,33,46,.06);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ground:#111721; --panel:#18202c; --ink:#e7ebf1; --muted:#95a3b4;
+      --head:#9fc2ea; --head-fg:#111721;
+      --note:#7fa9f0;
+      --chg:#e8776b; --chg-bg:#3a1f1c; --chg-line:#6d3a34;
+      --opt:#e0b25a; --opt-bg:#33290f; --opt-line:#6b5722;
+      --keep-bg:#222b38;
+      --line:#2a3340; --line-strong:#47566d;
+      --code-bg:#131a24; --code-ink:#d6dee8;
+      --shadow:0 1px 2px rgba(0,0,0,.35), 0 10px 28px rgba(0,0,0,.3);
+    }
+  }
+  :root[data-theme="dark"]{
+    --ground:#111721; --panel:#18202c; --ink:#e7ebf1; --muted:#95a3b4;
+    --head:#9fc2ea; --head-fg:#111721;
+    --note:#7fa9f0;
+    --chg:#e8776b; --chg-bg:#3a1f1c; --chg-line:#6d3a34;
+    --opt:#e0b25a; --opt-bg:#33290f; --opt-line:#6b5722;
+    --keep-bg:#222b38;
+    --line:#2a3340; --line-strong:#47566d;
+    --code-bg:#131a24; --code-ink:#d6dee8;
+    --shadow:0 1px 2px rgba(0,0,0,.35), 0 10px 28px rgba(0,0,0,.3);
+  }
+  *{ box-sizing:border-box; }
+  body{ background:var(--ground); color:var(--ink); }
+  .page{
+    font-family:"Noto Sans KR",-apple-system,BlinkMacSystemFont,"Segoe UI","Malgun Gothic",system-ui,sans-serif;
+    max-width:980px; margin:0 auto;
+    padding-block:clamp(22px,4vw,54px) 72px; padding-inline:clamp(16px,4vw,40px);
+    line-height:1.62; -webkit-font-smoothing:antialiased;
+  }
+  .page :is(h1,h2,h3,p,ul,ol){ margin:0; }
+  .page code{ font-family:ui-monospace,"Cascadia Code",Consolas,monospace; font-size:.9em; }
+
+  .masthead{ display:flex; flex-direction:column; gap:10px; margin-bottom:26px; }
+  .eyebrow{ font-size:.72rem; letter-spacing:.18em; text-transform:uppercase; color:var(--note); font-weight:700; }
+  .masthead h1{ font-family:"Noto Serif KR",Georgia,serif; font-size:clamp(1.55rem,4vw,2.2rem);
+    font-weight:600; letter-spacing:-.01em; line-height:1.2; color:var(--head); text-wrap:balance; }
+  .lede{ font-size:clamp(.95rem,2.2vw,1.04rem); color:var(--muted); max-width:70ch; }
+  .meta{ font-size:.79rem; color:var(--muted); }
+
+  .callout{ border-left:3px solid var(--line-strong); background:var(--panel); border-radius:0 8px 8px 0;
+    padding:13px 16px; font-size:.9rem; box-shadow:var(--shadow); }
+  .callout.warn{ border-left-color:var(--chg); }
+  .callout.opt{ border-left-color:var(--opt); }
+  .callout b{ color:var(--head); }
+  .callout.warn b{ color:var(--chg); }
+  .callout.opt b{ color:var(--opt); }
+
+  .sec{ margin-top:30px; }
+  .sec-head{ display:flex; align-items:center; gap:11px; background:var(--head); color:var(--head-fg);
+    padding:10px 16px; border-radius:8px 8px 0 0; font-weight:700; font-size:1rem; }
+  .sec-no{ font-size:.75rem; font-weight:800; color:var(--head); background:var(--head-fg);
+    width:1.5rem; height:1.5rem; display:grid; place-items:center; border-radius:5px; flex:none; }
+  .sec-body{ background:var(--panel); border:1px solid var(--line); border-top:none; border-radius:0 0 10px 10px;
+    padding:clamp(14px,2.6vw,22px); box-shadow:var(--shadow); display:flex; flex-direction:column; gap:12px; }
+  .cols{ display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:22px; }
+  .grouplabel{ font-size:.76rem; font-weight:800; letter-spacing:.1em; text-transform:uppercase;
+    color:var(--head); margin-bottom:8px; }
+
+  .deflist{ display:flex; flex-direction:column; gap:9px; }
+  .def{ display:grid; grid-template-columns:auto 1fr; gap:10px; align-items:baseline; }
+  .def.new .sym{ color:var(--chg); }
+  .sym{ font-family:"STIX Two Math","Cambria Math",Georgia,"Times New Roman",serif;
+    font-style:italic; font-size:1.02rem; white-space:nowrap; color:var(--ink); }
+  .sym .up{ font-style:normal; }
+  .sym sub,.sym sup{ font-size:.66em; }
+  .sym sub{ vertical-align:-.35em; } .sym sup{ vertical-align:.5em; }
+  .txt{ font-size:.87rem; color:var(--ink); }
+  .txt .why{ color:var(--muted); }
+  .def.new .txt{ color:var(--chg); }
+
+  .eq{ border:1px solid var(--line); border-left:4px solid var(--line); border-radius:8px;
+    background:var(--panel); overflow:hidden; }
+  .eq.new{ border-left-color:var(--chg); background:var(--chg-bg); border-color:var(--chg-line); }
+  .eq.mod{ border-left-color:var(--chg); }
+  .eq.del{ border-left-color:var(--chg); }
+  .eq.del .math{ opacity:.55; text-decoration:line-through; text-decoration-thickness:1px; }
+  .eq.opt{ border-left-color:var(--opt); background:var(--opt-bg); border-color:var(--opt-line); }
+  .eq-in{ display:flex; align-items:flex-start; gap:12px; padding:11px 14px; flex-wrap:wrap; }
+  .tag{ flex:none; font-family:ui-monospace,Consolas,monospace; font-size:.75rem; font-weight:800;
+    color:var(--head); background:var(--keep-bg); border-radius:6px; padding:3px 9px; margin-top:3px; white-space:nowrap; }
+  .eq.new .tag,.eq.mod .tag,.eq.del .tag{ color:var(--chg); background:var(--chg-bg); }
+  .eq.new .tag{ background:var(--panel); }
+  .eq.opt .tag{ color:var(--opt); background:var(--panel); }
+  .eq-main{ flex:1 1 260px; min-width:0; display:flex; flex-direction:column; gap:4px; }
+  .math{ font-family:"STIX Two Math","Cambria Math",Georgia,"Times New Roman",serif;
+    font-size:1.03rem; font-style:italic; line-height:1.95; overflow-x:auto; white-space:nowrap; padding-bottom:2px; }
+  .math .up{ font-style:normal; }
+  .math sub,.math sup{ font-size:.64em; }
+  .math sub{ vertical-align:-.38em; } .math sup{ vertical-align:.52em; }
+  .math .red{ color:var(--chg); font-weight:600; }
+  .math .pol{ font-style:normal; font-family:ui-monospace,Consolas,monospace; font-size:.7rem; font-weight:800;
+    color:var(--head); background:var(--keep-bg); border-radius:4px; padding:1px 7px; margin-right:9px; }
+  .ann{ font-size:.85rem; color:var(--note); }
+  .ann .why{ color:var(--muted); }
+  .chg{ font-size:.85rem; color:var(--chg); font-weight:600; }
+  .eq.opt .chg{ color:var(--opt); }
+
+  .tbl-wrap{ overflow-x:auto; }
+  table.t{ width:100%; border-collapse:collapse; font-size:.86rem; }
+  table.t th,table.t td{ padding:8px 12px; border-bottom:1px solid var(--line); text-align:left; vertical-align:top; }
+  table.t thead th{ border-bottom:1.5px solid var(--line-strong); font-weight:700; white-space:nowrap; }
+  table.t td.n{ font-variant-numeric:tabular-nums; white-space:nowrap; }
+  table.t td .why{ color:var(--muted); }
+
+  .legend{ display:flex; flex-wrap:wrap; gap:8px 15px; }
+  .legend span{ display:inline-flex; align-items:center; gap:6px; font-size:.8rem; color:var(--muted); font-weight:600; }
+  .chip{ display:inline-block; font-size:.68rem; font-weight:800; letter-spacing:.05em;
+    border-radius:999px; padding:2px 10px; white-space:nowrap; }
+  .chip.keep{ color:var(--muted); background:var(--keep-bg); }
+  .chip.new{ color:var(--chg); background:var(--chg-bg); }
+  .chip.del{ color:var(--head-fg); background:var(--chg); }
+  .chip.opt{ color:var(--opt); background:var(--opt-bg); }
+
+  .tex{ display:flex; align-items:stretch; border-top:1px dashed var(--line); margin-top:7px; }
+  .tex button{ flex:none; border:none; cursor:pointer; font:inherit; font-size:.69rem; font-weight:700;
+    color:var(--head); background:var(--keep-bg); padding:0 11px; letter-spacing:.03em; white-space:nowrap; }
+  .eq.new .tex button,.eq.mod .tex button,.eq.del .tex button{ color:var(--chg); background:var(--chg-bg); }
+  .eq.opt .tex button{ color:var(--opt); background:var(--opt-bg); }
+  .tex button:hover{ filter:brightness(.95); }
+  .tex button:focus-visible{ outline:2px solid var(--head); outline-offset:-2px; }
+  .tex code{ flex:1 1 auto; display:block; font-family:ui-monospace,"Cascadia Code",Consolas,monospace;
+    font-size:.74rem; color:var(--code-ink); background:var(--code-bg);
+    padding:8px 11px; white-space:pre; overflow-x:auto; min-width:0; line-height:1.55; }
+  .bulk{ border:1px solid var(--line); border-radius:8px; overflow:hidden; }
+  .bulk-head{ display:flex; align-items:center; justify-content:space-between; gap:10px;
+    background:var(--keep-bg); padding:8px 13px; font-size:.8rem; font-weight:700; color:var(--head); }
+  .bulk-head button{ border:none; cursor:pointer; font:inherit; font-size:.72rem; font-weight:700;
+    color:var(--head-fg); background:var(--head); border-radius:5px; padding:4px 12px; }
+  .bulk pre{ margin:0; background:var(--code-bg); color:var(--code-ink); padding:12px 13px;
+    font-family:ui-monospace,"Cascadia Code",Consolas,monospace; font-size:.73rem; line-height:1.6;
+    white-space:pre; overflow-x:auto; }
+  footer.foot{ margin-top:38px; padding-top:14px; border-top:1px solid var(--line);
+    font-size:.78rem; color:var(--muted); display:flex; flex-wrap:wrap; gap:6px 18px; }
+</style>
+
+  <!-- LINEAGE-CSS -->
+  <style>
+    .lin{ display:flex; flex-direction:column; gap:10px; }
+    .lin-item{ font-size:.87rem; border-left:2px solid var(--line); padding:2px 0 2px 12px; }
+    .lin-item b{ color:var(--head); }
+    .lin-item .why{ color:var(--muted); }
+    .lin-map{ font-family:"STIX Two Math","Cambria Math",Georgia,"Times New Roman",serif;
+      font-style:italic; font-size:1.02rem; line-height:2.1; overflow-x:auto; white-space:nowrap;
+      background:var(--code-bg); border-radius:7px; padding:9px 13px; margin-top:8px; }
+    .lin-map .up{ font-style:normal; }
+    .lin-map sub{ font-size:.66em; vertical-align:-.35em; }
+  </style>
+  <!-- /LINEAGE-CSS -->
+
+<main class="page">
+  <header class="masthead">
+    <p class="eyebrow">RMS Dynamic Layout · Adaptive Extension</p>
+    <h1>w 모델 — 이동 이진변수 정식화</h1>
+    <p class="lede">Saffar et al. (2025)의 MILP에 기계 이동(relocation)을 더하되, 논문의 변수
+      <span class="sym">x</span>, <span class="sym">s</span>, <span class="sym">y</span>를 <b>전부 그대로 두고</b>
+      이동 이진변수 <span class="sym">w<sub>kpjt</sub></span> 하나만 추가한다.
+      논문에서 삭제되는 식은 (2) 단 하나다.</p>
+    <div class="legend">
+      <span><span class="chip keep">유지</span> 논문 그대로</span>
+      <span><span class="chip del">삭제</span> (2) 하나만</span>
+      <span><span class="chip new">신규·수정</span> adaptive에서 추가</span>
+      <span><span class="chip opt">선택</span> LP 강화용</span>
+    </div>
+    <p class="meta">구현 <code>scratchpad/saffar_w_adaptive.py</code> · 원문 대조 Saffar et al., IJPR 63(17), 식 (1)–(16)</p>
+  </header>
+
+  <div class="callout"><b>z 모델과의 핵심 차이.</b> z는 (이동 × 재구성) 조합마다 전이 arc를 하나씩 만들고,
+    기계가 <b>그냥 머무를 때도</b> arc 변수가 필요하다. w는 이동과 재구성을 <b>곱이 아니라 합</b>으로 표현하고,
+    머무는 데는 변수가 들지 않는다 — 논문 식 (5)의 유지항이 받쳐 주기 때문이다.
+    그래서 같은 인스턴스에서 전이변수가 60,000개 대 14,340개로 갈린다. LP relaxation bound는 소수점까지 같다.</div>
+
+  <!-- 1 -->
+  <section class="sec">
+    <div class="sec-head"><span class="sec-no">1</span> Sets · Indices · Input Parameters</div>
+    <div class="sec-body">
+      <div class="cols">
+        <div>
+          <p class="grouplabel">Sets</p>
+          <div class="deflist">
+            <div class="def"><span class="sym">P</span><span class="txt">RMT를 설치할 수 있는 모든 위치의 집합</span></div>
+            <div class="def"><span class="sym">J</span><span class="txt">가능한 모든 RMT configuration의 집합</span></div>
+            <div class="def"><span class="sym">L</span><span class="txt">필요한 모든 생산 공정(operation)의 집합</span></div>
+            <div class="def"><span class="sym">T</span><span class="txt">생산 기간의 집합</span></div>
+            <div class="def new"><span class="sym">F <span class="up">⊆</span> J <span class="up">×</span> L</span><span class="txt">수행 가능한 (configuration, operation) 쌍의 집합 <span class="why">(B<sub>jl</sub>가 정의된 조합)</span></span></div>
+            <div class="def new"><span class="sym">R <span class="up">⊆</span> J <span class="up">×</span> J</span><span class="txt">재구성이 가능한 (j′, j) 쌍의 집합 <span class="why">(j′ ≠ j, 동일 machine type 내)</span></span></div>
+            <div class="def"><span class="sym">L<sub>j</sub></span><span class="txt">configuration j가 수행할 수 있는 operation의 집합 <span class="why">= { l : (j, l) ∈ F }</span></span></div>
+          </div>
+
+          <p class="grouplabel" style="margin-top:18px">Indices</p>
+          <div class="deflist">
+            <div class="def"><span class="sym">p <span class="up">∈</span> P</span><span class="txt">RMT 위치 (이동의 도착지)</span></div>
+            <div class="def new"><span class="sym">k <span class="up">∈</span> P</span><span class="txt">이동(relocation)의 출발 위치</span></div>
+            <div class="def"><span class="sym">p′ <span class="up">∈</span> P</span><span class="txt">자재 흐름의 상대 위치</span></div>
+            <div class="def"><span class="sym">j, j′ <span class="up">∈</span> J</span><span class="txt">RMT configuration <span class="why">(j′ = 직전 기간의 configuration)</span></span></div>
+            <div class="def"><span class="sym">l, l′ <span class="up">∈</span> L</span><span class="txt">생산 공정(operation)</span></div>
+            <div class="def"><span class="sym">t <span class="up">∈</span> T</span><span class="txt">생산 기간</span></div>
+          </div>
+
+          <p class="grouplabel" style="margin-top:18px">약식 기호 <span style="font-weight:500;text-transform:none;letter-spacing:0;color:var(--muted)">(변수가 아니라 표기 줄임)</span></p>
+          <div class="deflist">
+            <div class="def"><span class="sym">σ<sub>pjt</sub></span><span class="txt">= <span class="sym">∑<sub>l∈L<sub>j</sub></sub> s<sub>pjlt</sub></span> — 위치 p에 config j 기계가 있으면 1</span></div>
+            <div class="def"><span class="sym">Win<sub>pjt</sub></span><span class="txt">= <span class="sym">∑<sub>k≠p</sub> w<sub>kpjt</sub></span> — config j를 달고 p로 들어온 이동</span></div>
+            <div class="def"><span class="sym">Wout<sub>pjt</sub></span><span class="txt">= <span class="sym">∑<sub>q≠p</sub> w<sub>pqjt</sub></span> — config j를 달고 p에서 나간 이동</span></div>
+            <div class="def"><span class="sym">Yin<sub>pjlt</sub></span><span class="txt">= <span class="sym">∑<sub>j′</sub> y<sub>pj′jlt</sub></span> — 다른 config에서 (j, l)로 재구성</span></div>
+            <div class="def"><span class="sym">Yout<sub>pjt</sub></span><span class="txt">= <span class="sym">∑<sub>j″,l</sub> y<sub>pjj″lt</sub></span> — config j에서 다른 config로 재구성</span></div>
+          </div>
+        </div>
+
+        <div>
+          <p class="grouplabel">Input Parameters</p>
+          <div class="deflist">
+            <div class="def"><span class="sym">X<sub>p</sub>, Y<sub>p</sub></span><span class="txt">위치 p의 x좌표, y좌표</span></div>
+            <div class="def"><span class="sym">C<sub>j</sub></span><span class="txt">configuration j를 가진 RMT 구매비용</span></div>
+            <div class="def"><span class="sym">d<sub>l</sub><sup>t</sup></span><span class="txt">period t에서 operation l에 필요한 수요 또는 처리량</span></div>
+            <div class="def"><span class="sym"><span class="up">MHC</span></span><span class="txt">제품 1단위를 거리 1만큼 이동시키는 material handling cost</span></div>
+            <div class="def"><span class="sym">B<sub>jl</sub></span><span class="txt">configuration j의 RMT가 operation l을 수행할 때의 최대 생산능력</span></div>
+            <div class="def"><span class="sym">r<sub>j′j</sub></span><span class="txt">RMT configuration을 j′에서 j로 변경하는 비용</span></div>
+            <div class="def"><span class="sym">q<sub>ll′t</sub></span><span class="txt">period t에서 operation l이 l′의 직접 선행공정이면 1, 아니면 0</span></div>
+            <div class="def"><span class="sym">D<sub>pp′</sub></span><span class="txt">위치 p와 p′ 사이의 Manhattan distance, |X<sub>p</sub> − X<sub>p′</sub>| + |Y<sub>p</sub> − Y<sub>p′</sub>|</span></div>
+            <div class="def new"><span class="sym">α, β <span class="up">≥</span> 0</span><span class="txt">이동비 계수. 기계 1대의 이동비 = C<sub>j</sub>(α + β·D<sub>kp</sub>) <span class="why">(α: 거리 무관 고정비, β: 거리 비례비)</span></span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2 -->
+  <section class="sec">
+    <div class="sec-head"><span class="sec-no">2</span> Decision variables</div>
+    <div class="sec-body">
+      <div class="eq">
+        <div class="eq-in"><span class="tag">유지</span><div class="eq-main">
+          <div class="math">x<sub>pjl</sub> <span class="up">∈ {</span>0, 1<span class="up">}</span></div>
+          <div class="ann">위치 p에 configuration j인 RMT를 구매/설치하고 operation l에 배정하면 1
+            <span class="why">— 기간 인덱스가 없으므로 구매는 1기에만 일어난다.</span></div>
+        
+          <div class="tex"><button type="button">LaTeX 복사</button><code>x_{pjl} \in \{0,1\} \quad \forall p \in P,\ (j,l) \in F</code></div>
+        </div></div>
+      </div>
+      <div class="eq">
+        <div class="eq-in"><span class="tag">유지</span><div class="eq-main">
+          <div class="math">s<sub>pjlt</sub> <span class="up">∈ {</span>0, 1<span class="up">}</span></div>
+          <div class="ann">period t에 위치 p의 RMT가 configuration j로 operation l을 수행하면 1</div>
+        
+          <div class="tex"><button type="button">LaTeX 복사</button><code>s_{pjlt} \in \{0,1\} \quad \forall p \in P,\ (j,l) \in F,\ t \in T</code></div>
+        </div></div>
+      </div>
+      <div class="eq">
+        <div class="eq-in"><span class="tag">유지</span><div class="eq-main">
+          <div class="math">y<sub>pj′jlt</sub> <span class="up">∈ {</span>0, 1<span class="up">}</span>,   (j′, j) <span class="up">∈</span> R,  t <span class="up">≠</span> 1</div>
+          <div class="ann">period t 시작 시 위치 p의 RMT가 configuration j′에서 j로 재구성되고 operation l을 수행하면 1
+            <span class="why">— 논문 그대로. 단 joint 정책에서 p는 "그 기계가 기간 t에 놓여 있는 슬롯(= 도착지)"으로 읽는다.</span></div>
+        
+          <div class="tex"><button type="button">LaTeX 복사</button><code>y_{pj'jlt} \in \{0,1\} \quad \forall p \in P,\ (j',j) \in R,\ l \in L_j,\ t \in T \setminus \{1\}</code></div>
+        </div></div>
+      </div>
+      <div class="eq new">
+        <div class="eq-in"><span class="tag">신규</span><div class="eq-main">
+          <div class="math"><span class="red">w<sub>kpjt</sub> <span class="up">∈ {</span>0, 1<span class="up">}</span>,   k, p <span class="up">∈</span> P,  k <span class="up">≠</span> p,  j <span class="up">∈</span> J,  t <span class="up">≠</span> 1</span></div>
+          <div class="chg">유일한 신규 변수 — 기간 t−1에 위치 k에서 configuration j였던 기계가, configuration j를 단 채로 기간 t에 위치 p로 이동하면 1.</div>
+          <div class="ann">인덱스 j는 항상 <b>출발 시점(운반 중) configuration</b>이다. operation 인덱스는 없다 —
+            도착 후 어떤 operation을 할지는 s가 정하고, 같은 configuration 안의 operation 변경은 논문처럼 무료다.</div>
+          <div class="ann why"><b>머무는 데는 변수가 들지 않는다.</b> 기계가 제자리에 있으면 w도 y도 켜지 않는다.
+            변수는 "변화가 일어날 때만" 생긴다 — 이동하면 w, 재구성하면 y, 동시면 둘 다.</div>
+        
+          <div class="tex"><button type="button">LaTeX 복사</button><code>w_{kpjt} \in \{0,1\} \quad \forall k,p \in P,\ k \neq p,\ j \in J,\ t \in T \setminus \{1\}
+% 기간 t 시작 시점에 위치 k 의 config j 기계가 위치 p 로 이동하면 1</code></div>
+        </div></div>
+      </div>
+      <div class="eq">
+        <div class="eq-in"><span class="tag">유지</span><div class="eq-main">
+          <div class="math">v<sub>plt</sub> <span class="up">≥</span> 0,   v′<sub>plp′l′t</sub> <span class="up">≥</span> 0</div>
+          <div class="ann">v: period t에 위치 p에서 operation l을 수행하는 RMT의 총 input(=output) flow ·
+            v′: period t에 (p, l) RMT에서 (p′, l′) RMT로 이동하는 material flow</div>
+        
+          <div class="tex"><button type="button">LaTeX 복사</button><code>v_{plt} \ge 0,\qquad v'_{plp'l't} \ge 0 \quad \forall p,p' \in P,\ l,l' \in L,\ t \in T</code></div>
+        </div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3 -->
+  <section class="sec">
+    <div class="sec-head"><span class="sec-no">3</span> Objective function</div>
+    <div class="sec-body">
+      <div class="eq mod">
+        <div class="eq-in"><span class="tag">(1′)</span><div class="eq-main">
+          <div class="math"><span class="up">min</span>  <span class="up">∑</span><sub>p∈P</sub> <span class="up">∑</span><sub>j∈J</sub> <span class="up">∑</span><sub>l∈L</sub> C<sub>j</sub> x<sub>pjl</sub></div>
+          <div class="math">    <span class="up">+</span> <span class="up">∑</span><sub>t∈T\{1}</sub> <span class="up">∑</span><sub>p∈P</sub> <span class="up">∑</span><sub>(j′,j)∈R</sub> <span class="up">∑</span><sub>l∈L<sub>j</sub></sub> r<sub>j′j</sub> y<sub>pj′jlt</sub></div>
+          <div class="math">    <span class="up">+</span> <span class="red"><span class="up">∑</span><sub>t∈T\{1}</sub> <span class="up">∑</span><sub>k∈P</sub> <span class="up">∑</span><sub>p∈P, p≠k</sub> <span class="up">∑</span><sub>j∈J</sub> C<sub>j</sub><span class="up">(</span>α <span class="up">+</span> β D<sub>kp</sub><span class="up">)</span> w<sub>kpjt</sub></span></div>
+          <div class="math">    <span class="up">+</span> <span class="up">∑</span><sub>t∈T</sub> <span class="up">∑</span><sub>p∈P</sub> <span class="up">∑</span><sub>l∈L</sub> <span class="up">∑</span><sub>p′∈P</sub> <span class="up">∑</span><sub>l′∈L</sub> v′<sub>plp′l′t</sub> D<sub>pp′</sub> <span class="up">MHC</span></div>
+          <div class="chg">이동비 항 하나만 추가. 구매비 · 재구성비(y) · 자재취급비 항은 논문 그대로.</div>
+          <div class="ann why"><b>이중계상 경로가 없다.</b> joint에서 "이동 + 재구성" 한 건은
+            w<sub>kpj′t</sub> 1개와 y<sub>pj′jlt</sub> 1개로 표현되어 r<sub>j′j</sub> + C<sub>j′</sub>(α + βD<sub>kp</sub>)를
+            각각 정확히 한 번 지불한다. w를 도착 configuration으로도 인덱싱하지 않기 때문이다.
+            같은 config 안의 operation 변경과 제자리 유지는 변수가 없으므로 비용 0이다.</div>
+        
+          <div class="tex"><button type="button">LaTeX 복사</button><code>\min\ \sum_{p \in P}\sum_{j \in J}\sum_{l \in L} C_j\, x_{pjl}
+\;+\; \sum_{t \in T \setminus \{1\}}\sum_{p \in P}\sum_{(j',j) \in R}\sum_{l \in L_j} r_{j'j}\, y_{pj'jlt}
+\;+\; \sum_{t \in T \setminus \{1\}}\sum_{k \in P}\sum_{\substack{p \in P \\ p \neq k}}\sum_{j \in J} C_j\bigl(\alpha + \beta D_{kp}\bigr) w_{kpjt}
+\;+\; \sum_{t \in T}\sum_{p \in P}\sum_{l \in L}\sum_{p' \in P}\sum_{l' \in L} v'_{plp'l't}\, D_{pp'}\, \mathrm{MHC}
+\tag{1'}</code></div>
+        </div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4 -->
+  <section class="sec">
+    <div class="sec-head"><span class="sec-no">4</span> Subject to — machine layer</div>
+    <div class="sec-body">
+      <p class="ann" style="color:var(--muted)">t ≥ 2 제약은 ∀t ∈ T \ {1}. 정책(separate / joint)에 따라 갈리는 두 식은 함께 표시했다.</p>
+
+      <div class="eq del">
+        <div class="eq-in"><span class="tag">(2)</span><div class="eq-main">
+          <div class="math">s<sub>pjlt</sub> <span class="up">≤</span> <span class="up">∑</span><sub>j′∈J</sub> <span class="up">∑</span><sub>l′∈L</sub> x<sub>pj′l′</sub>   <span class="up">∀</span>p, j, l, t</div>
+          <div class="chg">삭제 → (19)가 대체. <b>논문에서 삭제되는 식은 이것 하나뿐이다.</b></div>
+          <div class="ann why">x에 기간 인덱스가 없어 (2)는 기계를 구매한 위치에 영구 결박한다 — 위치 고정(robust) 가정의 본체다.</div>
+        
+          <div class="tex"><button type="button">LaTeX 복사</button><code>% 삭제 — 이 식이 기계를 구매 위치에 영구 결박한다
+s_{pjlt} \le \sum_{j' \in J}\sum_{l' \in L} x_{pj'l'}
+\quad \forall p \in P,\ j \in J,\ l \in L,\ t \in T \tag{2}</code></div>
+        </div></div>
+      </div>
+
+      <div class="eq">
+        <div class="eq-in"><span class="tag">(3)</span><div class="eq-main">
+          <div class="math"><span class="up">∑</span><sub>j∈J</sub> <span class="up">∑</span><sub>l∈L</sub> s<sub>pjlt</sub> <span class="up">≤</span> 1   <span class="up">∀</span>p <span class="up">∈</span> P, t <span class="up">∈</span> T</div>
+          <div class="ann">한 위치의 RMT는 한 period에 하나의 configuration과 하나의 operation만 가진다.
+            <span class="why">adaptive에서는 "이미 찬 슬롯으로의 이동"과 "한 슬롯에 두 대 도착"을 막는 유일한 식이 된다.</span></div>
+        
+          <div class="tex"><button type="button">LaTeX 복사</button><code>\sum_{(j,l) \in F} s_{pjlt} \le 1 \quad \forall p \in P,\ t \in T \tag{3}</code></div>
+        </div></div>
+      </div>
+
+      <div class="eq">
+        <div class="eq-in"><span class="tag">(3′)</span><div class="eq-main">
+          <div class="math"><span class="up">∑</span><sub>(j,l)∈F</sub> x<sub>pjl</sub> <span class="up">≤</span> 1   <span class="up">∀</span>p <span class="up">∈</span> P</div>
+          <div class="ann">위치당 최대 1대 구매. <span class="why">(3)과 (4′)가 함의하지만 구현에서는 명시한다.</span></div>
+        
+          <div class="tex"><button type="button">LaTeX 복사</button><code>\sum_{(j,l) \in F} x_{pjl} \le 1 \quad \forall p \in P \tag{3'}</code></div>
+        </div></div>
+      </div>
+
+      <div class="eq mod">
+        <div class="eq-in"><span class="tag">(4′)</span><div class="eq-main">
+          <div class="math"><span class="red">s<sub>pjl,1</sub> <span class="up">=</span> x<sub>pjl</sub></span>   <span class="up">∀</span>p <span class="up">∈</span> P, j <span class="up">∈</span> J, l <span class="up">∈</span> L</div>
+          <div class="chg">논문 (4) 부등식을 <b>등식으로 강화</b> — 필수.</div>
+          <div class="ann why">(2)를 삭제하면 t = 1에 구매 없이 s = 1이 되는 <b>유령 기계</b>를 막을 유일한 앵커가 이 식이다.</div>
+        
+          <div class="tex"><button type="button">LaTeX 복사</button><code>s_{pjl1} = x_{pjl} \quad \forall p \in P,\ (j,l) \in F \tag{4'}</code></div>
+        </div></div>
+      </div>
+
+      <div class="eq mod">
+        <div class="eq-in"><span class="tag">(20)</span><div class="eq-main">
+          <div class="math">s<sub>pjlt</sub> <span class="up">≤</span> <span class="up">∑</span><sub>l′∈L<sub>j</sub></sub> s<sub>pjl′(t−1)</sub> <span class="up">+</span> <span class="up">∑</span><sub>j′</sub> y<sub>pj′jlt</sub> <span class="red"><span class="up">+</span> Win<sub>pjt</sub></span>   <span class="up">∀</span>p, (j,l) <span class="up">∈</span> F, t <span class="up">≠</span> 1</div>
+          <div class="chg">논문 (5)에 <b>이동 유입항 하나만</b> 추가.</div>
+          <div class="ann">상태의 출처 세 가지: ① 같은 configuration 유지 ② 제자리 재구성
+            <span style="color:var(--chg);font-weight:600">③ 다른 위치에서 이동해 옴</span>.
+            <span class="why">① 항이 있기 때문에 "그냥 머무름"에는 변수가 필요 없다.</span></div>
+        
+          <div class="tex"><button type="button">LaTeX 복사</button><code>s_{pjlt} \;\le\; \sum_{l' \in L_j} s_{pjl'(t-1)} \;+\; \sum_{j' :\, (j',j) \in R} y_{pj'jlt} \;+\; W^{\mathrm{in}}_{pjt}
+\quad \forall p \in P,\ (j,l) \in F,\ t \in T \setminus \{1\} \tag{20}</code></div>
+        </div></div>
+      </div>
+
+      <div class="eq">
+        <div class="eq-in"><span class="tag">(6)</span><div class="eq-main">
+          <div class="math"><span class="up">∑</span><sub>j′∈J</sub> y<sub>pj′jlt</sub> <span class="up">≤</span> s<sub>pjlt</sub>   <span class="up">∀</span>p, (j,l) <span class="up">∈</span> F, t <span class="up">≠</span> 1</div>
+          <div class="ann">재구성되면 결과 상태 변수도 1 — 논문 그대로.
+            <span class="why">joint에서 "도착 후 재구성"의 목적 상태가 실제 상태와 일치하도록 묶는 역할도 한다.</span></div>
+        
+          <div class="tex"><button type="button">LaTeX 복사</button><code>\sum_{j' :\, (j',j) \in R} y_{pj'jlt} \;\le\; s_{pjlt}
+\quad \forall p \in P,\ (j,l) \in F,\ t \in T \setminus \{1\} \tag{6}</code></div>
+        </div></div>
+      </div>
+
+      <div class="eq mod">
+        <div class="eq-in"><span class="tag">(7)/(7′)</span><div class="eq-main">
+          <div class="math"><span class="pol">separate</span>y<sub>pj′jlt</sub> <span class="up">≤</span> σ<sub>pj′(t−1)</sub></div>
+          <div class="math"><span class="pol">joint</span>y<sub>pj′jlt</sub> <span class="up">≤</span> σ<sub>pj′(t−1)</sub> <span class="red"><span class="up">+</span> Win<sub>pj′t</sub></span>   <span class="up">∀</span>(p, j′, j, l), t <span class="up">≠</span> 1</div>
+          <div class="chg">separate는 논문 (7) 그대로. joint만 이동 유입항 추가.</div>
+          <div class="ann">재구성의 전제가 되는 configuration j′는 "직전에 p에 있던 기계"의 것이거나,
+            joint에서는 <span style="color:var(--chg);font-weight:600">"j′를 달고 방금 p로 들어온 기계"</span>의 것이다.</div>
+        
+          <div class="tex"><button type="button">LaTeX 복사</button><code>% separate (이동 XOR 재구성)
+y_{pj'jlt} \;\le\; \sigma_{pj'(t-1)} \tag{7}
+% joint (이동 + 재구성 동시)
+y_{pj'jlt} \;\le\; \sigma_{pj'(t-1)} + W^{\mathrm{in}}_{pj't}
+\quad \forall p \in P,\ (j',j) \in R,\ l \in L_j,\ t \in T \setminus \{1\} \tag{7'}</code></div>
+        </div></div>
+      </div>
+
+      <div class="eq new">
+        <div class="eq-in"><span class="tag">(18a)</span><div class="eq-main">
+          <div class="math"><span class="pol">separate</span><span class="red">Win<sub>pjt</sub> <span class="up">≤</span> σ<sub>pjt</sub></span>   <span class="up">∀</span>p, j, t <span class="up">≠</span> 1</div>
+          <div class="math"><span class="pol">joint</span><span class="red">Win<sub>pj′t</sub> <span class="up">≤</span> σ<sub>pj′t</sub> <span class="up">+</span> Yout<sub>pj′t</sub></span>   <span class="up">∀</span>p, j′, t <span class="up">≠</span> 1</div>
+          <div class="chg">도착 등록 — configuration j로 들어온 기계는 도착지에서 configuration j 상태여야 한다 (separate: 이동 중 재구성 금지).
+            joint는 "j′를 유지하거나, 도착지에서 j′ → j로 재구성된다".</div>
+          <div class="ann why"><b>이 식이 빠지면 모델이 깨진다.</b> (20)의 유지항 σ<sub>pj(t−1)</sub>은 떠난 기계를 빼지 않은 gross 형태라,
+            p의 기계가 떠나고 다른 기계가 들어왔는데도 "떠난 기계의 configuration"으로 현재 상태를 정당화할 수 있다.
+            두 기계가 자리를 맞바꾸는 것만으로 machine type을 넘나드는 무료 변신이 가능해진다.</div>
+        
+          <div class="tex"><button type="button">LaTeX 복사</button><code>% separate
+W^{\mathrm{in}}_{pjt} \;\le\; \sigma_{pjt} \tag{18a}
+% joint
+W^{\mathrm{in}}_{pjt} \;\le\; \sigma_{pjt} + Y^{\mathrm{out}}_{pjt}
+\quad \forall p \in P,\ j \in J,\ t \in T \setminus \{1\} \tag{18a'}</code></div>
+        </div></div>
+      </div>
+
+      <div class="eq new">
+        <div class="eq-in"><span class="tag">(18b)</span><div class="eq-main">
+          <div class="math"><span class="red"><span class="up">∑</span><sub>q∈P, q≠k</sub> w<sub>kqjt</sub> <span class="up">≤</span> σ<sub>kj(t−1)</sub></span>   <span class="up">∀</span>k <span class="up">∈</span> P, j <span class="up">∈</span> J, t <span class="up">≠</span> 1</div>
+          <div class="chg">출발 조건 — 직전 기간에 위치 k에 configuration j 기계가 실제로 있어야 하고, 한 기계는 최대 한 곳으로만 떠난다.</div>
+          <div class="ann why">반드시 <b>도착지에 대한 합산형</b>이어야 한다. 개별형 w<sub>kpjt</sub> ≤ σ<sub>kj(t−1)</sub>로 쓰면
+            joint에서 한 기계가 두 곳으로 복제되는 해가 통과한다.</div>
+        
+          <div class="tex"><button type="button">LaTeX 복사</button><code>W^{\mathrm{out}}_{pjt} \;=\; \sum_{\substack{q \in P \\ q \neq p}} w_{pqjt} \;\le\; \sigma_{pj(t-1)}
+\quad \forall p \in P,\ j \in J,\ t \in T \setminus \{1\} \tag{18b}</code></div>
+        </div></div>
+      </div>
+
+      <div class="eq new">
+        <div class="eq-in"><span class="tag">(19)</span><div class="eq-main">
+          <div class="math"><span class="red"><span class="up">∑</span><sub>(j,l)∈F</sub> s<sub>pjlt</sub> <span class="up">−</span> <span class="up">∑</span><sub>(j,l)∈F</sub> s<sub>pjl(t−1)</sub> <span class="up">=</span> <span class="up">∑</span><sub>j∈J</sub> Win<sub>pjt</sub> <span class="up">−</span> <span class="up">∑</span><sub>j∈J</sub> Wout<sub>pjt</sub></span>   <span class="up">∀</span>p <span class="up">∈</span> P, t <span class="up">≠</span> 1</div>
+          <div class="chg">기계 보존 — 위치 p의 점유 변화 = 들어온 이동 − 나간 이동. 논문 (2)의 역할을 넘겨받는다.</div>
+          <div class="ann why">p에 대해 합하면 각 w가 +1과 −1로 한 번씩 나타나 상쇄되므로 매 기간 기계 수 = 구매 수가 된다.
+            두 기계가 자리를 맞바꾸는 swap은 점유 변화 0 = 유입 1 − 유출 1로 그대로 허용된다.
+            <b>등식</b>이므로 기계의 폐기는 불가능하다 — 유휴 기계도 매 기간 슬롯을 점유하고, 비켜주려면 이동비를 낸다.</div>
+        
+          <div class="tex"><button type="button">LaTeX 복사</button><code>\sum_{(j,l) \in F} s_{pjlt} \;-\; \sum_{(j,l) \in F} s_{pjl(t-1)}
+\;=\; \sum_{j \in J} W^{\mathrm{in}}_{pjt} \;-\; \sum_{j \in J} W^{\mathrm{out}}_{pjt}
+\quad \forall p \in P,\ t \in T \setminus \{1\} \tag{19}</code></div>
+        </div></div>
+      </div>
+
+      <div class="eq mod">
+        <div class="eq-in"><span class="tag">(16′)</span><div class="eq-main">
+          <div class="math">x<sub>pjl</sub>, s<sub>pjlt</sub>, y<sub>pj′jlt</sub> <span class="up">∈ {</span>0,1<span class="up">}</span>,  <span class="red">w<sub>kpjt</sub> <span class="up">∈ {</span>0,1<span class="up">}</span></span></div>
+          <div class="chg">w의 도메인만 추가.</div>
+        
+          <div class="tex"><button type="button">LaTeX 복사</button><code>x_{pjl},\ s_{pjlt},\ y_{pj'jlt},\ w_{kpjt} \in \{0,1\} \tag{16'}</code></div>
+        </div></div>
+      </div>
+
+      <div class="callout warn"><b>넣으면 안 되는 식.</b> "도착 슬롯이 t−1에 비어 있어야 한다"
+        (w<sub>kpjt</sub> ≤ 1 − 점유<sub>p,t−1</sub>) 류는 swap과 연쇄 이동을 금지해 가능영역을 좁힌다.
+        (19)를 ≤ 로 바꾸면 기계 폐기를 허용하는 <b>다른 문제</b>가 된다.</div>
+    </div>
+  </section>
+
+  <!-- 5 -->
+  <section class="sec">
+    <div class="sec-head"><span class="sec-no">5</span> Subject to — flow layer (논문 그대로)</div>
+    <div class="sec-body">
+      <p class="ann" style="color:var(--muted)">기계층만 바꾸고 흐름층과 capacity 제약은 논문 (8)–(15)를 그대로 쓴다.
+        이 부분이 z 모델 · network 모델과도 공통이라 정식화 간 등가성 검증이 쉬워진다.</p>
+      <div class="eq">
+        <div class="eq-in"><span class="tag">(8)</span><div class="eq-main">
+          <div class="math">v<sub>plt</sub> <span class="up">≤</span> <span class="up">∑</span><sub>j∈J</sub> s<sub>pjlt</sub> B<sub>jl</sub>   <span class="up">∀</span>p, l, t</div>
+          <div class="ann">처리량은 배치된 RMT의 최대 생산능력 이하. <span class="why">기계층과 흐름층을 잇는 유일한 제약.</span></div>
+        
+          <div class="tex"><button type="button">LaTeX 복사</button><code>v_{plt} \le \sum_{j \in J} s_{pjlt}\, B_{jl} \quad \forall p \in P,\ l \in L,\ t \in T \tag{8}</code></div>
+        </div></div>
+      </div>
+      <div class="eq">
+        <div class="eq-in"><span class="tag">(9)</span><div class="eq-main">
+          <div class="math"><span class="up">∑</span><sub>p∈P</sub> v<sub>plt</sub> <span class="up">≥</span> d<sub>l</sub><sup>t</sup>   <span class="up">∀</span>l, t</div>
+          <div class="ann">period t에서 operation l의 총 수요 만족</div>
+        
+          <div class="tex"><button type="button">LaTeX 복사</button><code>\sum_{p \in P} v_{plt} \ge d_l^{\,t} \quad \forall l \in L,\ t \in T \tag{9}</code></div>
+        </div></div>
+      </div>
+      <div class="eq">
+        <div class="eq-in"><span class="tag">(10)(11)</span><div class="eq-main">
+          <div class="math">v′<sub>plp′l′t</sub> <span class="up">≤</span> v<sub>plt</sub> q<sub>ll′t</sub>,  v′<sub>plp′l′t</sub> <span class="up">≤</span> v<sub>p′l′t</sub> q<sub>ll′t</sub></div>
+          <div class="ann">선후행 관계 flow 제약 — 연속 공정 사이에만 흐름 허용</div>
+        
+          <div class="tex"><button type="button">LaTeX 복사</button><code>v'_{plp'l't} \le v_{plt}\, q_{ll't}, \qquad v'_{plp'l't} \le v_{p'l't}\, q_{ll't}
+\quad \forall p,p' \in P,\ l,l' \in L,\ t \in T \tag{10, 11}</code></div>
+        </div></div>
+      </div>
+      <div class="eq">
+        <div class="eq-in"><span class="tag">(12)–(14)</span><div class="eq-main">
+          <div class="math"><span class="up">∑</span><sub>p′,l′</sub> v′<sub>plp′l′t</sub> <span class="up">=</span> <span class="up">∑</span><sub>p′,l′</sub> v′<sub>p′l′plt</sub> <span class="up">=</span> v<sub>plt</sub></div>
+          <div class="ann">flow 균형 — 들어오는 flow = 처리량 = 나가는 flow. 더미 start/end로 경계 처리.</div>
+        
+          <div class="tex"><button type="button">LaTeX 복사</button><code>\sum_{p' \in P}\sum_{l' \in L} v'_{plp'l't} \;=\; \sum_{p' \in P}\sum_{l' \in L} v'_{p'l'plt} \;=\; v_{plt}
+\quad \forall p \in P,\ l \in L,\ t \in T \tag{12-14}</code></div>
+        </div></div>
+      </div>
+      <div class="eq">
+        <div class="eq-in"><span class="tag">(15)</span><div class="eq-main">
+          <div class="math">v<sub>plt</sub>, v′<sub>plp′l′t</sub> <span class="up">≥</span> 0</div>
+          <div class="ann">flow 비음수</div>
+        
+          <div class="tex"><button type="button">LaTeX 복사</button><code>v_{plt} \ge 0,\qquad v'_{plp'l't} \ge 0 \quad \forall p,p' \in P,\ l,l' \in L,\ t \in T \tag{15}</code></div>
+        </div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6 -->
+  <section class="sec">
+    <div class="sec-head"><span class="sec-no">6</span> 이동 정책과 선택적 강화식</div>
+    <div class="sec-body">
+      <div class="tbl-wrap">
+        <table class="t">
+          <thead><tr><th>정책</th><th>구성</th><th>의미</th></tr></thead>
+          <tbody>
+            <tr><td><b>off</b></td><td>w를 생성하지 않음</td><td>위치 고정. 논문 원형과 동등(재구성만 가능)</td></tr>
+            <tr><td><b>separate</b></td><td>(7) 원형 + (18a) 원형</td><td>이동과 재구성 <b>동시 금지</b>. 이동하면 config 유지</td></tr>
+            <tr><td><b>joint</b></td><td>(7′) + (18a′) — 항 하나씩 추가</td><td>이동 + 재구성 <b>동시 허용</b></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="callout"><b>정책 차이가 제약 두 개의 항 하나씩이다.</b> 변수 집합은 세 정책이 완전히 같다.
+        중첩 관계 off ⊂ separate ⊂ joint 이므로 최적값은 off ≥ separate ≥ joint 순서를 만족한다.</div>
+
+      <div class="eq opt">
+        <div class="eq-in"><span class="tag">(S)</span><div class="eq-main">
+          <div class="math">σ<sub>pjt</sub> <span class="up">=</span> σ<sub>pj(t−1)</sub> <span class="up">−</span> Wout<sub>pjt</sub> <span class="up">+</span> Win<sub>pjt</sub> <span class="up">−</span> Yout<sub>pjt</sub> <span class="up">+</span> <span class="up">∑</span><sub>l∈L<sub>j</sub></sub> Yin<sub>pjlt</sub>   <span class="up">∀</span>p, j, t <span class="up">≠</span> 1</div>
+          <div class="chg">선택 — configuration 단위 기계 보존 등식. <b>새 변수 없이</b> s, y, w만으로 쓴다. 최적해를 자르지 않는다.</div>
+          <div class="ann">(19)는 이 식을 j에 대해 합한 것이다. (S)를 넣으면 LP relaxation이 크게 강해진다.
+            <span class="why">넣지 않은 순수 부등식판은 최적값은 같지만 완화가 약하다 — multi_part에서 약 11% 낮은 bound.</span></div>
+          <div class="ann why"><b>발표 시 제안</b>: "모형"은 4절의 논문식 부등식으로 제시하고,
+            (S)는 "모형에서 유도되는 유효 등식(강화식)"으로 층을 나눠 보이면
+            논문과의 거리와 계산 성능을 함께 지킬 수 있다.</div>
+        
+          <div class="tex"><button type="button">LaTeX 복사</button><code>\sigma_{pjt} \;=\; \sigma_{pj(t-1)} \;-\; W^{\mathrm{out}}_{pjt} \;+\; W^{\mathrm{in}}_{pjt}
+\;-\; Y^{\mathrm{out}}_{pjt} \;+\; \sum_{l \in L_j} Y^{\mathrm{in}}_{pjlt}
+\quad \forall p \in P,\ j \in J,\ t \in T \setminus \{1\} \tag{S}</code></div>
+        </div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7 -->
+  <section class="sec">
+    <div class="sec-head"><span class="sec-no">7</span> 변경 요약과 모델 크기</div>
+    <div class="sec-body">
+      <div class="tbl-wrap">
+        <table class="t">
+          <thead><tr><th>논문</th><th>상태</th><th>w 모델</th></tr></thead>
+          <tbody>
+            <tr><td>변수 x, s, y</td><td><span class="chip keep">유지</span></td><td>전부 그대로</td></tr>
+            <tr><td>목적 (1)</td><td><span class="chip new">수정</span></td><td>이동비 항 C<sub>j</sub>(α+βD) 추가</td></tr>
+            <tr><td>(2) 상태–구매 귀속</td><td><span class="chip del">삭제</span></td><td>(19) 기계 보존 등식이 대체 — <b>유일한 삭제</b></td></tr>
+            <tr><td>(3) 점유 ≤ 1</td><td><span class="chip keep">유지</span></td><td>그대로</td></tr>
+            <tr><td>(4) 초기 상태</td><td><span class="chip new">수정</span></td><td>등식으로 강화 — t=1 유령 기계 방지 앵커</td></tr>
+            <tr><td>(5) 상태 전이</td><td><span class="chip new">수정</span></td><td>(20) 이동 유입항 Win 추가</td></tr>
+            <tr><td>(6) y 연결</td><td><span class="chip keep">유지</span></td><td>그대로</td></tr>
+            <tr><td>(7) y 전제조건</td><td><span class="chip keep">유지</span> / <span class="chip new">수정</span></td><td>separate는 그대로, joint만 Win 추가</td></tr>
+            <tr><td>(8)–(15) 능력 · 수요 · flow</td><td><span class="chip keep">유지</span></td><td>변경 없음</td></tr>
+            <tr><td>(16) 도메인</td><td><span class="chip new">수정</span></td><td>w 이진 추가</td></tr>
+            <tr><td>—</td><td><span class="chip new">신규</span></td><td>인덱스 k, 파라미터 α · β, 변수 w, 제약 (18a)(18b)(19)</td></tr>
+            <tr><td>—</td><td><span class="chip opt">선택</span></td><td>(S) config 단위 보존 등식 (LP 강화)</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="ann" style="margin-top:2px">삭제 1개 · 수정 4개(joint는 5개) · 신규 3개 · 신규 변수 1개.</p>
+
+      <p class="grouplabel" style="margin-top:12px">정식화 3종 비교 (Saffar Example 2 = multi_part, 20위치 · 4기간 · joint · 이동비 0 · 600초)</p>
+      <div class="tbl-wrap">
+        <table class="t">
+          <thead><tr><th>정식화</th><th>전이변수</th><th>총 변수</th><th>이진</th><th>제약</th><th>LP bound</th><th>gap</th></tr></thead>
+          <tbody>
+            <tr><td>network (source–sink 경로)</td><td class="n">115,200</td><td class="n">123,600</td><td class="n">2,000</td><td class="n">4,528</td><td class="n">33,841.704881</td><td class="n">3.70%</td></tr>
+            <tr><td>z (통합 전이)</td><td class="n">60,000</td><td class="n">68,000</td><td class="n">2,000</td><td class="n">3,588</td><td class="n">33,841.704881</td><td class="n">2.04%</td></tr>
+            <tr><td><b>w (이동 이진)</b></td><td class="n"><b>14,340</b><br><span class="why">w 12,540 + y 1,800</span></td><td class="n"><b>22,340</b></td><td class="n">16,340</td><td class="n">7,968</td><td class="n">33,841.704881</td><td class="n"><b>1.87%</b></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="callout"><b>세 정식화의 LP relaxation bound가 소수점까지 같다.</b> 완화 강도로는 우열이 없고
+        차이는 모델 크기와 분기탐색 거동에서만 난다. w는 network의 1/5.5 크기이면서 같은 시간의 bound가 가장 강했다.
+        <span class="why">단, 속도 우열은 seed 1회 측정이라 확정된 주장이 아니다.</span></div>
+      <div class="callout warn"><b>이동과 재구성을 곱하지 않고 더한다.</b> z는 (이동 × 재구성) 조합마다 arc가 필요해
+        "동시 전이" arc만 34,200개를 쓰고, 기계가 그냥 머무는 경우에도 arc 1,200개를 쓴다.
+        w는 이동 12,540 + 재구성 1,800을 각각 켤 뿐이고 머무름에는 변수를 쓰지 않는다 — 이것이 크기 차이의 원인이다.</div>
+    </div>
+  </section>
+
+  <!-- LINEAGE -->
+  <section class="sec">
+    <div class="sec-head"><span class="sec-no">8</span> 이 모델은 어떤 방법에 가까운가</div>
+    <div class="sec-body">
+
+      <div class="callout"><b>한 줄 답 &mdash; 동적 설비배치문제(DFLP, Dynamic Facility Layout Problem)의 표준 MIP
+        이동 구조를 Saffar의 RMS 모형 위에 그대로 얹은 것이다.</b>
+        DFLP의 세 부품 &mdash; <i>기간별 배치 이진변수</i>, <i>기간 경계의 재배치 이진변수</i>, <i>보존식</i> &mdash; 이
+        여기서는 각각 <span class="sym">s<sub>pjlt</sub></span>, <span class="sym">w<sub>kpjt</sub></span>, 식 (19)에 대응한다.
+        DFLP의 "부서(department)" 자리를 "configuration을 달고 있는 RMT"가 대신한다.</div>
+
+      <div class="grouplabel">계보 분해</div>
+      <div class="tbl-wrap">
+        <table class="t">
+          <thead><tr><th>구성 요소</th><th>출처 계보</th><th>w 모델에서</th></tr></thead>
+          <tbody>
+            <tr><td>기간별 배치 이진 + 재배치 이진 + 보존식</td>
+                <td><b>DFLP</b><br><span class="why">Rosenblatt 1986; Balakrishnan &amp; Cheng 1998</span></td>
+                <td><span class="sym">s</span>, <span class="sym">w</span> · 식 (18b)(19)(20)</td></tr>
+            <tr><td>기계 구매 + configuration 재구성 + 능력 제약</td>
+                <td><b>RMS 구성선택</b><br><span class="why">Youssef &amp; ElMaraghy 2007; Saffar et al. 2025</span></td>
+                <td><span class="sym">x</span>, <span class="sym">y</span> · 식 (8)</td></tr>
+            <tr><td>flow 변수로 자재취급비를 선형화</td>
+                <td><b>Saffar et al. 2025</b><br><span class="why">식 (8)&ndash;(15)</span></td>
+                <td><span class="sym">v</span>, <span class="sym">v&prime;</span> &mdash; 손대지 않음</td></tr>
+            <tr><td>기간 간 기계 재배치를 균형식으로 기술</td>
+                <td><b>동적 셀 형성</b><br><span class="why">Chen 1998; Defersha &amp; Chen 2006</span></td>
+                <td>식 (19) &mdash; 셀 대신 <i>위치</i> 단위</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="ann why">서지사항(권&middot;호&middot;면)은 인용 전 원문에서 확인할 것. 여기서는 계보를 가리키는 용도로만 적었다.</div>
+
+      <div class="grouplabel" style="margin-top:6px">고전 DFLP와 다른 점 &mdash; 세 가지</div>
+      <div class="lin">
+        <div class="lin-item"><b>① 배치할 개체의 수가 결정변수다.</b>
+          고전 DFLP는 부서 n개를 위치 n개에 배정하는 QAP형이라 개체 수가 고정이다.
+          여기서는 구매 <span class="sym">x</span>가 살아 있어 <b>"옮긴다"와 "한 대 더 산다"가 서로 경쟁</b>한다.
+          그래서 식 (3)이 부등식(&le;&nbsp;1)이고 위치는 비어 있어도 된다.
+          <span class="why">이 경쟁이 캠페인 실험에서 관측된 "정적 레이아웃의 우회로 &mdash; 싼 기계 한 대 더 사기"의 정체다.</span></div>
+        <div class="lin-item"><b>② 흐름비용이 이미 선형이다.</b>
+          고전 DFLP는 (흐름 &times; 거리)가 배정변수의 곱으로 들어가는 이차식이라 선형화가 필요하다.
+          Saffar 모형은 <span class="sym">v&prime;<sub>plp&prime;l&prime;t</sub></span>가 흐름을 직접 들고 있어 MHC 항이 처음부터 선형이다.
+          <b>DFLP의 선형화 기법을 가져올 필요가 없다.</b></div>
+        <div class="lin-item"><b>③ 옮기는 개체의 정체성이 변한다.</b>
+          DFLP의 부서는 옮겨도 그대로지만, RMT는 <b>옮기면서 동시에 재구성</b>될 수 있다.
+          이 결합을 담당하는 것이 (7&prime;)과 (18a&prime;)이고, DFLP 문헌에는 대응물이 없다.
+          <span class="why">결합을 끊으면 separate 정책 &mdash; (7)과 (18a) &mdash; 로 내려가고, 그때는 DFLP + 재구성의 단순 합이 된다.</span></div>
+      </div>
+
+      <div class="grouplabel" style="margin-top:6px">MILP 용어로 &mdash; z 모델과의 관계</div>
+      <div class="tbl-wrap">
+        <table class="t">
+          <thead><tr><th></th><th>z 모델 (network)</th><th>w 모델</th></tr></thead>
+          <tbody>
+            <tr><td>정식화 유형</td>
+                <td><b>extended (arc-based) formulation</b><br><span class="why">전이마다 변수 하나 &mdash; 네트워크 흐름형</span></td>
+                <td><b>compact formulation</b><br><span class="why">이동&middot;재구성을 따로 세고 균형식으로 묶음</span></td></tr>
+            <tr><td>보존식의 성격</td>
+                <td>완전 보존 등식 (R1)(R2)<br><span class="why">기계 한 대 단위</span></td>
+                <td>재고균형식 (19)<br><span class="why">위치별 점유 대수 &mdash; lot-sizing 재고식과 같은 꼴</span></td></tr>
+            <tr><td>전이변수 지수</td><td class="n">6 &mdash; (k, p, j&prime;, j, l, t)</td><td class="n">4 &mdash; (k, p, j, t)</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout"><b>w와 y는 z의 사영(projection)이다.</b>
+        <div class="lin-map">
+          w<sub>kpjt</sub> <span class="up">=</span> <span class="up">∑</span><sub>j″∈J</sub> <span class="up">∑</span><sub>l∈L</sub> z<sub>kpjj″lt</sub>  <span class="up">(k ≠ p)</span>
+          &nbsp;&nbsp;&nbsp;&nbsp;
+          y<sub>pj′jlt</sub> <span class="up">=</span> <span class="up">∑</span><sub>k∈P</sub> z<sub>kpj′jlt</sub>
+        </div>
+        <div style="margin-top:8px"><b>w는 도착 config와 operation을 합산해 없앤 것</b>이고,
+          <b>y는 출발 위치를 합산해 없앤 것</b>이다.
+          w의 지수 <span class="sym">j</span>가 z의 <span class="sym">j&prime;</span>(출발 config) 자리에 들어간다는 점에 주목할 것 &mdash;
+          그래서 이동비 기준가가 z는 <span class="sym">C<sub>j&prime;</sub></span>, w는 <span class="sym">C<sub>j</sub></span>로
+          표기가 달라도 <b>같은 configuration을 가리킨다.</b> 두 모델의 이동비는 정합한다.</div></div>
+
+      <div class="callout warn"><b>보통 compact는 extended보다 LP bound가 약한데, 여기서는 같았다.</b>
+        multi_part에서 두 모델의 LP relaxation이 소수점까지 일치했다
+        (이동비 0 &rarr; 33,841.704881 / 이동비 거리당 1 &rarr; 33,845.87855).
+        집계가 수송(transportation) 구조 위에서 이뤄져 사영이 손실 없이 작동하는 것으로 보이지만,
+        <b>이는 두 인스턴스에서의 실측이지 일반 정리로 증명한 것이 아니다.</b>
+        <span class="why">정수 최적값이 같다는 것도 Youssef 인스턴스에서 두 모델이 모두 17,500을 최적으로 증명한 것
+        (z 119초 / w 86초)이 현재까지의 근거다. multi_part는 10분 안에 양쪽 다 최적 증명이 되지 않아 incumbent만 비교했다.</span></div>
+
+      <div class="grouplabel" style="margin-top:6px">아닌 것들 &mdash; 오해 방지</div>
+      <div class="lin">
+        <div class="lin-item"><b>network / path 정식화가 아니다.</b>
+          source&ndash;sink 노드도, 기계 한 대의 경로를 추적하는 변수도 없다.
+          w는 "이 기간에 이 슬롯에서 저 슬롯으로 한 번 옮김"만 센다.</div>
+        <div class="lin-item"><b>QAP가 아니다.</b> 이차항이 없고 배정 등식(<span class="sym">∑<sub>p</sub></span> = 1)도 없다.
+          점유는 부등식 (3)이라 빈 슬롯이 허용된다.</div>
+        <div class="lin-item"><b>2단계 분해가 아니다.</b> 구매&middot;재구성&middot;이동&middot;흐름을 한 번에 푸는 단일 MILP다.</div>
+      </div>
+
+      <div class="grouplabel" style="margin-top:6px">참고문헌</div>
+      <div class="lin">
+        <div class="lin-item">Rosenblatt, M. J. (1986). The dynamics of plant layout. <i>Management Science</i>, 32(1), 76&ndash;86.
+          <span class="why">DFLP를 동적계획으로 정식화한 원점.</span></div>
+        <div class="lin-item">Balakrishnan, J., &amp; Cheng, C. H. (1998). Dynamic layout algorithms: a state-of-the-art survey.
+          <i>Omega</i>, 26(4), 507&ndash;521. <span class="why">재배치 이진변수 + 보존식 형태의 표준 MIP 정리.</span></div>
+        <div class="lin-item">Defersha, F. M., &amp; Chen, M. (2006). A comprehensive mathematical model for the design of
+          cellular manufacturing systems. <i>International Journal of Production Economics</i>, 103(2), 767&ndash;783.
+          <span class="why">기간 간 기계 재배치를 균형식으로 쓰는 동적 셀 형성 계보.</span></div>
+        <div class="lin-item">Youssef, A. M. A., &amp; ElMaraghy, H. A. (2007). Optimal configuration selection for
+          reconfigurable manufacturing systems. <i>International Journal of Flexible Manufacturing Systems</i>, 19(2), 67&ndash;106.
+          <span class="why">본 연구의 데이터 출처이자 RMS 구성선택 계보.</span></div>
+        <div class="lin-item">Saffar, M., Moghaddam, S. K., &amp; Huang, S. (2025). <i>International Journal of Production Research</i>, 63(17).
+          <span class="why">확장 대상인 원형 모형. 식 (1)&ndash;(16).</span></div>
+      </div>
+
+    </div>
+  </section>
+  <!-- /LINEAGE -->
+
+  <!-- BULK -->
+  <section class="sec">
+    <div class="sec-head"><span class="sec-no">∑</span> 전체 LaTeX</div>
+    <div class="sec-body">
+      <div class="bulk">
+        <div class="bulk-head"><span>w 정식화 전체 — amsmath align 환경</span><button type="button">전체 복사</button></div>
+        <pre>% ============================================================
+%  Adaptive Layout — w 정식화 (Saffar 원형 + 이동 이진변수)
+%  Saffar, Moghaddam &amp; Huang (2025) IJPR 63(17) 식 (1)-(16) 확장
+%  요구: \usepackage{amsmath, amssymb}
+% ============================================================
+
+% ---- Sets ----
+% P : 설치 가능 위치(슬롯),  p, k, q, p' ∈ P
+% J : configuration,         j, j'      ∈ J
+% L : operation,             l, l'      ∈ L
+% L_j ⊆ L : config j 가 수행 가능한 operation
+% T : period,                t          ∈ T
+% F ⊆ J × L : (config, op) 실행 가능 쌍
+% R ⊆ J × J : 같은 기계 안에서 가능한 재구성 쌍 (j' → j)
+
+% ---- Parameters ----
+% C_j, r_{j'j}, B_{jl}, d_l^t, q_{ll't}, D_{pp'}, MHC, α, β  (z 모델과 동일)
+%   이동비 = C_j (α + β D_{kp}),  j = 운반 중 configuration
+
+% ---- 표기 약속 (집계 기호) ----
+% σ_{pjt}        = Σ_{l ∈ L_j} s_{pjlt}              위치 p 가 기간 t 에 config j 를 달고 있으면 1
+% W^in_{pjt}     = Σ_{k ≠ p} w_{kpjt}                config j 를 달고 p 로 들어온 이동
+% W^out_{pjt}    = Σ_{q ≠ p} w_{pqjt}                config j 를 달고 p 에서 나간 이동
+% Y^in_{pjlt}    = Σ_{j' : (j',j) ∈ R} y_{pj'jlt}    p 에서 j 로 재구성되어 들어옴
+% Y^out_{pjt}    = Σ_{(j'',l) : (j,j'') ∈ R} y_{pjj''lt}   p 에서 j 로부터 재구성되어 나감
+
+\begin{align}
+% ---------- Objective ----------
+\min\ &amp; \sum_{p \in P}\sum_{j \in J}\sum_{l \in L} C_j\, x_{pjl}
+ + \sum_{t \in T \setminus \{1\}}\sum_{p \in P}\sum_{(j',j) \in R}\sum_{l \in L_j} r_{j'j}\, y_{pj'jlt} \notag \\
+ &amp; + \sum_{t \in T \setminus \{1\}}\sum_{k \in P}\sum_{\substack{p \in P \\ p \neq k}}\sum_{j \in J} C_j\bigl(\alpha + \beta D_{kp}\bigr) w_{kpjt} \notag \\
+ &amp; + \sum_{t \in T}\sum_{p \in P}\sum_{l \in L}\sum_{p' \in P}\sum_{l' \in L} v'_{plp'l't}\, D_{pp'}\, \mathrm{MHC} \tag{1'} \\
+% ---------- machine layer ----------
+\text{s.t.}\quad &amp; \sum_{(j,l) \in F} s_{pjlt} \le 1 &amp;&amp; \forall p \in P,\ t \in T \tag{3} \\
+&amp; \sum_{(j,l) \in F} x_{pjl} \le 1 &amp;&amp; \forall p \in P \tag{3'} \\
+&amp; s_{pjl1} = x_{pjl} &amp;&amp; \forall p \in P,\ (j,l) \in F \tag{4'} \\
+&amp; s_{pjlt} \le \sum_{l' \in L_j} s_{pjl'(t-1)} + Y^{\mathrm{in}}_{pjlt} + W^{\mathrm{in}}_{pjt} &amp;&amp; \forall p \in P,\ (j,l) \in F,\ t \in T \setminus \{1\} \tag{20} \\
+&amp; Y^{\mathrm{in}}_{pjlt} \le s_{pjlt} &amp;&amp; \forall p \in P,\ (j,l) \in F,\ t \in T \setminus \{1\} \tag{6} \\
+&amp; y_{pj'jlt} \le \sigma_{pj'(t-1)} + W^{\mathrm{in}}_{pj't} &amp;&amp; \forall p \in P,\ (j',j) \in R,\ l \in L_j,\ t \in T \setminus \{1\} \tag{7'} \\
+&amp; W^{\mathrm{in}}_{pjt} \le \sigma_{pjt} + Y^{\mathrm{out}}_{pjt} &amp;&amp; \forall p \in P,\ j \in J,\ t \in T \setminus \{1\} \tag{18a'} \\
+&amp; W^{\mathrm{out}}_{pjt} \le \sigma_{pj(t-1)} &amp;&amp; \forall p \in P,\ j \in J,\ t \in T \setminus \{1\} \tag{18b} \\
+&amp; \sum_{(j,l) \in F} s_{pjlt} - \sum_{(j,l) \in F} s_{pjl(t-1)} = \sum_{j \in J} W^{\mathrm{in}}_{pjt} - \sum_{j \in J} W^{\mathrm{out}}_{pjt} &amp;&amp; \forall p \in P,\ t \in T \setminus \{1\} \tag{19} \\
+% ---------- flow layer ----------
+&amp; v_{plt} \le \sum_{j \in J} s_{pjlt}\, B_{jl} &amp;&amp; \forall p \in P,\ l \in L,\ t \in T \tag{8} \\
+&amp; \sum_{p \in P} v_{plt} \ge d_l^{\,t} &amp;&amp; \forall l \in L,\ t \in T \tag{9} \\
+&amp; v'_{plp'l't} \le v_{plt}\, q_{ll't} &amp;&amp; \forall p,p' \in P,\ l,l' \in L,\ t \in T \tag{10} \\
+&amp; v'_{plp'l't} \le v_{p'l't}\, q_{ll't} &amp;&amp; \forall p,p' \in P,\ l,l' \in L,\ t \in T \tag{11} \\
+&amp; \sum_{p' \in P}\sum_{l' \in L} v'_{plp'l't} = \sum_{p' \in P}\sum_{l' \in L} v'_{p'l'plt} = v_{plt} &amp;&amp; \forall p \in P,\ l \in L,\ t \in T \tag{12-14} \\
+% ---------- domains ----------
+&amp; v_{plt} \ge 0,\quad v'_{plp'l't} \ge 0 \tag{15} \\
+&amp; x_{pjl},\ s_{pjlt},\ y_{pj'jlt},\ w_{kpjt} \in \{0,1\} \tag{16'}
+\end{align}
+
+% ---- 이동 정책 ----
+% off      : w 를 생성하지 않음 (W^in = W^out = 0). 논문 원형과 동치.
+% separate : (7)  y_{pj'jlt} ≤ σ_{pj'(t-1)},      (18a) W^in_{pjt} ≤ σ_{pjt}
+% joint    : (7') 과 (18a') 을 사용 (위 본문). 이동과 재구성을 같은 기간에 함께 허용.
+
+% ---- 선택적 강화식 (config 단위 보존, 없어도 타당) ----
+% σ_{pjt} = σ_{pj(t-1)} − W^out_{pjt} + W^in_{pjt} − Y^out_{pjt} + Σ_{l ∈ L_j} Y^in_{pjlt}
+%   ∀ p ∈ P, j ∈ J, t ∈ T \ {1}                                            (S)
+</pre>
+      </div>
+    </div>
+  </section>
+  <!-- /BULK -->
+
+  <footer class="foot">
+    <span>원문: Saffar, Moghaddam &amp; Huang (2025), IJPR 63(17) 식 (1)–(16)</span>
+    <span>구현: scratchpad/saffar_w_adaptive.py</span>
+    <span>대조: z 모델 (Src/milp_adaptive.py)</span>
+  </footer>
+</main>
+<script>
+  document.querySelectorAll(".tex button, .bulk-head button").forEach(function(btn){
+    btn.addEventListener("click", function(){
+      var host = btn.closest(".tex") || btn.closest(".bulk");
+      var el = host.querySelector("code, pre");
+      var text = el.textContent;
+      var orig = btn.textContent;
+      function done(){ btn.textContent = "복사됨 ✓"; setTimeout(function(){ btn.textContent = orig; }, 1200); }
+      function fallback(){
+        var ta = document.createElement("textarea");
+        ta.value = text; document.body.appendChild(ta); ta.select();
+        try { document.execCommand("copy"); done(); } catch(e){}
+        document.body.removeChild(ta);
+      }
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(done, fallback);
+      } else { fallback(); }
+    });
+  });
+</script>
