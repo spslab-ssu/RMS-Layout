@@ -1,0 +1,37 @@
+[
+ {
+  "id": "Y_reent_ctrl",
+  "base": "youssef_2007",
+  "hypothesis": "대조군: re-entrant만 (3레이어 [1>5>15] 반복, 매 기간 동일). 라우트 길이만으로는 이득 0일 것",
+  "demands": [
+   {
+    "part": "P",
+    "periods": [
+     40,
+     40,
+     40,
+     40
+    ],
+    "seq": "1>5>15>1>5>15>1>5>15>60"
+   }
+  ]
+ },
+ {
+  "id": "Y_reent_ctrl_spec",
+  "base": "youssef_2007",
+  "hypothesis": "대조군2: re-entrant + 특화, 매 기간 동일. 특화해도 충돌 없으면 0일 것",
+  "demands": [
+   {
+    "part": "P",
+    "periods": [
+     40,
+     40,
+     40,
+     40
+    ],
+    "seq": "1>5>15>1>5>15>1>5>15>60"
+   }
+  ],
+  "specialize": true
+ }
+]

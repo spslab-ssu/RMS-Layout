@@ -1,0 +1,32 @@
+=== [1/8] Y_seqrev_spec_cmh1 (% 천장: c_mh 1 - MHC 비중 축소로 구매중복 이득의 비율 상승 기대) ===
+    [off] OPTIMAL obj=5925.0 bound=5925.0 gap=0.0 (1.7s)
+    [joint] OPTIMAL obj=5265.0 bound=5265.0 gap=0.0 (4.4s)
+    >>> 이득 660.0 (11.14%)  구간 [660.0, 660.0]  MHC여유(off) 660.0  Δ구매 0.0 Δ재구성 0 ΔMHC 660.0
+=== [2/8] Y_seqrev_spec_cmh2 (% 천장: c_mh 2) ===
+    [off] OPTIMAL obj=8565.0 bound=8565.0 gap=0.0 (3.9s)
+    [joint] OPTIMAL obj=7245.0 bound=7245.0 gap=0.0 (8.6s)
+    >>> 이득 1320.0 (15.41%)  구간 [1320.0, 1320.0]  MHC여유(off) 1320.0  Δ구매 0.0 Δ재구성 0 ΔMHC 1320.0
+=== [3/8] Y_longrev (긴 라우트 역전: B(6 op) 정/역 교대, A 없음) ===
+    [off] OPTIMAL obj=15015.0 bound=15015.0 gap=0.0 (17.6s)
+    [joint] OPTIMAL obj=14105.0 bound=14105.0 gap=0.0 (4.1s)
+    >>> 이득 910.0 (6.06%)  구간 [910.0, 910.0]  MHC여유(off) 0.0  Δ구매 860.0 Δ재구성 50.0 ΔMHC 0.0
+=== [4/8] Y_longrev_spec (긴 라우트 역전 + 특화) ===
+    [off] OPTIMAL obj=17605.0 bound=17605.0 gap=0.0 (11.2s)
+    [joint] OPTIMAL obj=14105.0 bound=14105.0 gap=0.0 (6.2s)
+    >>> 이득 3500.0 (19.88%)  구간 [3500.0, 3500.0]  MHC여유(off) 2640.0  Δ구매 860.0 Δ재구성 0 ΔMHC 2640.0
+=== [5/8] Y_3dir_T6 (3방향 순환(6기간): 정방향/역방향/회전이 돌아가며 등장 - 정적은 3개 배치를 동시에 만족해야) ===
+    [off] OPTIMAL obj=16005.0 bound=16005.0 gap=0.0 (17.3s)
+    [joint] OPTIMAL obj=15165.0 bound=15165.0 gap=0.0 (10.1s)
+    >>> 이득 840.0 (5.25%)  구간 [840.0, 840.0]  MHC여유(off) 0.0  Δ구매 690.0 Δ재구성 150.0 ΔMHC 0.0
+=== [6/8] Y_3dir_T6_spec (3방향 순환 + 특화) ===
+    [off] OPTIMAL obj=18635.0 bound=18635.0 gap=0.0 (15.5s)
+    [joint] OPTIMAL obj=15165.0 bound=15165.0 gap=0.0 (13.8s)
+    >>> 이득 3470.0 (18.62%)  구간 [3470.0, 3470.0]  MHC여유(off) 880.0  Δ구매 2490.0 Δ재구성 100.0 ΔMHC 880.0
+=== [7/8] Y_Brev_only (원본에 가깝게: A 원본 그대로 정방향, B만 4기에 역전 (부분 역전의 현실적 사례)) ===
+    [off] OPTIMAL obj=17600.0 bound=17600.0 gap=0.0 (42.5s)
+    [joint] OPTIMAL obj=17500.0 bound=17500.0 gap=0.0 (14.9s)
+    >>> 이득 100.0 (0.57%)  구간 [100.0, 100.0]  MHC여유(off) 0.0  Δ구매 0.0 Δ재구성 100.0 ΔMHC 0.0
+=== [8/8] M_allrev_20slot (multi_part 3부품 전부 교대 역전, 20슬롯(15슬롯은 INFEASIBLE였음)) ===
+    [off] TIME_LIMIT obj=38997.0 bound=38112.597465 gap=0.022679 (300.1s)
+    [joint] TIME_LIMIT obj=37398.0 bound=36829.033784 gap=0.015214 (300.2s)
+    >>> 이득 1599.0 (4.10%)  구간 [714.6, 2168.0]  MHC여유(off) 2852.0  Δ구매 -130.0 Δ재구성 325.0 ΔMHC 1404.0

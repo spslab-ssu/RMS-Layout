@@ -1,0 +1,277 @@
+[
+ {
+  "mode": "off",
+  "beta": 0.0,
+  "balance_eq_S": true,
+  "status": "OPTIMAL",
+  "objective": 22910.0,
+  "best_bound": 22910.0,
+  "gap": 0.0,
+  "lp_bound": 22162.618038,
+  "runtime_s": 7.5,
+  "wall_s": 7.7,
+  "num_vars": 4096,
+  "num_binary": 1856,
+  "num_constraints": 3472,
+  "nodes": 2560.0,
+  "purchase": 11025.0,
+  "reconfig": 1925.0,
+  "mhc": 9960.0,
+  "move": 0.0,
+  "n_machines": 12,
+  "n_relocations": 0,
+  "n_reconfigurations": 9,
+  "n_move_and_reconfig": 0,
+  "relocations": []
+ },
+ {
+  "mode": "separate",
+  "beta": 0.0,
+  "balance_eq_S": true,
+  "status": "OPTIMAL",
+  "objective": 22894.0,
+  "best_bound": 22894.0,
+  "gap": 0.0,
+  "lp_bound": 22115.904645,
+  "runtime_s": 79.0,
+  "wall_s": 79.6,
+  "num_vars": 11296,
+  "num_binary": 9056,
+  "num_constraints": 4432,
+  "nodes": 2280.0,
+  "purchase": 11025.0,
+  "reconfig": 1925.0,
+  "mhc": 9944.0,
+  "move": 0.0,
+  "n_machines": 12,
+  "n_relocations": 9,
+  "n_reconfigurations": 9,
+  "n_move_and_reconfig": 0,
+  "relocations": [
+   {
+    "period": 3,
+    "from_location": 3,
+    "to_location": 14,
+    "configuration": "mc54",
+    "machine": "M5",
+    "distance": 4.0,
+    "relocation_cost": 0.0
+   },
+   {
+    "period": 3,
+    "from_location": 15,
+    "to_location": 2,
+    "configuration": "mc51",
+    "machine": "M5",
+    "distance": 4.0,
+    "relocation_cost": 0.0
+   },
+   {
+    "period": 3,
+    "from_location": 16,
+    "to_location": 15,
+    "configuration": "mc32",
+    "machine": "M3",
+    "distance": 1.0,
+    "relocation_cost": 0.0
+   },
+   {
+    "period": 4,
+    "from_location": 7,
+    "to_location": 4,
+    "configuration": "mc32",
+    "machine": "M3",
+    "distance": 2.0,
+    "relocation_cost": 0.0
+   },
+   {
+    "period": 4,
+    "from_location": 8,
+    "to_location": 7,
+    "configuration": "mc32",
+    "machine": "M3",
+    "distance": 1.0,
+    "relocation_cost": 0.0
+   },
+   {
+    "period": 4,
+    "from_location": 9,
+    "to_location": 1,
+    "configuration": "mc52",
+    "machine": "M5",
+    "distance": 2.0,
+    "relocation_cost": 0.0
+   },
+   {
+    "period": 4,
+    "from_location": 13,
+    "to_location": 9,
+    "configuration": "mc52",
+    "machine": "M5",
+    "distance": 1.0,
+    "relocation_cost": 0.0
+   },
+   {
+    "period": 4,
+    "from_location": 14,
+    "to_location": 3,
+    "configuration": "mc54",
+    "machine": "M5",
+    "distance": 4.0,
+    "relocation_cost": 0.0
+   },
+   {
+    "period": 4,
+    "from_location": 15,
+    "to_location": 8,
+    "configuration": "mc32",
+    "machine": "M3",
+    "distance": 3.0,
+    "relocation_cost": 0.0
+   }
+  ]
+ },
+ {
+  "mode": "joint",
+  "beta": 0.0,
+  "balance_eq_S": true,
+  "status": "OPTIMAL",
+  "objective": 22894.0,
+  "best_bound": 22894.0,
+  "gap": 0.0,
+  "lp_bound": 22115.904645,
+  "runtime_s": 52.7,
+  "wall_s": 53.2,
+  "num_vars": 11296,
+  "num_binary": 9056,
+  "num_constraints": 4432,
+  "nodes": 2678.0,
+  "purchase": 11025.0,
+  "reconfig": 1925.0,
+  "mhc": 9944.0,
+  "move": 0.0,
+  "n_machines": 12,
+  "n_relocations": 13,
+  "n_reconfigurations": 9,
+  "n_move_and_reconfig": 6,
+  "relocations": [
+   {
+    "period": 2,
+    "from_location": 7,
+    "to_location": 12,
+    "configuration": "mc31",
+    "machine": "M3",
+    "distance": 2.0,
+    "relocation_cost": 0.0
+   },
+   {
+    "period": 2,
+    "from_location": 8,
+    "to_location": 7,
+    "configuration": "mc31",
+    "machine": "M3",
+    "distance": 1.0,
+    "relocation_cost": 0.0
+   },
+   {
+    "period": 2,
+    "from_location": 11,
+    "to_location": 8,
+    "configuration": "mc31",
+    "machine": "M3",
+    "distance": 2.0,
+    "relocation_cost": 0.0
+   },
+   {
+    "period": 2,
+    "from_location": 12,
+    "to_location": 11,
+    "configuration": "mc31",
+    "machine": "M3",
+    "distance": 1.0,
+    "relocation_cost": 0.0
+   },
+   {
+    "period": 2,
+    "from_location": 15,
+    "to_location": 4,
+    "configuration": "mc51",
+    "machine": "M5",
+    "distance": 4.0,
+    "relocation_cost": 0.0
+   },
+   {
+    "period": 3,
+    "from_location": 2,
+    "to_location": 4,
+    "configuration": "mc51",
+    "machine": "M5",
+    "distance": 2.0,
+    "relocation_cost": 0.0
+   },
+   {
+    "period": 3,
+    "from_location": 4,
+    "to_location": 14,
+    "configuration": "mc51",
+    "machine": "M5",
+    "distance": 5.0,
+    "relocation_cost": 0.0
+   },
+   {
+    "period": 4,
+    "from_location": 4,
+    "to_location": 14,
+    "configuration": "mc51",
+    "machine": "M5",
+    "distance": 5.0,
+    "relocation_cost": 0.0
+   },
+   {
+    "period": 4,
+    "from_location": 5,
+    "to_location": 13,
+    "configuration": "mc52",
+    "machine": "M5",
+    "distance": 2.0,
+    "relocation_cost": 0.0
+   },
+   {
+    "period": 4,
+    "from_location": 6,
+    "to_location": 9,
+    "configuration": "mc52",
+    "machine": "M5",
+    "distance": 2.0,
+    "relocation_cost": 0.0
+   },
+   {
+    "period": 4,
+    "from_location": 9,
+    "to_location": 6,
+    "configuration": "mc52",
+    "machine": "M5",
+    "distance": 2.0,
+    "relocation_cost": 0.0
+   },
+   {
+    "period": 4,
+    "from_location": 13,
+    "to_location": 5,
+    "configuration": "mc52",
+    "machine": "M5",
+    "distance": 2.0,
+    "relocation_cost": 0.0
+   },
+   {
+    "period": 4,
+    "from_location": 14,
+    "to_location": 15,
+    "configuration": "mc51",
+    "machine": "M5",
+    "distance": 1.0,
+    "relocation_cost": 0.0
+   }
+  ]
+ }
+]

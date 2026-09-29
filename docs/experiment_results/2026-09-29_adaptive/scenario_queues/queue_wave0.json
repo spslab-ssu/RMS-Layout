@@ -1,0 +1,22 @@
+[
+ {"id": "Y_seqrev", "base": "youssef_2007",
+  "hypothesis": "흐름 역전: 홀수기간 1>5>60>15, 짝수기간 15>60>5>1 - 기계의 이상적 위치가 기간마다 좌우 반전",
+  "demands": [{"part": "A", "periods": [55, 0, 55, 0], "seq": "1>5>60>15"},
+              {"part": "Ar", "periods": [0, 55, 0, 55], "seq": "15>60>5>1"}]},
+ {"id": "Y_seqrev_cmh20", "base": "youssef_2007",
+  "hypothesis": "흐름 역전 + c_mh 20: MHC 비중을 키워 중복구매 대신 이동을 유도",
+  "demands": [{"part": "A", "periods": [55, 0, 55, 0], "seq": "1>5>60>15"},
+              {"part": "Ar", "periods": [0, 55, 0, 55], "seq": "15>60>5>1"}],
+  "params": {"material_handling_cost": 20}},
+ {"id": "Y_spec", "base": "youssef_2007",
+  "hypothesis": "완전 특화: (config,op)마다 별도 기계타입 - op전환/재구성 불가, 이동만이 유일한 적응수단. 원본 수요",
+  "specialize": true},
+ {"id": "Y_x2_15slot", "base": "youssef_2007",
+  "hypothesis": "9/19 파일럿 재현 앵커: 수요x2 + 15슬롯(y=0..2) - 구매 절감 이득 >=358.7 기대",
+  "demand_scale": 2.0, "grid": {"keep_rows": [0, 1, 2]}},
+ {"id": "Y_seqrev_spec_cmh20", "base": "youssef_2007",
+  "hypothesis": "결합: 흐름 역전 + 완전 특화 + c_mh 20",
+  "demands": [{"part": "A", "periods": [55, 0, 55, 0], "seq": "1>5>60>15"},
+              {"part": "Ar", "periods": [0, 55, 0, 55], "seq": "15>60>5>1"}],
+  "specialize": true, "params": {"material_handling_cost": 20}}
+]

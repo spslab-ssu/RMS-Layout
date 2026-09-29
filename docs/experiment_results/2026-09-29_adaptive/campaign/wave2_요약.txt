@@ -1,0 +1,55 @@
+=== [1/14] Y_seqrev_spec_x2 (최대치: 역전+특화+수요x2 (c_mh 4)) ===
+    [off] OPTIMAL obj=24370.0 bound=24370.0 gap=0.0 (27.6s)
+    [joint] OPTIMAL obj=20585.0 bound=20585.0 gap=0.0 (25.7s)
+    >>> 이득 3785.0 (15.53%)  구간 [3785.0, 3785.0]  MHC여유(off) 2560.0  Δ구매 1075.0 Δ재구성 150.0 ΔMHC 2560.0
+=== [2/14] Y_seqrev_spec_x3 (최대치: 역전+특화+수요x3) ===
+    [off] OPTIMAL obj=35160.0 bound=35160.0 gap=0.0 (32.2s)
+    [joint] TIME_LIMIT obj=31790.0 bound=31083.833353 gap=0.022213 (300.1s)
+    >>> 이득 3370.0 (9.58%)  구간 [3370.0, 4076.2]  MHC여유(off) 2740.0  Δ구매 280.0 Δ재구성 350.0 ΔMHC 2740.0
+=== [3/14] Y_allrev_withB (B 문제: B도 같이 역전(모든 흐름이 함께 뒤집힘) - 정방향 앵커 제거) ===
+    [off] OPTIMAL obj=24120.0 bound=24120.0 gap=0.0 (147.0s)
+    [joint] OPTIMAL obj=23250.0 bound=23250.0 gap=0.0 (86.9s)
+    >>> 이득 870.0 (3.61%)  구간 [870.0, 870.0]  MHC여유(off) 720.0  Δ구매 0.0 Δ재구성 150.0 ΔMHC 720.0
+=== [4/14] Y_seqrev_withB_spec (B 문제: 정방향 B 유지 + 특화 - 특화가 B의 앵커 효과를 이기나) ===
+    [off] OPTIMAL obj=24070.0 bound=24070.0 gap=0.0 (52.9s)
+    [joint] OPTIMAL obj=22110.0 bound=22110.0 gap=0.0 (299.1s)
+    >>> 이득 1960.0 (8.14%)  구간 [1960.0, 1960.0]  MHC여유(off) 1760.0  Δ구매 860.0 Δ재구성 0 ΔMHC 1100.0
+=== [5/14] M_seqrev_15slot_spec (multi_part 역전 + 특화) ===
+    [off] OPTIMAL obj=19252.0 bound=19252.0 gap=0.0 (12.2s)
+    [joint] TIME_LIMIT obj=18448.0 bound=18420.980837 gap=0.001465 (300.2s)
+    >>> 이득 804.0 (4.18%)  구간 [804.0, 831.0]  MHC여유(off) 832.0  Δ구매 100.0 Δ재구성 0 ΔMHC 704.0
+=== [6/14] M_allrev_15slot (multi_part 3부품 전부 교대 역전 (A/Ar, B/Br, C/Cr), 15슬롯) ===
+    [off] INFEASIBLE obj=None bound=None gap=None (0.8s)
+    [joint] INFEASIBLE obj=None bound=None gap=None (0.8s)
+=== [7/14] Y_seqrev_spec_mc5 (손익분기: Y_seqrev_spec, 이동비 거리당 5) ===
+    [off] OPTIMAL obj=13380.0 bound=13380.0 gap=0.0 (5.9s)
+    [joint] OPTIMAL obj=11325.0 bound=11325.0 gap=0.0 (4.1s)
+    >>> 이득 2055.0 (15.36%)  구간 [2055.0, 2055.0]  MHC여유(off) 880.0  Δ구매 1245.0 Δ재구성 50.0 ΔMHC 880.0
+=== [8/14] Y_seqrev_spec_mc20 (손익분기: 이동비 거리당 20) ===
+    [off] OPTIMAL obj=13380.0 bound=13380.0 gap=0.0 (5.8s)
+    [joint] OPTIMAL obj=11685.0 bound=11685.0 gap=0.0 (3.3s)
+    >>> 이득 1695.0 (12.67%)  구간 [1695.0, 1695.0]  MHC여유(off) 880.0  Δ구매 1245.0 Δ재구성 50.0 ΔMHC 880.0
+=== [9/14] Y_seqrev_spec_mc50 (손익분기: 이동비 거리당 50) ===
+    [off] OPTIMAL obj=13380.0 bound=13380.0 gap=0.0 (6.4s)
+    [joint] OPTIMAL obj=12405.0 bound=12405.0 gap=0.0 (5.7s)
+    >>> 이득 975.0 (7.29%)  구간 [975.0, 975.0]  MHC여유(off) 880.0  Δ구매 1245.0 Δ재구성 50.0 ΔMHC 880.0
+=== [10/14] Y_seqrev_spec_mc100 (손익분기: 이동비 거리당 100) ===
+    [off] OPTIMAL obj=13380.0 bound=13380.0 gap=0.0 (5.6s)
+    [joint] OPTIMAL obj=13265.0 bound=13265.0 gap=0.0 (28.4s)
+    >>> 이득 115.0 (0.86%)  구간 [115.0, 115.0]  MHC여유(off) 880.0  Δ구매 385.0 Δ재구성 50.0 ΔMHC 880.0
+=== [11/14] Y_seqrev_spec_mc200 (손익분기: 이동비 거리당 200) ===
+    [off] OPTIMAL obj=13380.0 bound=13380.0 gap=0.0 (5.7s)
+    [joint] OPTIMAL obj=13380.0 bound=13380.0 gap=0.0 (26.3s)
+    >>> 이득 0.0 (0.00%)  구간 [0.0, 0.0]  MHC여유(off) 880.0  Δ구매 170.0 Δ재구성 -50.0 ΔMHC -120.0
+=== [12/14] Y_seqrev_mc5 (손익분기(비특화): Y_seqrev, 이동비 거리당 5) ===
+    [off] OPTIMAL obj=11640.0 bound=11640.0 gap=0.0 (2.5s)
+    [joint] OPTIMAL obj=11235.0 bound=11235.0 gap=0.0 (3.5s)
+    >>> 이득 405.0 (3.48%)  구간 [405.0, 405.0]  MHC여유(off) 120.0  Δ구매 215.0 Δ재구성 100.0 ΔMHC 120.0
+=== [13/14] Y_seqrev_mc20 (손익분기(비특화): 이동비 거리당 20) ===
+    [off] OPTIMAL obj=11640.0 bound=11640.0 gap=0.0 (2.8s)
+    [joint] OPTIMAL obj=11325.0 bound=11325.0 gap=0.0 (3.0s)
+    >>> 이득 315.0 (2.71%)  구간 [315.0, 315.0]  MHC여유(off) 120.0  Δ구매 215.0 Δ재구성 100.0 ΔMHC 120.0
+=== [14/14] Y_seqrev_mc50 (손익분기(비특화): 이동비 거리당 50) ===
+    [off] OPTIMAL obj=11640.0 bound=11640.0 gap=0.0 (2.7s)
+    [joint] OPTIMAL obj=11505.0 bound=11505.0 gap=0.0 (3.7s)
+    >>> 이득 135.0 (1.16%)  구간 [135.0, 135.0]  MHC여유(off) 120.0  Δ구매 215.0 Δ재구성 100.0 ΔMHC 120.0

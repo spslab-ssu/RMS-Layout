@@ -1,0 +1,4594 @@
+[
+ {
+  "id": "Y_seqrev",
+  "base": "youssef_2007",
+  "hypothesis": "흐름 역전: 홀수기간 1>5>60>15, 짝수기간 15>60>5>1 - 기계의 이상적 위치가 기간마다 좌우 반전",
+  "time_limit": 300,
+  "mhc_lb": 7920.0,
+  "mhc_lb_detail": {
+   "A": {
+    "min_path": 9.0,
+    "total_demand": 110.0,
+    "mhc_lb": 3960.0
+   },
+   "Ar": {
+    "min_path": 9.0,
+    "total_demand": 110.0,
+    "mhc_lb": 3960.0
+   }
+  },
+  "P": 20,
+  "F": 20,
+  "T": 4,
+  "ops": [
+   1,
+   5,
+   15,
+   60
+  ],
+  "off": {
+   "status": "OPTIMAL",
+   "obj": 11640.0,
+   "bound": 11640.0,
+   "gap": 0.0,
+   "lp": 10011.145833,
+   "runtime": 3.7,
+   "wall": 4.1,
+   "vars": 11600,
+   "binary": 6560,
+   "purchase": 3500.0,
+   "reconfig": 100.0,
+   "mhc": 8040.0,
+   "move": 0.0,
+   "machines": 5,
+   "reconfigs": 2,
+   "relocations": 0
+  },
+  "joint": {
+   "status": "OPTIMAL",
+   "obj": 11205.0,
+   "bound": 11205.0,
+   "gap": 0.0,
+   "lp": 9737.864583,
+   "runtime": 5.2,
+   "wall": 6.4,
+   "vars": 21860,
+   "binary": 16820,
+   "purchase": 3285.0,
+   "reconfig": 0.0,
+   "mhc": 7920.0,
+   "move": 0.0,
+   "machines": 4,
+   "reconfigs": 0,
+   "relocations": 8
+  },
+  "gain_interval": [
+   435.0,
+   435.0
+  ],
+  "gain_point": 435.0,
+  "gain_pct_point": 3.74,
+  "gain_pct_lb": 3.74,
+  "mhc_slack_off": 120.0,
+  "delta": {
+   "purchase": 215.0,
+   "reconfig": 100.0,
+   "mhc": 120.0
+  },
+  "elapsed": 10.6
+ },
+ {
+  "id": "Y_seqrev_cmh20",
+  "base": "youssef_2007",
+  "hypothesis": "흐름 역전 + c_mh 20: MHC 비중을 키워 중복구매 대신 이동을 유도",
+  "time_limit": 300,
+  "mhc_lb": 39600.0,
+  "mhc_lb_detail": {
+   "A": {
+    "min_path": 9.0,
+    "total_demand": 110.0,
+    "mhc_lb": 19800.0
+   },
+   "Ar": {
+    "min_path": 9.0,
+    "total_demand": 110.0,
+    "mhc_lb": 19800.0
+   }
+  },
+  "P": 20,
+  "F": 20,
+  "T": 4,
+  "ops": [
+   1,
+   5,
+   15,
+   60
+  ],
+  "off": {
+   "status": "OPTIMAL",
+   "obj": 43320.0,
+   "bound": 43320.0,
+   "gap": 0.0,
+   "lp": 41691.145833,
+   "runtime": 6.2,
+   "wall": 7.0,
+   "vars": 11600,
+   "binary": 6560,
+   "purchase": 3670.0,
+   "reconfig": 50.0,
+   "mhc": 39600.0,
+   "move": 0.0,
+   "machines": 5,
+   "reconfigs": 1,
+   "relocations": 0
+  },
+  "joint": {
+   "status": "OPTIMAL",
+   "obj": 42885.0,
+   "bound": 42885.0,
+   "gap": 0.0,
+   "lp": 41417.864583,
+   "runtime": 11.1,
+   "wall": 12.7,
+   "vars": 21860,
+   "binary": 16820,
+   "purchase": 3285.0,
+   "reconfig": 0.0,
+   "mhc": 39600.0,
+   "move": 0.0,
+   "machines": 4,
+   "reconfigs": 0,
+   "relocations": 10
+  },
+  "gain_interval": [
+   435.0,
+   435.0
+  ],
+  "gain_point": 435.0,
+  "gain_pct_point": 1.0,
+  "gain_pct_lb": 1.0,
+  "mhc_slack_off": 0.0,
+  "delta": {
+   "purchase": 385.0,
+   "reconfig": 50.0,
+   "mhc": 0.0
+  },
+  "elapsed": 19.8
+ },
+ {
+  "id": "Y_spec",
+  "base": "youssef_2007",
+  "hypothesis": "완전 특화: (config,op)마다 별도 기계타입 - op전환/재구성 불가, 이동만이 유일한 적응수단. 원본 수요",
+  "time_limit": 300,
+  "mhc_lb": 9940.0,
+  "mhc_lb_detail": {
+   "A": {
+    "min_path": 9.0,
+    "total_demand": 115.0,
+    "mhc_lb": 4140.0
+   },
+   "B": {
+    "min_path": 10.0,
+    "total_demand": 145.0,
+    "mhc_lb": 5800.0
+   }
+  },
+  "P": 20,
+  "F": 36,
+  "T": 4,
+  "ops": [
+   1,
+   5,
+   6,
+   9,
+   12,
+   15,
+   16,
+   60
+  ],
+  "off": {
+   "status": "OPTIMAL",
+   "obj": 17550.0,
+   "bound": 17550.0,
+   "gap": 0.0,
+   "lp": 14259.045139,
+   "runtime": 17.0,
+   "wall": 18.5,
+   "vars": 20240,
+   "binary": 11040,
+   "purchase": 7560.0,
+   "reconfig": 50.0,
+   "mhc": 9940.0,
+   "move": 0.0,
+   "machines": 9,
+   "reconfigs": 1,
+   "relocations": 0
+  },
+  "joint": {
+   "status": "OPTIMAL",
+   "obj": 17550.0,
+   "bound": 17550.0,
+   "gap": 0.0,
+   "lp": 14259.045139,
+   "runtime": 198.2,
+   "wall": 201.9,
+   "vars": 61280,
+   "binary": 52080,
+   "purchase": 7560.0,
+   "reconfig": 50.0,
+   "mhc": 9940.0,
+   "move": 0.0,
+   "machines": 9,
+   "reconfigs": 1,
+   "relocations": 16
+  },
+  "gain_interval": [
+   0.0,
+   0.0
+  ],
+  "gain_point": 0.0,
+  "gain_pct_point": 0.0,
+  "gain_pct_lb": 0.0,
+  "mhc_slack_off": 0.0,
+  "delta": {
+   "purchase": 0.0,
+   "reconfig": 0.0,
+   "mhc": 0.0
+  },
+  "elapsed": 220.5
+ },
+ {
+  "id": "Y_x2_15slot",
+  "base": "youssef_2007",
+  "hypothesis": "9/19 파일럿 재현 앵커: 수요x2 + 15슬롯(y=0..2) - 구매 절감 이득 >=358.7 기대",
+  "time_limit": 300,
+  "mhc_lb": 19880.0,
+  "mhc_lb_detail": {
+   "A": {
+    "min_path": 9.0,
+    "total_demand": 230.0,
+    "mhc_lb": 8280.0
+   },
+   "B": {
+    "min_path": 10.0,
+    "total_demand": 290.0,
+    "mhc_lb": 11600.0
+   }
+  },
+  "P": 15,
+  "F": 36,
+  "T": 4,
+  "ops": [
+   1,
+   5,
+   6,
+   9,
+   12,
+   15,
+   16,
+   60
+  ],
+  "off": {
+   "status": "OPTIMAL",
+   "obj": 31185.0,
+   "bound": 31185.0,
+   "gap": 0.0,
+   "lp": 27558.402778,
+   "runtime": 192.7,
+   "wall": 194.0,
+   "vars": 14070,
+   "binary": 8820,
+   "purchase": 10695.0,
+   "reconfig": 50.0,
+   "mhc": 20440.0,
+   "move": 0.0,
+   "machines": 12,
+   "reconfigs": 1,
+   "relocations": 0
+  },
+  "joint": {
+   "status": "OPTIMAL",
+   "obj": 30920.0,
+   "bound": 30920.0,
+   "gap": 0.0,
+   "lp": 27530.625,
+   "runtime": 155.7,
+   "wall": 159.3,
+   "vars": 19740,
+   "binary": 14490,
+   "purchase": 10480.0,
+   "reconfig": 0.0,
+   "mhc": 20440.0,
+   "move": 0.0,
+   "machines": 11,
+   "reconfigs": 0,
+   "relocations": 27
+  },
+  "gain_interval": [
+   265.0,
+   265.0
+  ],
+  "gain_point": 265.0,
+  "gain_pct_point": 0.85,
+  "gain_pct_lb": 0.85,
+  "mhc_slack_off": 560.0,
+  "delta": {
+   "purchase": 215.0,
+   "reconfig": 50.0,
+   "mhc": 0.0
+  },
+  "elapsed": 353.4
+ },
+ {
+  "id": "Y_seqrev_spec_cmh20",
+  "base": "youssef_2007",
+  "hypothesis": "결합: 흐름 역전 + 완전 특화 + c_mh 20",
+  "time_limit": 300,
+  "mhc_lb": 39600.0,
+  "mhc_lb_detail": {
+   "A": {
+    "min_path": 9.0,
+    "total_demand": 110.0,
+    "mhc_lb": 19800.0
+   },
+   "Ar": {
+    "min_path": 9.0,
+    "total_demand": 110.0,
+    "mhc_lb": 19800.0
+   }
+  },
+  "P": 20,
+  "F": 20,
+  "T": 4,
+  "ops": [
+   1,
+   5,
+   15,
+   60
+  ],
+  "off": {
+   "status": "OPTIMAL",
+   "obj": 46050.0,
+   "bound": 46050.0,
+   "gap": 0.0,
+   "lp": 41948.958333,
+   "runtime": 4.3,
+   "wall": 5.3,
+   "vars": 11360,
+   "binary": 6320,
+   "purchase": 6400.0,
+   "reconfig": 50.0,
+   "mhc": 39600.0,
+   "move": 0.0,
+   "machines": 8,
+   "reconfigs": 1,
+   "relocations": 0
+  },
+  "joint": {
+   "status": "OPTIMAL",
+   "obj": 42885.0,
+   "bound": 42885.0,
+   "gap": 0.0,
+   "lp": 41417.864583,
+   "runtime": 13.2,
+   "wall": 16.2,
+   "vars": 34160,
+   "binary": 29120,
+   "purchase": 3285.0,
+   "reconfig": 0.0,
+   "mhc": 39600.0,
+   "move": 0.0,
+   "machines": 4,
+   "reconfigs": 0,
+   "relocations": 12
+  },
+  "gain_interval": [
+   3165.0,
+   3165.0
+  ],
+  "gain_point": 3165.0,
+  "gain_pct_point": 6.87,
+  "gain_pct_lb": 6.87,
+  "mhc_slack_off": 0.0,
+  "delta": {
+   "purchase": 3115.0,
+   "reconfig": 50.0,
+   "mhc": 0.0
+  },
+  "elapsed": 21.6
+ },
+ {
+  "id": "Y_seqrev_spec",
+  "base": "youssef_2007",
+  "hypothesis": "증폭기 분리: 역전 + 특화만 (c_mh 4). 6.87%에 c_mh20이 필요했나?",
+  "time_limit": 300,
+  "mhc_lb": 7920.0,
+  "mhc_lb_detail": {
+   "A": {
+    "min_path": 9.0,
+    "total_demand": 110.0,
+    "mhc_lb": 3960.0
+   },
+   "Ar": {
+    "min_path": 9.0,
+    "total_demand": 110.0,
+    "mhc_lb": 3960.0
+   }
+  },
+  "P": 20,
+  "F": 20,
+  "T": 4,
+  "ops": [
+   1,
+   5,
+   15,
+   60
+  ],
+  "off": {
+   "status": "OPTIMAL",
+   "obj": 13380.0,
+   "bound": 13380.0,
+   "gap": 0.0,
+   "lp": 10268.958333,
+   "runtime": 10.2,
+   "wall": 10.9,
+   "vars": 11360,
+   "binary": 6320,
+   "purchase": 4530.0,
+   "reconfig": 50.0,
+   "mhc": 8800.0,
+   "move": 0.0,
+   "machines": 6,
+   "reconfigs": 1,
+   "relocations": 0
+  },
+  "joint": {
+   "status": "OPTIMAL",
+   "obj": 11205.0,
+   "bound": 11205.0,
+   "gap": 0.0,
+   "lp": 9737.864583,
+   "runtime": 13.4,
+   "wall": 16.0,
+   "vars": 34160,
+   "binary": 29120,
+   "purchase": 3285.0,
+   "reconfig": 0.0,
+   "mhc": 7920.0,
+   "move": 0.0,
+   "machines": 4,
+   "reconfigs": 0,
+   "relocations": 11
+  },
+  "gain_interval": [
+   2175.0,
+   2175.0
+  ],
+  "gain_point": 2175.0,
+  "gain_pct_point": 16.26,
+  "gain_pct_lb": 16.26,
+  "mhc_slack_off": 880.0,
+  "delta": {
+   "purchase": 1245.0,
+   "reconfig": 50.0,
+   "mhc": 880.0
+  },
+  "elapsed": 27.0
+ },
+ {
+  "id": "Y_seqrev_mc15only",
+  "base": "youssef_2007",
+  "hypothesis": "부분 특화: MC15를 전용 op {5,9,16}만 하게 제한 (M1/M2 재구성은 유지). 특화 정도에 따른 기울기",
+  "time_limit": 300,
+  "mhc_lb": 7920.0,
+  "mhc_lb_detail": {
+   "A": {
+    "min_path": 9.0,
+    "total_demand": 110.0,
+    "mhc_lb": 3960.0
+   },
+   "Ar": {
+    "min_path": 9.0,
+    "total_demand": 110.0,
+    "mhc_lb": 3960.0
+   }
+  },
+  "P": 20,
+  "F": 17,
+  "T": 4,
+  "ops": [
+   1,
+   5,
+   15,
+   60
+  ],
+  "off": {
+   "status": "OPTIMAL",
+   "obj": 11640.0,
+   "bound": 11640.0,
+   "gap": 0.0,
+   "lp": 10011.145833,
+   "runtime": 2.8,
+   "wall": 3.6,
+   "vars": 10580,
+   "binary": 5540,
+   "purchase": 3670.0,
+   "reconfig": 50.0,
+   "mhc": 7920.0,
+   "move": 0.0,
+   "machines": 5,
+   "reconfigs": 1,
+   "relocations": 0
+  },
+  "joint": {
+   "status": "OPTIMAL",
+   "obj": 11205.0,
+   "bound": 11205.0,
+   "gap": 0.0,
+   "lp": 9737.864583,
+   "runtime": 11.5,
+   "wall": 13.4,
+   "vars": 20840,
+   "binary": 15800,
+   "purchase": 3285.0,
+   "reconfig": 0.0,
+   "mhc": 7920.0,
+   "move": 0.0,
+   "machines": 4,
+   "reconfigs": 0,
+   "relocations": 10
+  },
+  "gain_interval": [
+   435.0,
+   435.0
+  ],
+  "gain_point": 435.0,
+  "gain_pct_point": 3.74,
+  "gain_pct_lb": 3.74,
+  "mhc_slack_off": 0.0,
+  "delta": {
+   "purchase": 385.0,
+   "reconfig": 50.0,
+   "mhc": 0.0
+  },
+  "elapsed": 17.2
+ },
+ {
+  "id": "Y_seqrev_withB",
+  "base": "youssef_2007",
+  "hypothesis": "현실성: 역전 A/Ar에 원본 B(45,0,45,55) 추가 - B는 항상 정방향",
+  "time_limit": 300,
+  "mhc_lb": 13720.0,
+  "mhc_lb_detail": {
+   "A": {
+    "min_path": 9.0,
+    "total_demand": 110.0,
+    "mhc_lb": 3960.0
+   },
+   "Ar": {
+    "min_path": 9.0,
+    "total_demand": 110.0,
+    "mhc_lb": 3960.0
+   },
+   "B": {
+    "min_path": 10.0,
+    "total_demand": 145.0,
+    "mhc_lb": 5800.0
+   }
+  },
+  "P": 20,
+  "F": 36,
+  "T": 4,
+  "ops": [
+   1,
+   5,
+   6,
+   9,
+   12,
+   15,
+   16,
+   60
+  ],
+  "off": {
+   "status": "OPTIMAL",
+   "obj": 22160.0,
+   "bound": 22160.0,
+   "gap": 0.0,
+   "lp": 18862.97092,
+   "runtime": 76.4,
+   "wall": 78.7,
+   "vars": 22140,
+   "binary": 11760,
+   "purchase": 7730.0,
+   "reconfig": 50.0,
+   "mhc": 14380.0,
+   "move": 0.0,
+   "machines": 9,
+   "reconfigs": 1,
+   "relocations": 0
+  },
+  "joint": {
+   "status": "OPTIMAL",
+   "obj": 22110.0,
+   "bound": 22110.0,
+   "gap": 0.0,
+   "lp": 18757.170139,
+   "runtime": 198.6,
+   "wall": 202.3,
+   "vars": 32400,
+   "binary": 22020,
+   "purchase": 7730.0,
+   "reconfig": 0.0,
+   "mhc": 14380.0,
+   "move": 0.0,
+   "machines": 9,
+   "reconfigs": 0,
+   "relocations": 23
+  },
+  "gain_interval": [
+   50.0,
+   50.0
+  ],
+  "gain_point": 50.0,
+  "gain_pct_point": 0.23,
+  "gain_pct_lb": 0.23,
+  "mhc_slack_off": 660.0,
+  "delta": {
+   "purchase": 0.0,
+   "reconfig": 50.0,
+   "mhc": 0.0
+  },
+  "elapsed": 281.1
+ },
+ {
+  "id": "Y_partsalt",
+  "base": "youssef_2007",
+  "hypothesis": "대조군: 부품 교대만(역전 없음, 둘 다 정방향). 충돌 없으면 이득 작아야",
+  "time_limit": 300,
+  "mhc_lb": 9120.0,
+  "mhc_lb_detail": {
+   "A": {
+    "min_path": 9.0,
+    "total_demand": 120.0,
+    "mhc_lb": 4320.0
+   },
+   "B": {
+    "min_path": 10.0,
+    "total_demand": 120.0,
+    "mhc_lb": 4800.0
+   }
+  },
+  "P": 20,
+  "F": 36,
+  "T": 4,
+  "ops": [
+   1,
+   5,
+   6,
+   9,
+   12,
+   15,
+   16,
+   60
+  ],
+  "off": {
+   "status": "OPTIMAL",
+   "obj": 14105.0,
+   "bound": 14105.0,
+   "gap": 0.0,
+   "lp": 12359.833333,
+   "runtime": 1.8,
+   "wall": 3.3,
+   "vars": 18640,
+   "binary": 11760,
+   "purchase": 4835.0,
+   "reconfig": 150.0,
+   "mhc": 9120.0,
+   "move": 0.0,
+   "machines": 6,
+   "reconfigs": 3,
+   "relocations": 0
+  },
+  "joint": {
+   "status": "OPTIMAL",
+   "obj": 14105.0,
+   "bound": 14105.0,
+   "gap": 0.0,
+   "lp": 12347.916667,
+   "runtime": 4.6,
+   "wall": 8.4,
+   "vars": 28900,
+   "binary": 22020,
+   "purchase": 4835.0,
+   "reconfig": 150.0,
+   "mhc": 9120.0,
+   "move": 0.0,
+   "machines": 6,
+   "reconfigs": 3,
+   "relocations": 14
+  },
+  "gain_interval": [
+   0.0,
+   0.0
+  ],
+  "gain_point": 0.0,
+  "gain_pct_point": 0.0,
+  "gain_pct_lb": 0.0,
+  "mhc_slack_off": 0.0,
+  "delta": {
+   "purchase": 0.0,
+   "reconfig": 0.0,
+   "mhc": 0.0
+  },
+  "elapsed": 11.8
+ },
+ {
+  "id": "Y_rotate",
+  "base": "youssef_2007",
+  "hypothesis": "부분 충돌: 완전 역전이 아닌 회전 (60>15>1>5) - 충돌 정도가 이득을 결정하나",
+  "time_limit": 300,
+  "mhc_lb": 7920.0,
+  "mhc_lb_detail": {
+   "A": {
+    "min_path": 9.0,
+    "total_demand": 110.0,
+    "mhc_lb": 3960.0
+   },
+   "Ar": {
+    "min_path": 9.0,
+    "total_demand": 110.0,
+    "mhc_lb": 3960.0
+   }
+  },
+  "P": 20,
+  "F": 20,
+  "T": 4,
+  "ops": [
+   1,
+   5,
+   15,
+   60
+  ],
+  "off": {
+   "status": "OPTIMAL",
+   "obj": 11690.0,
+   "bound": 11690.0,
+   "gap": 0.0,
+   "lp": 10356.954449,
+   "runtime": 1.8,
+   "wall": 2.8,
+   "vars": 11600,
+   "binary": 6560,
+   "purchase": 3670.0,
+   "reconfig": 100.0,
+   "mhc": 7920.0,
+   "move": 0.0,
+   "machines": 5,
+   "reconfigs": 2,
+   "relocations": 0
+  },
+  "joint": {
+   "status": "OPTIMAL",
+   "obj": 11205.0,
+   "bound": 11205.0,
+   "gap": 0.0,
+   "lp": 9737.864583,
+   "runtime": 5.1,
+   "wall": 7.0,
+   "vars": 21860,
+   "binary": 16820,
+   "purchase": 3285.0,
+   "reconfig": 0.0,
+   "mhc": 7920.0,
+   "move": 0.0,
+   "machines": 4,
+   "reconfigs": 0,
+   "relocations": 11
+  },
+  "gain_interval": [
+   485.0,
+   485.0
+  ],
+  "gain_point": 485.0,
+  "gain_pct_point": 4.15,
+  "gain_pct_lb": 4.15,
+  "mhc_slack_off": 0.0,
+  "delta": {
+   "purchase": 385.0,
+   "reconfig": 100.0,
+   "mhc": 0.0
+  },
+  "elapsed": 9.9
+ },
+ {
+  "id": "Y_seqrev_T2",
+  "base": "youssef_2007",
+  "hypothesis": "기간 수: 2기간(역전 1회). 기간이 적으면 이동 기회가 적어 이득 감소 예상",
+  "time_limit": 300,
+  "mhc_lb": 3960.0,
+  "mhc_lb_detail": {
+   "A": {
+    "min_path": 9.0,
+    "total_demand": 55.0,
+    "mhc_lb": 1980.0
+   },
+   "Ar": {
+    "min_path": 9.0,
+    "total_demand": 55.0,
+    "mhc_lb": 1980.0
+   }
+  },
+  "P": 20,
+  "F": 20,
+  "T": 2,
+  "ops": [
+   1,
+   5,
+   15,
+   60
+  ],
+  "off": {
+   "status": "OPTIMAL",
+   "obj": 7630.0,
+   "bound": 7630.0,
+   "gap": 0.0,
+   "lp": 5984.114583,
+   "runtime": 1.5,
+   "wall": 1.9,
+   "vars": 5240,
+   "binary": 2720,
+   "purchase": 3500.0,
+   "reconfig": 50.0,
+   "mhc": 4080.0,
+   "move": 0.0,
+   "machines": 5,
+   "reconfigs": 1,
+   "relocations": 0
+  },
+  "joint": {
+   "status": "OPTIMAL",
+   "obj": 7245.0,
+   "bound": 7245.0,
+   "gap": 0.0,
+   "lp": 5777.864583,
+   "runtime": 2.6,
+   "wall": 3.4,
+   "vars": 8660,
+   "binary": 6140,
+   "purchase": 3285.0,
+   "reconfig": 0.0,
+   "mhc": 3960.0,
+   "move": 0.0,
+   "machines": 4,
+   "reconfigs": 0,
+   "relocations": 1
+  },
+  "gain_interval": [
+   385.0,
+   385.0
+  ],
+  "gain_point": 385.0,
+  "gain_pct_point": 5.05,
+  "gain_pct_lb": 5.05,
+  "mhc_slack_off": 120.0,
+  "delta": {
+   "purchase": 215.0,
+   "reconfig": 50.0,
+   "mhc": 120.0
+  },
+  "elapsed": 5.5
+ },
+ {
+  "id": "Y_seqrev_T8",
+  "base": "youssef_2007",
+  "hypothesis": "기간 수: 8기간(역전 7회). 기간이 많을수록 정적의 불리함 누적",
+  "time_limit": 300,
+  "mhc_lb": 15840.0,
+  "mhc_lb_detail": {
+   "A": {
+    "min_path": 9.0,
+    "total_demand": 220.0,
+    "mhc_lb": 7920.0
+   },
+   "Ar": {
+    "min_path": 9.0,
+    "total_demand": 220.0,
+    "mhc_lb": 7920.0
+   }
+  },
+  "P": 20,
+  "F": 20,
+  "T": 8,
+  "ops": [
+   1,
+   5,
+   15,
+   60
+  ],
+  "off": {
+   "status": "OPTIMAL",
+   "obj": 19560.0,
+   "bound": 19560.0,
+   "gap": 0.0,
+   "lp": 17931.145833,
+   "runtime": 12.6,
+   "wall": 15.0,
+   "vars": 24320,
+   "binary": 14240,
+   "purchase": 3670.0,
+   "reconfig": 50.0,
+   "mhc": 15840.0,
+   "move": 0.0,
+   "machines": 5,
+   "reconfigs": 1,
+   "relocations": 0
+  },
+  "joint": {
+   "status": "OPTIMAL",
+   "obj": 19125.0,
+   "bound": 19125.0,
+   "gap": 0.0,
+   "lp": 17657.864583,
+   "runtime": 29.4,
+   "wall": 34.1,
+   "vars": 48260,
+   "binary": 38180,
+   "purchase": 3285.0,
+   "reconfig": 0.0,
+   "mhc": 15840.0,
+   "move": 0.0,
+   "machines": 4,
+   "reconfigs": 0,
+   "relocations": 17
+  },
+  "gain_interval": [
+   435.0,
+   435.0
+  ],
+  "gain_point": 435.0,
+  "gain_pct_point": 2.22,
+  "gain_pct_lb": 2.22,
+  "mhc_slack_off": 0.0,
+  "delta": {
+   "purchase": 385.0,
+   "reconfig": 50.0,
+   "mhc": 0.0
+  },
+  "elapsed": 49.2
+ },
+ {
+  "id": "Y_seqrev_2x10",
+  "base": "youssef_2007",
+  "hypothesis": "격자: 2행x10열 길쭉 - 거리 편차 커짐. 도크 (-2,0.5)/(11,0.5)",
+  "time_limit": 300,
+  "mhc_lb": 12320.0,
+  "mhc_lb_detail": {
+   "A": {
+    "min_path": 14.0,
+    "total_demand": 110.0,
+    "mhc_lb": 6160.0
+   },
+   "Ar": {
+    "min_path": 14.0,
+    "total_demand": 110.0,
+    "mhc_lb": 6160.0
+   }
+  },
+  "P": 20,
+  "F": 20,
+  "T": 4,
+  "ops": [
+   1,
+   5,
+   15,
+   60
+  ],
+  "off": {
+   "status": "OPTIMAL",
+   "obj": 16040.0,
+   "bound": 16040.0,
+   "gap": 0.0,
+   "lp": 14203.893229,
+   "runtime": 38.5,
+   "wall": 39.7,
+   "vars": 11600,
+   "binary": 6560,
+   "purchase": 3670.0,
+   "reconfig": 50.0,
+   "mhc": 12320.0,
+   "move": 0.0,
+   "machines": 5,
+   "reconfigs": 1,
+   "relocations": 0
+  },
+  "joint": {
+   "status": "OPTIMAL",
+   "obj": 15605.0,
+   "bound": 15605.0,
+   "gap": 0.0,
+   "lp": 14137.864583,
+   "runtime": 9.4,
+   "wall": 11.4,
+   "vars": 21860,
+   "binary": 16820,
+   "purchase": 3285.0,
+   "reconfig": 0.0,
+   "mhc": 12320.0,
+   "move": 0.0,
+   "machines": 4,
+   "reconfigs": 0,
+   "relocations": 8
+  },
+  "gain_interval": [
+   435.0,
+   435.0
+  ],
+  "gain_point": 435.0,
+  "gain_pct_point": 2.71,
+  "gain_pct_lb": 2.71,
+  "mhc_slack_off": 0.0,
+  "delta": {
+   "purchase": 385.0,
+   "reconfig": 50.0,
+   "mhc": 0.0
+  },
+  "elapsed": 51.2
+ },
+ {
+  "id": "Y_seqrev_10slot",
+  "base": "youssef_2007",
+  "hypothesis": "슬롯 압박: 역전 + 10슬롯(y=1..2) - 빈 자리가 적어 정적이 양쪽 배치를 못 깔아둠",
+  "time_limit": 300,
+  "mhc_lb": 7920.0,
+  "mhc_lb_detail": {
+   "A": {
+    "min_path": 9.0,
+    "total_demand": 110.0,
+    "mhc_lb": 3960.0
+   },
+   "Ar": {
+    "min_path": 9.0,
+    "total_demand": 110.0,
+    "mhc_lb": 3960.0
+   }
+  },
+  "P": 10,
+  "F": 20,
+  "T": 4,
+  "ops": [
+   1,
+   5,
+   15,
+   60
+  ],
+  "off": {
+   "status": "OPTIMAL",
+   "obj": 11640.0,
+   "bound": 11640.0,
+   "gap": 0.0,
+   "lp": 10011.145833,
+   "runtime": 3.2,
+   "wall": 3.8,
+   "vars": 4600,
+   "binary": 3280,
+   "purchase": 3670.0,
+   "reconfig": 50.0,
+   "mhc": 7920.0,
+   "move": 0.0,
+   "machines": 5,
+   "reconfigs": 1,
+   "relocations": 0
+  },
+  "joint": {
+   "status": "OPTIMAL",
+   "obj": 11205.0,
+   "bound": 11205.0,
+   "gap": 0.0,
+   "lp": 9737.864583,
+   "runtime": 1.1,
+   "wall": 2.0,
+   "vars": 7030,
+   "binary": 5710,
+   "purchase": 3285.0,
+   "reconfig": 0.0,
+   "mhc": 7920.0,
+   "move": 0.0,
+   "machines": 4,
+   "reconfigs": 0,
+   "relocations": 6
+  },
+  "gain_interval": [
+   435.0,
+   435.0
+  ],
+  "gain_point": 435.0,
+  "gain_pct_point": 3.74,
+  "gain_pct_lb": 3.74,
+  "mhc_slack_off": 0.0,
+  "delta": {
+   "purchase": 385.0,
+   "reconfig": 50.0,
+   "mhc": 0.0
+  },
+  "elapsed": 5.9
+ },
+ {
+  "id": "Y_seqrev_x2",
+  "base": "youssef_2007",
+  "hypothesis": "수요 배율: 역전 x2 (110) - 기계가 많아져 정적의 중복구매 부담 증가",
+  "time_limit": 300,
+  "mhc_lb": 15840.0,
+  "mhc_lb_detail": {
+   "A": {
+    "min_path": 9.0,
+    "total_demand": 220.0,
+    "mhc_lb": 7920.0
+   },
+   "Ar": {
+    "min_path": 9.0,
+    "total_demand": 220.0,
+    "mhc_lb": 7920.0
+   }
+  },
+  "P": 20,
+  "F": 20,
+  "T": 4,
+  "ops": [
+   1,
+   5,
+   15,
+   60
+  ],
+  "off": {
+   "status": "OPTIMAL",
+   "obj": 22005.0,
+   "bound": 22005.0,
+   "gap": 0.0,
+   "lp": 20022.291667,
+   "runtime": 28.6,
+   "wall": 29.7,
+   "vars": 11600,
+   "binary": 6560,
+   "purchase": 5440.0,
+   "reconfig": 725.0,
+   "mhc": 15840.0,
+   "move": 0.0,
+   "machines": 5,
+   "reconfigs": 7,
+   "relocations": 0
+  },
+  "joint": {
+   "status": "OPTIMAL",
+   "obj": 20585.0,
+   "bound": 20585.0,
+   "gap": 0.0,
+   "lp": 19475.729167,
+   "runtime": 12.9,
+   "wall": 14.5,
+   "vars": 21860,
+   "binary": 16820,
+   "purchase": 4745.0,
+   "reconfig": 0.0,
+   "mhc": 15840.0,
+   "move": 0.0,
+   "machines": 5,
+   "reconfigs": 0,
+   "relocations": 13
+  },
+  "gain_interval": [
+   1420.0,
+   1420.0
+  ],
+  "gain_point": 1420.0,
+  "gain_pct_point": 6.45,
+  "gain_pct_lb": 6.45,
+  "mhc_slack_off": 0.0,
+  "delta": {
+   "purchase": 695.0,
+   "reconfig": 725.0,
+   "mhc": 0.0
+  },
+  "elapsed": 44.3
+ },
+ {
+  "id": "Y_seqrev_cmh50",
+  "base": "youssef_2007",
+  "hypothesis": "c_mh 50: 절대 이득이 435에서 안 움직이는지 확인 (c_mh 무효 가설 검증)",
+  "time_limit": 300,
+  "mhc_lb": 99000.0,
+  "mhc_lb_detail": {
+   "A": {
+    "min_path": 9.0,
+    "total_demand": 110.0,
+    "mhc_lb": 49500.0
+   },
+   "Ar": {
+    "min_path": 9.0,
+    "total_demand": 110.0,
+    "mhc_lb": 49500.0
+   }
+  },
+  "P": 20,
+  "F": 20,
+  "T": 4,
+  "ops": [
+   1,
+   5,
+   15,
+   60
+  ],
+  "off": {
+   "status": "OPTIMAL",
+   "obj": 102720.0,
+   "bound": 102720.0,
+   "gap": 0.0,
+   "lp": 101091.145833,
+   "runtime": 2.0,
+   "wall": 2.7,
+   "vars": 11600,
+   "binary": 6560,
+   "purchase": 3670.0,
+   "reconfig": 50.0,
+   "mhc": 99000.0,
+   "move": 0.0,
+   "machines": 5,
+   "reconfigs": 1,
+   "relocations": 0
+  },
+  "joint": {
+   "status": "OPTIMAL",
+   "obj": 102285.0,
+   "bound": 102285.0,
+   "gap": 0.0,
+   "lp": 100817.864583,
+   "runtime": 9.7,
+   "wall": 11.1,
+   "vars": 21860,
+   "binary": 16820,
+   "purchase": 3285.0,
+   "reconfig": 0.0,
+   "mhc": 99000.0,
+   "move": 0.0,
+   "machines": 4,
+   "reconfigs": 0,
+   "relocations": 8
+  },
+  "gain_interval": [
+   435.0,
+   435.0
+  ],
+  "gain_point": 435.0,
+  "gain_pct_point": 0.42,
+  "gain_pct_lb": 0.42,
+  "mhc_slack_off": 0.0,
+  "delta": {
+   "purchase": 385.0,
+   "reconfig": 50.0,
+   "mhc": 0.0
+  },
+  "elapsed": 13.9
+ },
+ {
+  "id": "Y_seqrev_spec_T8_x2",
+  "base": "youssef_2007",
+  "hypothesis": "최대 결합: 역전 + 특화 + 8기간 + 수요x2",
+  "time_limit": 300,
+  "mhc_lb": 31680.0,
+  "mhc_lb_detail": {
+   "A": {
+    "min_path": 9.0,
+    "total_demand": 440.0,
+    "mhc_lb": 15840.0
+   },
+   "Ar": {
+    "min_path": 9.0,
+    "total_demand": 440.0,
+    "mhc_lb": 15840.0
+   }
+  },
+  "P": 20,
+  "F": 20,
+  "T": 8,
+  "ops": [
+   1,
+   5,
+   15,
+   60
+  ],
+  "off": {
+   "status": "OPTIMAL",
+   "obj": 40700.0,
+   "bound": 40700.0,
+   "gap": 0.0,
+   "lp": 36377.916667,
+   "runtime": 26.3,
+   "wall": 27.9,
+   "vars": 23760,
+   "binary": 13680,
+   "purchase": 8870.0,
+   "reconfig": 150.0,
+   "mhc": 31680.0,
+   "move": 0.0,
+   "machines": 10,
+   "reconfigs": 2,
+   "relocations": 0
+  },
+  "joint": {
+   "status": "OPTIMAL",
+   "obj": 36425.0,
+   "bound": 36425.0,
+   "gap": 0.0,
+   "lp": 35315.729167,
+   "runtime": 44.1,
+   "wall": 49.4,
+   "vars": 76960,
+   "binary": 66880,
+   "purchase": 4745.0,
+   "reconfig": 0.0,
+   "mhc": 31680.0,
+   "move": 0.0,
+   "machines": 5,
+   "reconfigs": 0,
+   "relocations": 33
+  },
+  "gain_interval": [
+   4275.0,
+   4275.0
+  ],
+  "gain_point": 4275.0,
+  "gain_pct_point": 10.5,
+  "gain_pct_lb": 10.5,
+  "mhc_slack_off": 0.0,
+  "delta": {
+   "purchase": 4125.0,
+   "reconfig": 150.0,
+   "mhc": 0.0
+  },
+  "elapsed": 77.4
+ },
+ {
+  "id": "M_seqrev_15slot",
+  "base": "multi_part",
+  "hypothesis": "multi_part 탐색: A 정방향(2>12>17), C 역방향(8>11>12>2)으로 교대, 15슬롯으로 축소해 5분 안에 증명 시도",
+  "time_limit": 300,
+  "mhc_lb": 5760.0,
+  "mhc_lb_detail": {
+   "A": {
+    "min_path": 9.0,
+    "total_demand": 80.0,
+    "mhc_lb": 2880.0
+   },
+   "Cr": {
+    "min_path": 9.0,
+    "total_demand": 80.0,
+    "mhc_lb": 2880.0
+   }
+  },
+  "P": 15,
+  "F": 20,
+  "T": 4,
+  "ops": [
+   2,
+   8,
+   11,
+   12,
+   17
+  ],
+  "off": {
+   "status": "OPTIMAL",
+   "obj": 16190.0,
+   "bound": 16190.0,
+   "gap": 0.0,
+   "lp": 14971.527078,
+   "runtime": 89.8,
+   "wall": 90.7,
+   "vars": 5370,
+   "binary": 2850,
+   "purchase": 8400.0,
+   "reconfig": 1450.0,
+   "mhc": 6340.0,
+   "move": 0.0,
+   "machines": 8,
+   "reconfigs": 6,
+   "relocations": 0
+  },
+  "joint": {
+   "status": "OPTIMAL",
+   "obj": 15450.0,
+   "bound": 15450.0,
+   "gap": 0.0,
+   "lp": 14415.646061,
+   "runtime": 217.4,
+   "wall": 219.1,
+   "vars": 12300,
+   "binary": 9780,
+   "purchase": 7940.0,
+   "reconfig": 1750.0,
+   "mhc": 5760.0,
+   "move": 0.0,
+   "machines": 8,
+   "reconfigs": 6,
+   "relocations": 20
+  },
+  "gain_interval": [
+   740.0,
+   740.0
+  ],
+  "gain_point": 740.0,
+  "gain_pct_point": 4.57,
+  "gain_pct_lb": 4.57,
+  "mhc_slack_off": 580.0,
+  "delta": {
+   "purchase": 460.0,
+   "reconfig": -300.0,
+   "mhc": 580.0
+  },
+  "elapsed": 310.0
+ },
+ {
+  "id": "Y_seqrev_spec_x2",
+  "base": "youssef_2007",
+  "hypothesis": "최대치: 역전+특화+수요x2 (c_mh 4)",
+  "time_limit": 300,
+  "mhc_lb": 15840.0,
+  "mhc_lb_detail": {
+   "A": {
+    "min_path": 9.0,
+    "total_demand": 220.0,
+    "mhc_lb": 7920.0
+   },
+   "Ar": {
+    "min_path": 9.0,
+    "total_demand": 220.0,
+    "mhc_lb": 7920.0
+   }
+  },
+  "P": 20,
+  "F": 20,
+  "T": 4,
+  "ops": [
+   1,
+   5,
+   15,
+   60
+  ],
+  "off": {
+   "status": "OPTIMAL",
+   "obj": 24370.0,
+   "bound": 24370.0,
+   "gap": 0.0,
+   "lp": 20537.916667,
+   "runtime": 27.6,
+   "wall": 28.3,
+   "vars": 11360,
+   "binary": 6320,
+   "purchase": 5820.0,
+   "reconfig": 150.0,
+   "mhc": 18400.0,
+   "move": 0.0,
+   "machines": 7,
+   "reconfigs": 2,
+   "relocations": 0,
+   "move_distance": 0
+  },
+  "move_cost_flat": 0.0,
+  "joint": {
+   "status": "OPTIMAL",
+   "obj": 20585.0,
+   "bound": 20585.0,
+   "gap": 0.0,
+   "lp": 19475.729167,
+   "runtime": 25.7,
+   "wall": 28.3,
+   "vars": 34160,
+   "binary": 29120,
+   "purchase": 4745.0,
+   "reconfig": 0.0,
+   "mhc": 15840.0,
+   "move": 0.0,
+   "machines": 5,
+   "reconfigs": 0,
+   "relocations": 13,
+   "move_distance": 41.0
+  },
+  "gain_interval": [
+   3785.0,
+   3785.0
+  ],
+  "gain_point": 3785.0,
+  "gain_pct_point": 15.53,
+  "gain_pct_lb": 15.53,
+  "mhc_slack_off": 2560.0,
+  "delta": {
+   "purchase": 1075.0,
+   "reconfig": 150.0,
+   "mhc": 2560.0
+  },
+  "elapsed": 56.7
+ },
+ {
+  "id": "Y_seqrev_spec_x3",
+  "base": "youssef_2007",
+  "hypothesis": "최대치: 역전+특화+수요x3",
+  "time_limit": 300,
+  "mhc_lb": 23760.0,
+  "mhc_lb_detail": {
+   "A": {
+    "min_path": 9.0,
+    "total_demand": 330.0,
+    "mhc_lb": 11880.0
+   },
+   "Ar": {
+    "min_path": 9.0,
+    "total_demand": 330.0,
+    "mhc_lb": 11880.0
+   }
+  },
+  "P": 20,
+  "F": 20,
+  "T": 4,
+  "ops": [
+   1,
+   5,
+   15,
+   60
+  ],
+  "off": {
+   "status": "OPTIMAL",
+   "obj": 35160.0,
+   "bound": 35160.0,
+   "gap": 0.0,
+   "lp": 31123.4375,
+   "runtime": 32.2,
+   "wall": 33.4,
+   "vars": 11360,
+   "binary": 6320,
+   "purchase": 8310.0,
+   "reconfig": 350.0,
+   "mhc": 26500.0,
+   "move": 0.0,
+   "machines": 9,
+   "reconfigs": 4,
+   "relocations": 0,
+   "move_distance": 0
+  },
+  "move_cost_flat": 0.0,
+  "joint": {
+   "status": "TIME_LIMIT",
+   "obj": 31790.0,
+   "bound": 31083.833353,
+   "gap": 0.022213,
+   "lp": 29213.59375,
+   "runtime": 300.1,
+   "wall": 302.9,
+   "vars": 34160,
+   "binary": 29120,
+   "purchase": 8030.0,
+   "reconfig": 0.0,
+   "mhc": 23760.0,
+   "move": 0.0,
+   "machines": 9,
+   "reconfigs": 0,
+   "relocations": 24,
+   "move_distance": 82.0
+  },
+  "gain_interval": [
+   3370.0,
+   4076.2
+  ],
+  "gain_point": 3370.0,
+  "gain_pct_point": 9.58,
+  "gain_pct_lb": 9.58,
+  "mhc_slack_off": 2740.0,
+  "delta": {
+   "purchase": 280.0,
+   "reconfig": 350.0,
+   "mhc": 2740.0
+  },
+  "elapsed": 336.4
+ },
+ {
+  "id": "Y_allrev_withB",
+  "base": "youssef_2007",
+  "hypothesis": "B 문제: B도 같이 역전(모든 흐름이 함께 뒤집힘) - 정방향 앵커 제거",
+  "time_limit": 300,
+  "mhc_lb": 15520.0,
+  "mhc_lb_detail": {
+   "A": {
+    "min_path": 9.0,
+    "total_demand": 110.0,
+    "mhc_lb": 3960.0
+   },
+   "Ar": {
+    "min_path": 9.0,
+    "total_demand": 110.0,
+    "mhc_lb": 3960.0
+   },
+   "B": {
+    "min_path": 10.0,
+    "total_demand": 90.0,
+    "mhc_lb": 3600.0
+   },
+   "Br": {
+    "min_path": 10.0,
+    "total_demand": 100.0,
+    "mhc_lb": 4000.0
+   }
+  },
+  "P": 20,
+  "F": 36,
+  "T": 4,
+  "ops": [
+   1,
+   5,
+   6,
+   9,
+   12,
+   15,
+   16,
+   60
+  ],
+  "off": {
+   "status": "OPTIMAL",
+   "obj": 24120.0,
+   "bound": 24120.0,
+   "gap": 0.0,
+   "lp": 20580.086806,
+   "runtime": 147.0,
+   "wall": 149.3,
+   "vars": 23280,
+   "binary": 11760,
+   "purchase": 7730.0,
+   "reconfig": 150.0,
+   "mhc": 16240.0,
+   "move": 0.0,
+   "machines": 9,
+   "reconfigs": 3,
+   "relocations": 0,
+   "move_distance": 0
+  },
+  "move_cost_flat": 0.0,
+  "joint": {
+   "status": "OPTIMAL",
+   "obj": 23250.0,
+   "bound": 23250.0,
+   "gap": 0.0,
+   "lp": 20557.170139,
+   "runtime": 86.9,
+   "wall": 90.8,
+   "vars": 33540,
+   "binary": 22020,
+   "purchase": 7730.0,
+   "reconfig": 0.0,
+   "mhc": 15520.0,
+   "move": 0.0,
+   "machines": 9,
+   "reconfigs": 0,
+   "relocations": 20,
+   "move_distance": 37.0
+  },
+  "gain_interval": [
+   870.0,
+   870.0
+  ],
+  "gain_point": 870.0,
+  "gain_pct_point": 3.61,
+  "gain_pct_lb": 3.61,
+  "mhc_slack_off": 720.0,
+  "delta": {
+   "purchase": 0.0,
+   "reconfig": 150.0,
+   "mhc": 720.0
+  },
+  "elapsed": 240.4
+ },
+ {
+  "id": "Y_seqrev_withB_spec",
+  "base": "youssef_2007",
+  "hypothesis": "B 문제: 정방향 B 유지 + 특화 - 특화가 B의 앵커 효과를 이기나",
+  "time_limit": 300,
+  "mhc_lb": 13720.0,
+  "mhc_lb_detail": {
+   "A": {
+    "min_path": 9.0,
+    "total_demand": 110.0,
+    "mhc_lb": 3960.0
+   },
+   "Ar": {
+    "min_path": 9.0,
+    "total_demand": 110.0,
+    "mhc_lb": 3960.0
+   },
+   "B": {
+    "min_path": 10.0,
+    "total_demand": 145.0,
+    "mhc_lb": 5800.0
+   }
+  },
+  "P": 20,
+  "F": 36,
+  "T": 4,
+  "ops": [
+   1,
+   5,
+   6,
+   9,
+   12,
+   15,
+   16,
+   60
+  ],
+  "off": {
+   "status": "OPTIMAL",
+   "obj": 24070.0,
+   "bound": 24070.0,
+   "gap": 0.0,
+   "lp": 19385.243056,
+   "runtime": 52.9,
+   "wall": 55.3,
+   "vars": 21420,
+   "binary": 11040,
+   "purchase": 8590.0,
+   "reconfig": 0.0,
+   "mhc": 15480.0,
+   "move": 0.0,
+   "machines": 10,
+   "reconfigs": 0,
+   "relocations": 0,
+   "move_distance": 0
+  },
+  "move_cost_flat": 0.0,
+  "joint": {
+   "status": "OPTIMAL",
+   "obj": 22110.0,
+   "bound": 22110.0,
+   "gap": 0.0,
+   "lp": 18903.836806,
+   "runtime": 299.1,
+   "wall": 304.7,
+   "vars": 62460,
+   "binary": 52080,
+   "purchase": 7730.0,
+   "reconfig": 0.0,
+   "mhc": 14380.0,
+   "move": 0.0,
+   "machines": 9,
+   "reconfigs": 0,
+   "relocations": 22,
+   "move_distance": 72.0
+  },
+  "gain_interval": [
+   1960.0,
+   1960.0
+  ],
+  "gain_point": 1960.0,
+  "gain_pct_point": 8.14,
+  "gain_pct_lb": 8.14,
+  "mhc_slack_off": 1760.0,
+  "delta": {
+   "purchase": 860.0,
+   "reconfig": 0,
+   "mhc": 1100.0
+  },
+  "elapsed": 360.5
+ },
+ {
+  "id": "M_seqrev_15slot_spec",
+  "base": "multi_part",
+  "hypothesis": "multi_part 역전 + 특화",
+  "time_limit": 300,
+  "mhc_lb": 5760.0,
+  "mhc_lb_detail": {
+   "A": {
+    "min_path": 9.0,
+    "total_demand": 80.0,
+    "mhc_lb": 2880.0
+   },
+   "Cr": {
+    "min_path": 9.0,
+    "total_demand": 80.0,
+    "mhc_lb": 2880.0
+   }
+  },
+  "P": 15,
+  "F": 20,
+  "T": 4,
+  "ops": [
+   2,
+   8,
+   11,
+   12,
+   17
+  ],
+  "off": {
+   "status": "OPTIMAL",
+   "obj": 19252.0,
+   "bound": 19252.0,
+   "gap": 0.0,
+   "lp": 17868.818182,
+   "runtime": 12.2,
+   "wall": 12.4,
+   "vars": 4200,
+   "binary": 1680,
+   "purchase": 12660.0,
+   "reconfig": 0.0,
+   "mhc": 6592.0,
+   "move": 0.0,
+   "machines": 11,
+   "reconfigs": 0,
+   "relocations": 0,
+   "move_distance": 0
+  },
+  "move_cost_flat": 0.0,
+  "joint": {
+   "status": "TIME_LIMIT",
+   "obj": 18448.0,
+   "bound": 18420.980837,
+   "gap": 0.001465,
+   "lp": 17196.272727,
+   "runtime": 300.2,
+   "wall": 301.1,
+   "vars": 16800,
+   "binary": 14280,
+   "purchase": 12560.0,
+   "reconfig": 0.0,
+   "mhc": 5888.0,
+   "move": 0.0,
+   "machines": 12,
+   "reconfigs": 0,
+   "relocations": 34,
+   "move_distance": 97.0
+  },
+  "gain_interval": [
+   804.0,
+   831.0
+  ],
+  "gain_point": 804.0,
+  "gain_pct_point": 4.18,
+  "gain_pct_lb": 4.18,
+  "mhc_slack_off": 832.0,
+  "delta": {
+   "purchase": 100.0,
+   "reconfig": 0,
+   "mhc": 704.0
+  },
+  "elapsed": 313.6
+ },
+ {
+  "id": "M_allrev_15slot",
+  "base": "multi_part",
+  "hypothesis": "multi_part 3부품 전부 교대 역전 (A/Ar, B/Br, C/Cr), 15슬롯",
+  "time_limit": 300,
+  "mhc_lb": 13860.0,
+  "mhc_lb_detail": {
+   "A": {
+    "min_path": 9.0,
+    "total_demand": 35.0,
+    "mhc_lb": 1260.0
+   },
+   "Ar": {
+    "min_path": 9.0,
+    "total_demand": 45.0,
+    "mhc_lb": 1620.0
+   },
+   "B": {
+    "min_path": 9.0,
+    "total_demand": 95.0,
+    "mhc_lb": 3420.0
+   },
+   "Br": {
+    "min_path": 9.0,
+    "total_demand": 90.0,
+    "mhc_lb": 3240.0
+   },
+   "C": {
+    "min_path": 9.0,
+    "total_demand": 40.0,
+    "mhc_lb": 1440.0
+   },
+   "Cr": {
+    "min_path": 9.0,
+    "total_demand": 80.0,
+    "mhc_lb": 2880.0
+   }
+  },
+  "P": 15,
+  "F": 20,
+  "T": 4,
+  "ops": [
+   2,
+   8,
+   11,
+   12,
+   17
+  ],
+  "off": {
+   "status": "INFEASIBLE",
+   "obj": null,
+   "bound": null,
+   "gap": null,
+   "lp": null,
+   "runtime": 0.8,
+   "wall": 1.2,
+   "vars": 6525,
+   "binary": 2850,
+   "purchase": null,
+   "reconfig": null,
+   "mhc": null,
+   "move": null,
+   "machines": 0,
+   "reconfigs": 0,
+   "relocations": 0,
+   "move_distance": 0
+  },
+  "move_cost_flat": 0.0,
+  "joint": {
+   "status": "INFEASIBLE",
+   "obj": null,
+   "bound": null,
+   "gap": null,
+   "lp": null,
+   "runtime": 0.8,
+   "wall": 2.1,
+   "vars": 13455,
+   "binary": 9780,
+   "purchase": null,
+   "reconfig": null,
+   "mhc": null,
+   "move": null,
+   "machines": 0,
+   "reconfigs": 0,
+   "relocations": 0,
+   "move_distance": 0
+  },
+  "elapsed": 3.4
+ },
+ {
+  "id": "Y_seqrev_spec_mc5",
+  "base": "youssef_2007",
+  "hypothesis": "손익분기: Y_seqrev_spec, 이동비 거리당 5",
+  "time_limit": 300,
+  "mhc_lb": 7920.0,
+  "mhc_lb_detail": {
+   "A": {
+    "min_path": 9.0,
+    "total_demand": 110.0,
+    "mhc_lb": 3960.0
+   },
+   "Ar": {
+    "min_path": 9.0,
+    "total_demand": 110.0,
+    "mhc_lb": 3960.0
+   }
+  },
+  "P": 20,
+  "F": 20,
+  "T": 4,
+  "ops": [
+   1,
+   5,
+   15,
+   60
+  ],
+  "off": {
+   "status": "OPTIMAL",
+   "obj": 13380.0,
+   "bound": 13380.0,
+   "gap": 0.0,
+   "lp": 10268.958333,
+   "runtime": 5.9,
+   "wall": 6.6,
+   "vars": 11360,
+   "binary": 6320,
+   "purchase": 4530.0,
+   "reconfig": 50.0,
+   "mhc": 8800.0,
+   "move": 0.0,
+   "machines": 6,
+   "reconfigs": 1,
+   "relocations": 0,
+   "move_distance": 0
+  },
+  "move_cost_flat": 5.0,
+  "joint": {
+   "status": "OPTIMAL",
+   "obj": 11325.0,
+   "bound": 11325.0,
+   "gap": 0.0,
+   "lp": 9765.364583,
+   "runtime": 4.1,
+   "wall": 5.2,
+   "vars": 34160,
+   "binary": 29120,
+   "purchase": 3285.0,
+   "reconfig": 0.0,
+   "mhc": 7920.0,
+   "move": 120.0,
+   "machines": 4,
+   "reconfigs": 0,
+   "relocations": 9,
+   "move_distance": 24.0
+  },
+  "gain_interval": [
+   2055.0,
+   2055.0
+  ],
+  "gain_point": 2055.0,
+  "gain_pct_point": 15.36,
+  "gain_pct_lb": 15.36,
+  "mhc_slack_off": 880.0,
+  "delta": {
+   "purchase": 1245.0,
+   "reconfig": 50.0,
+   "mhc": 880.0
+  },
+  "elapsed": 11.8
+ },
+ {
+  "id": "Y_seqrev_spec_mc20",
+  "base": "youssef_2007",
+  "hypothesis": "손익분기: 이동비 거리당 20",
+  "time_limit": 300,
+  "mhc_lb": 7920.0,
+  "mhc_lb_detail": {
+   "A": {
+    "min_path": 9.0,
+    "total_demand": 110.0,
+    "mhc_lb": 3960.0
+   },
+   "Ar": {
+    "min_path": 9.0,
+    "total_demand": 110.0,
+    "mhc_lb": 3960.0
+   }
+  },
+  "P": 20,
+  "F": 20,
+  "T": 4,
+  "ops": [
+   1,
+   5,
+   15,
+   60
+  ],
+  "off": {
+   "status": "OPTIMAL",
+   "obj": 13380.0,
+   "bound": 13380.0,
+   "gap": 0.0,
+   "lp": 10268.958333,
+   "runtime": 5.8,
+   "wall": 6.1,
+   "vars": 11360,
+   "binary": 6320,
+   "purchase": 4530.0,
+   "reconfig": 50.0,
+   "mhc": 8800.0,
+   "move": 0.0,
+   "machines": 6,
+   "reconfigs": 1,
+   "relocations": 0,
+   "move_distance": 0
+  },
+  "move_cost_flat": 20.0,
+  "joint": {
+   "status": "OPTIMAL",
+   "obj": 11685.0,
+   "bound": 11685.0,
+   "gap": 0.0,
+   "lp": 9847.864583,
+   "runtime": 3.3,
+   "wall": 4.4,
+   "vars": 34160,
+   "binary": 29120,
+   "purchase": 3285.0,
+   "reconfig": 0.0,
+   "mhc": 7920.0,
+   "move": 480.0,
+   "machines": 4,
+   "reconfigs": 0,
+   "relocations": 9,
+   "move_distance": 24.0
+  },
+  "gain_interval": [
+   1695.0,
+   1695.0
+  ],
+  "gain_point": 1695.0,
+  "gain_pct_point": 12.67,
+  "gain_pct_lb": 12.67,
+  "mhc_slack_off": 880.0,
+  "delta": {
+   "purchase": 1245.0,
+   "reconfig": 50.0,
+   "mhc": 880.0
+  },
+  "elapsed": 10.6
+ },
+ {
+  "id": "Y_seqrev_spec_mc50",
+  "base": "youssef_2007",
+  "hypothesis": "손익분기: 이동비 거리당 50",
+  "time_limit": 300,
+  "mhc_lb": 7920.0,
+  "mhc_lb_detail": {
+   "A": {
+    "min_path": 9.0,
+    "total_demand": 110.0,
+    "mhc_lb": 3960.0
+   },
+   "Ar": {
+    "min_path": 9.0,
+    "total_demand": 110.0,
+    "mhc_lb": 3960.0
+   }
+  },
+  "P": 20,
+  "F": 20,
+  "T": 4,
+  "ops": [
+   1,
+   5,
+   15,
+   60
+  ],
+  "off": {
+   "status": "OPTIMAL",
+   "obj": 13380.0,
+   "bound": 13380.0,
+   "gap": 0.0,
+   "lp": 10268.958333,
+   "runtime": 6.4,
+   "wall": 6.8,
+   "vars": 11360,
+   "binary": 6320,
+   "purchase": 4530.0,
+   "reconfig": 50.0,
+   "mhc": 8800.0,
+   "move": 0.0,
+   "machines": 6,
+   "reconfigs": 1,
+   "relocations": 0,
+   "move_distance": 0
+  },
+  "move_cost_flat": 50.0,
+  "joint": {
+   "status": "OPTIMAL",
+   "obj": 12405.0,
+   "bound": 12405.0,
+   "gap": 0.0,
+   "lp": 10012.864583,
+   "runtime": 5.7,
+   "wall": 7.0,
+   "vars": 34160,
+   "binary": 29120,
+   "purchase": 3285.0,
+   "reconfig": 0.0,
+   "mhc": 7920.0,
+   "move": 1200.0,
+   "machines": 4,
+   "reconfigs": 0,
+   "relocations": 9,
+   "move_distance": 24.0
+  },
+  "gain_interval": [
+   975.0,
+   975.0
+  ],
+  "gain_point": 975.0,
+  "gain_pct_point": 7.29,
+  "gain_pct_lb": 7.29,
+  "mhc_slack_off": 880.0,
+  "delta": {
+   "purchase": 1245.0,
+   "reconfig": 50.0,
+   "mhc": 880.0
+  },
+  "elapsed": 13.9
+ },
+ {
+  "id": "Y_seqrev_spec_mc100",
+  "base": "youssef_2007",
+  "hypothesis": "손익분기: 이동비 거리당 100",
+  "time_limit": 300,
+  "mhc_lb": 7920.0,
+  "mhc_lb_detail": {
+   "A": {
+    "min_path": 9.0,
+    "total_demand": 110.0,
+    "mhc_lb": 3960.0
+   },
+   "Ar": {
+    "min_path": 9.0,
+    "total_demand": 110.0,
+    "mhc_lb": 3960.0
+   }
+  },
+  "P": 20,
+  "F": 20,
+  "T": 4,
+  "ops": [
+   1,
+   5,
+   15,
+   60
+  ],
+  "off": {
+   "status": "OPTIMAL",
+   "obj": 13380.0,
+   "bound": 13380.0,
+   "gap": 0.0,
+   "lp": 10268.958333,
+   "runtime": 5.6,
+   "wall": 6.0,
+   "vars": 11360,
+   "binary": 6320,
+   "purchase": 4530.0,
+   "reconfig": 50.0,
+   "mhc": 8800.0,
+   "move": 0.0,
+   "machines": 6,
+   "reconfigs": 1,
+   "relocations": 0,
+   "move_distance": 0
+  },
+  "move_cost_flat": 100.0,
+  "joint": {
+   "status": "OPTIMAL",
+   "obj": 13265.0,
+   "bound": 13265.0,
+   "gap": 0.0,
+   "lp": 10221.979167,
+   "runtime": 28.4,
+   "wall": 29.4,
+   "vars": 34160,
+   "binary": 29120,
+   "purchase": 4145.0,
+   "reconfig": 0.0,
+   "mhc": 7920.0,
+   "move": 1200.0,
+   "machines": 5,
+   "reconfigs": 0,
+   "relocations": 6,
+   "move_distance": 12.0
+  },
+  "gain_interval": [
+   115.0,
+   115.0
+  ],
+  "gain_point": 115.0,
+  "gain_pct_point": 0.86,
+  "gain_pct_lb": 0.86,
+  "mhc_slack_off": 880.0,
+  "delta": {
+   "purchase": 385.0,
+   "reconfig": 50.0,
+   "mhc": 880.0
+  },
+  "elapsed": 35.5
+ },
+ {
+  "id": "Y_seqrev_spec_mc200",
+  "base": "youssef_2007",
+  "hypothesis": "손익분기: 이동비 거리당 200",
+  "time_limit": 300,
+  "mhc_lb": 7920.0,
+  "mhc_lb_detail": {
+   "A": {
+    "min_path": 9.0,
+    "total_demand": 110.0,
+    "mhc_lb": 3960.0
+   },
+   "Ar": {
+    "min_path": 9.0,
+    "total_demand": 110.0,
+    "mhc_lb": 3960.0
+   }
+  },
+  "P": 20,
+  "F": 20,
+  "T": 4,
+  "ops": [
+   1,
+   5,
+   15,
+   60
+  ],
+  "off": {
+   "status": "OPTIMAL",
+   "obj": 13380.0,
+   "bound": 13380.0,
+   "gap": 0.0,
+   "lp": 10268.958333,
+   "runtime": 5.7,
+   "wall": 6.2,
+   "vars": 11360,
+   "binary": 6320,
+   "purchase": 4530.0,
+   "reconfig": 50.0,
+   "mhc": 8800.0,
+   "move": 0.0,
+   "machines": 6,
+   "reconfigs": 1,
+   "relocations": 0,
+   "move_distance": 0
+  },
+  "move_cost_flat": 200.0,
+  "joint": {
+   "status": "OPTIMAL",
+   "obj": 13380.0,
+   "bound": 13380.0,
+   "gap": 0.0,
+   "lp": 10268.958333,
+   "runtime": 26.3,
+   "wall": 27.3,
+   "vars": 34160,
+   "binary": 29120,
+   "purchase": 4360.0,
+   "reconfig": 100.0,
+   "mhc": 8920.0,
+   "move": 0.0,
+   "machines": 6,
+   "reconfigs": 2,
+   "relocations": 0,
+   "move_distance": 0
+  },
+  "gain_interval": [
+   0.0,
+   0.0
+  ],
+  "gain_point": 0.0,
+  "gain_pct_point": 0.0,
+  "gain_pct_lb": 0.0,
+  "mhc_slack_off": 880.0,
+  "delta": {
+   "purchase": 170.0,
+   "reconfig": -50.0,
+   "mhc": -120.0
+  },
+  "elapsed": 33.6
+ },
+ {
+  "id": "Y_seqrev_mc5",
+  "base": "youssef_2007",
+  "hypothesis": "손익분기(비특화): Y_seqrev, 이동비 거리당 5",
+  "time_limit": 300,
+  "mhc_lb": 7920.0,
+  "mhc_lb_detail": {
+   "A": {
+    "min_path": 9.0,
+    "total_demand": 110.0,
+    "mhc_lb": 3960.0
+   },
+   "Ar": {
+    "min_path": 9.0,
+    "total_demand": 110.0,
+    "mhc_lb": 3960.0
+   }
+  },
+  "P": 20,
+  "F": 20,
+  "T": 4,
+  "ops": [
+   1,
+   5,
+   15,
+   60
+  ],
+  "off": {
+   "status": "OPTIMAL",
+   "obj": 11640.0,
+   "bound": 11640.0,
+   "gap": 0.0,
+   "lp": 10011.145833,
+   "runtime": 2.5,
+   "wall": 3.0,
+   "vars": 11600,
+   "binary": 6560,
+   "purchase": 3500.0,
+   "reconfig": 100.0,
+   "mhc": 8040.0,
+   "move": 0.0,
+   "machines": 5,
+   "reconfigs": 2,
+   "relocations": 0,
+   "move_distance": 0
+  },
+  "move_cost_flat": 5.0,
+  "joint": {
+   "status": "OPTIMAL",
+   "obj": 11235.0,
+   "bound": 11235.0,
+   "gap": 0.0,
+   "lp": 9755.052083,
+   "runtime": 3.5,
+   "wall": 4.3,
+   "vars": 21860,
+   "binary": 16820,
+   "purchase": 3285.0,
+   "reconfig": 0.0,
+   "mhc": 7920.0,
+   "move": 30.0,
+   "machines": 4,
+   "reconfigs": 0,
+   "relocations": 4,
+   "move_distance": 6.0
+  },
+  "gain_interval": [
+   405.0,
+   405.0
+  ],
+  "gain_point": 405.0,
+  "gain_pct_point": 3.48,
+  "gain_pct_lb": 3.48,
+  "mhc_slack_off": 120.0,
+  "delta": {
+   "purchase": 215.0,
+   "reconfig": 100.0,
+   "mhc": 120.0
+  },
+  "elapsed": 7.4
+ },
+ {
+  "id": "Y_seqrev_mc20",
+  "base": "youssef_2007",
+  "hypothesis": "손익분기(비특화): 이동비 거리당 20",
+  "time_limit": 300,
+  "mhc_lb": 7920.0,
+  "mhc_lb_detail": {
+   "A": {
+    "min_path": 9.0,
+    "total_demand": 110.0,
+    "mhc_lb": 3960.0
+   },
+   "Ar": {
+    "min_path": 9.0,
+    "total_demand": 110.0,
+    "mhc_lb": 3960.0
+   }
+  },
+  "P": 20,
+  "F": 20,
+  "T": 4,
+  "ops": [
+   1,
+   5,
+   15,
+   60
+  ],
+  "off": {
+   "status": "OPTIMAL",
+   "obj": 11640.0,
+   "bound": 11640.0,
+   "gap": 0.0,
+   "lp": 10011.145833,
+   "runtime": 2.8,
+   "wall": 3.3,
+   "vars": 11600,
+   "binary": 6560,
+   "purchase": 3500.0,
+   "reconfig": 100.0,
+   "mhc": 8040.0,
+   "move": 0.0,
+   "machines": 5,
+   "reconfigs": 2,
+   "relocations": 0,
+   "move_distance": 0
+  },
+  "move_cost_flat": 20.0,
+  "joint": {
+   "status": "OPTIMAL",
+   "obj": 11325.0,
+   "bound": 11325.0,
+   "gap": 0.0,
+   "lp": 9806.614583,
+   "runtime": 3.0,
+   "wall": 4.0,
+   "vars": 21860,
+   "binary": 16820,
+   "purchase": 3285.0,
+   "reconfig": 0.0,
+   "mhc": 7920.0,
+   "move": 120.0,
+   "machines": 4,
+   "reconfigs": 0,
+   "relocations": 4,
+   "move_distance": 6.0
+  },
+  "gain_interval": [
+   315.0,
+   315.0
+  ],
+  "gain_point": 315.0,
+  "gain_pct_point": 2.71,
+  "gain_pct_lb": 2.71,
+  "mhc_slack_off": 120.0,
+  "delta": {
+   "purchase": 215.0,
+   "reconfig": 100.0,
+   "mhc": 120.0
+  },
+  "elapsed": 7.4
+ },
+ {
+  "id": "Y_seqrev_mc50",
+  "base": "youssef_2007",
+  "hypothesis": "손익분기(비특화): 이동비 거리당 50",
+  "time_limit": 300,
+  "mhc_lb": 7920.0,
+  "mhc_lb_detail": {
+   "A": {
+    "min_path": 9.0,
+    "total_demand": 110.0,
+    "mhc_lb": 3960.0
+   },
+   "Ar": {
+    "min_path": 9.0,
+    "total_demand": 110.0,
+    "mhc_lb": 3960.0
+   }
+  },
+  "P": 20,
+  "F": 20,
+  "T": 4,
+  "ops": [
+   1,
+   5,
+   15,
+   60
+  ],
+  "off": {
+   "status": "OPTIMAL",
+   "obj": 11640.0,
+   "bound": 11640.0,
+   "gap": 0.0,
+   "lp": 10011.145833,
+   "runtime": 2.7,
+   "wall": 3.2,
+   "vars": 11600,
+   "binary": 6560,
+   "purchase": 3500.0,
+   "reconfig": 100.0,
+   "mhc": 8040.0,
+   "move": 0.0,
+   "machines": 5,
+   "reconfigs": 2,
+   "relocations": 0,
+   "move_distance": 0
+  },
+  "move_cost_flat": 50.0,
+  "joint": {
+   "status": "OPTIMAL",
+   "obj": 11505.0,
+   "bound": 11505.0,
+   "gap": 0.0,
+   "lp": 9909.739583,
+   "runtime": 3.7,
+   "wall": 4.6,
+   "vars": 21860,
+   "binary": 16820,
+   "purchase": 3285.0,
+   "reconfig": 0.0,
+   "mhc": 7920.0,
+   "move": 300.0,
+   "machines": 4,
+   "reconfigs": 0,
+   "relocations": 4,
+   "move_distance": 6.0
+  },
+  "gain_interval": [
+   135.0,
+   135.0
+  ],
+  "gain_point": 135.0,
+  "gain_pct_point": 1.16,
+  "gain_pct_lb": 1.16,
+  "mhc_slack_off": 120.0,
+  "delta": {
+   "purchase": 215.0,
+   "reconfig": 100.0,
+   "mhc": 120.0
+  },
+  "elapsed": 7.8
+ },
+ {
+  "id": "Y_seqrev_spec_cmh1",
+  "base": "youssef_2007",
+  "hypothesis": "% 천장: c_mh 1 - MHC 비중 축소로 구매중복 이득의 비율 상승 기대",
+  "time_limit": 300,
+  "mhc_lb": 1980.0,
+  "mhc_lb_detail": {
+   "A": {
+    "min_path": 9.0,
+    "total_demand": 110.0,
+    "mhc_lb": 990.0
+   },
+   "Ar": {
+    "min_path": 9.0,
+    "total_demand": 110.0,
+    "mhc_lb": 990.0
+   }
+  },
+  "P": 20,
+  "F": 20,
+  "T": 4,
+  "ops": [
+   1,
+   5,
+   15,
+   60
+  ],
+  "off": {
+   "status": "OPTIMAL",
+   "obj": 5925.0,
+   "bound": 5925.0,
+   "gap": 0.0,
+   "lp": 4178.854167,
+   "runtime": 1.7,
+   "wall": 2.1,
+   "vars": 11360,
+   "binary": 6320,
+   "purchase": 3285.0,
+   "reconfig": 0.0,
+   "mhc": 2640.0,
+   "move": 0.0,
+   "machines": 4,
+   "reconfigs": 0,
+   "relocations": 0,
+   "move_distance": 0
+  },
+  "move_cost_flat": 0.0,
+  "joint": {
+   "status": "OPTIMAL",
+   "obj": 5265.0,
+   "bound": 5265.0,
+   "gap": 0.0,
+   "lp": 3797.864583,
+   "runtime": 4.4,
+   "wall": 5.4,
+   "vars": 34160,
+   "binary": 29120,
+   "purchase": 3285.0,
+   "reconfig": 0.0,
+   "mhc": 1980.0,
+   "move": 0.0,
+   "machines": 4,
+   "reconfigs": 0,
+   "relocations": 12,
+   "move_distance": 37.0
+  },
+  "gain_interval": [
+   660.0,
+   660.0
+  ],
+  "gain_point": 660.0,
+  "gain_pct_point": 11.14,
+  "gain_pct_lb": 11.14,
+  "mhc_slack_off": 660.0,
+  "delta": {
+   "purchase": 0.0,
+   "reconfig": 0,
+   "mhc": 660.0
+  },
+  "elapsed": 7.5
+ },
+ {
+  "id": "Y_seqrev_spec_cmh2",
+  "base": "youssef_2007",
+  "hypothesis": "% 천장: c_mh 2",
+  "time_limit": 300,
+  "mhc_lb": 3960.0,
+  "mhc_lb_detail": {
+   "A": {
+    "min_path": 9.0,
+    "total_demand": 110.0,
+    "mhc_lb": 1980.0
+   },
+   "Ar": {
+    "min_path": 9.0,
+    "total_demand": 110.0,
+    "mhc_lb": 1980.0
+   }
+  },
+  "P": 20,
+  "F": 20,
+  "T": 4,
+  "ops": [
+   1,
+   5,
+   15,
+   60
+  ],
+  "off": {
+   "status": "OPTIMAL",
+   "obj": 8565.0,
+   "bound": 8565.0,
+   "gap": 0.0,
+   "lp": 6308.958333,
+   "runtime": 3.9,
+   "wall": 4.4,
+   "vars": 11360,
+   "binary": 6320,
+   "purchase": 3285.0,
+   "reconfig": 0.0,
+   "mhc": 5280.0,
+   "move": 0.0,
+   "machines": 4,
+   "reconfigs": 0,
+   "relocations": 0,
+   "move_distance": 0
+  },
+  "move_cost_flat": 0.0,
+  "joint": {
+   "status": "OPTIMAL",
+   "obj": 7245.0,
+   "bound": 7245.0,
+   "gap": 0.0,
+   "lp": 5777.864583,
+   "runtime": 8.6,
+   "wall": 10.0,
+   "vars": 34160,
+   "binary": 29120,
+   "purchase": 3285.0,
+   "reconfig": 0.0,
+   "mhc": 3960.0,
+   "move": 0.0,
+   "machines": 4,
+   "reconfigs": 0,
+   "relocations": 11,
+   "move_distance": 33.0
+  },
+  "gain_interval": [
+   1320.0,
+   1320.0
+  ],
+  "gain_point": 1320.0,
+  "gain_pct_point": 15.41,
+  "gain_pct_lb": 15.41,
+  "mhc_slack_off": 1320.0,
+  "delta": {
+   "purchase": 0.0,
+   "reconfig": 0,
+   "mhc": 1320.0
+  },
+  "elapsed": 14.4
+ },
+ {
+  "id": "Y_longrev",
+  "base": "youssef_2007",
+  "hypothesis": "긴 라우트 역전: B(6 op) 정/역 교대, A 없음",
+  "time_limit": 300,
+  "mhc_lb": 8800.0,
+  "mhc_lb_detail": {
+   "B": {
+    "min_path": 10.0,
+    "total_demand": 110.0,
+    "mhc_lb": 4400.0
+   },
+   "Br": {
+    "min_path": 10.0,
+    "total_demand": 110.0,
+    "mhc_lb": 4400.0
+   }
+  },
+  "P": 20,
+  "F": 22,
+  "T": 4,
+  "ops": [
+   1,
+   5,
+   6,
+   9,
+   12,
+   16
+  ],
+  "off": {
+   "status": "OPTIMAL",
+   "obj": 15015.0,
+   "bound": 15015.0,
+   "gap": 0.0,
+   "lp": 12466.255015,
+   "runtime": 17.6,
+   "wall": 18.2,
+   "vars": 15480,
+   "binary": 7240,
+   "purchase": 6165.0,
+   "reconfig": 50.0,
+   "mhc": 8800.0,
+   "move": 0.0,
+   "machines": 7,
+   "reconfigs": 1,
+   "relocations": 0,
+   "move_distance": 0
+  },
+  "move_cost_flat": 0.0,
+  "joint": {
+   "status": "OPTIMAL",
+   "obj": 14105.0,
+   "bound": 14105.0,
+   "gap": 0.0,
+   "lp": 12263.472222,
+   "runtime": 4.1,
+   "wall": 5.1,
+   "vars": 25740,
+   "binary": 17500,
+   "purchase": 5305.0,
+   "reconfig": 0.0,
+   "mhc": 8800.0,
+   "move": 0.0,
+   "machines": 6,
+   "reconfigs": 0,
+   "relocations": 18,
+   "move_distance": 48.0
+  },
+  "gain_interval": [
+   910.0,
+   910.0
+  ],
+  "gain_point": 910.0,
+  "gain_pct_point": 6.06,
+  "gain_pct_lb": 6.06,
+  "mhc_slack_off": 0.0,
+  "delta": {
+   "purchase": 860.0,
+   "reconfig": 50.0,
+   "mhc": 0.0
+  },
+  "elapsed": 23.4
+ },
+ {
+  "id": "Y_longrev_spec",
+  "base": "youssef_2007",
+  "hypothesis": "긴 라우트 역전 + 특화",
+  "time_limit": 300,
+  "mhc_lb": 8800.0,
+  "mhc_lb_detail": {
+   "B": {
+    "min_path": 10.0,
+    "total_demand": 110.0,
+    "mhc_lb": 4400.0
+   },
+   "Br": {
+    "min_path": 10.0,
+    "total_demand": 110.0,
+    "mhc_lb": 4400.0
+   }
+  },
+  "P": 20,
+  "F": 22,
+  "T": 4,
+  "ops": [
+   1,
+   5,
+   6,
+   9,
+   12,
+   16
+  ],
+  "off": {
+   "status": "OPTIMAL",
+   "obj": 17605.0,
+   "bound": 17605.0,
+   "gap": 0.0,
+   "lp": 14050.017361,
+   "runtime": 11.2,
+   "wall": 11.7,
+   "vars": 14760,
+   "binary": 6520,
+   "purchase": 6165.0,
+   "reconfig": 0.0,
+   "mhc": 11440.0,
+   "move": 0.0,
+   "machines": 7,
+   "reconfigs": 0,
+   "relocations": 0,
+   "move_distance": 0
+  },
+  "move_cost_flat": 0.0,
+  "joint": {
+   "status": "OPTIMAL",
+   "obj": 14105.0,
+   "bound": 14105.0,
+   "gap": 0.0,
+   "lp": 12263.472222,
+   "runtime": 6.2,
+   "wall": 7.3,
+   "vars": 39840,
+   "binary": 31600,
+   "purchase": 5305.0,
+   "reconfig": 0.0,
+   "mhc": 8800.0,
+   "move": 0.0,
+   "machines": 6,
+   "reconfigs": 0,
+   "relocations": 18,
+   "move_distance": 54.0
+  },
+  "gain_interval": [
+   3500.0,
+   3500.0
+  ],
+  "gain_point": 3500.0,
+  "gain_pct_point": 19.88,
+  "gain_pct_lb": 19.88,
+  "mhc_slack_off": 2640.0,
+  "delta": {
+   "purchase": 860.0,
+   "reconfig": 0,
+   "mhc": 2640.0
+  },
+  "elapsed": 19.1
+ },
+ {
+  "id": "Y_3dir_T6",
+  "base": "youssef_2007",
+  "hypothesis": "3방향 순환(6기간): 정방향/역방향/회전이 돌아가며 등장 - 정적은 3개 배치를 동시에 만족해야",
+  "time_limit": 300,
+  "mhc_lb": 11880.0,
+  "mhc_lb_detail": {
+   "A": {
+    "min_path": 9.0,
+    "total_demand": 110.0,
+    "mhc_lb": 3960.0
+   },
+   "Ar": {
+    "min_path": 9.0,
+    "total_demand": 110.0,
+    "mhc_lb": 3960.0
+   },
+   "Ac": {
+    "min_path": 9.0,
+    "total_demand": 110.0,
+    "mhc_lb": 3960.0
+   }
+  },
+  "P": 20,
+  "F": 20,
+  "T": 6,
+  "ops": [
+   1,
+   5,
+   15,
+   60
+  ],
+  "off": {
+   "status": "OPTIMAL",
+   "obj": 16005.0,
+   "bound": 16005.0,
+   "gap": 0.0,
+   "lp": 14337.216797,
+   "runtime": 17.3,
+   "wall": 18.1,
+   "vars": 17960,
+   "binary": 10400,
+   "purchase": 3975.0,
+   "reconfig": 150.0,
+   "mhc": 11880.0,
+   "move": 0.0,
+   "machines": 5,
+   "reconfigs": 3,
+   "relocations": 0,
+   "move_distance": 0
+  },
+  "move_cost_flat": 0.0,
+  "joint": {
+   "status": "OPTIMAL",
+   "obj": 15165.0,
+   "bound": 15165.0,
+   "gap": 0.0,
+   "lp": 13697.864583,
+   "runtime": 10.1,
+   "wall": 11.6,
+   "vars": 35060,
+   "binary": 27500,
+   "purchase": 3285.0,
+   "reconfig": 0.0,
+   "mhc": 11880.0,
+   "move": 0.0,
+   "machines": 4,
+   "reconfigs": 0,
+   "relocations": 17,
+   "move_distance": 38.0
+  },
+  "gain_interval": [
+   840.0,
+   840.0
+  ],
+  "gain_point": 840.0,
+  "gain_pct_point": 5.25,
+  "gain_pct_lb": 5.25,
+  "mhc_slack_off": 0.0,
+  "delta": {
+   "purchase": 690.0,
+   "reconfig": 150.0,
+   "mhc": 0.0
+  },
+  "elapsed": 29.7
+ },
+ {
+  "id": "Y_3dir_T6_spec",
+  "base": "youssef_2007",
+  "hypothesis": "3방향 순환 + 특화",
+  "time_limit": 300,
+  "mhc_lb": 11880.0,
+  "mhc_lb_detail": {
+   "A": {
+    "min_path": 9.0,
+    "total_demand": 110.0,
+    "mhc_lb": 3960.0
+   },
+   "Ar": {
+    "min_path": 9.0,
+    "total_demand": 110.0,
+    "mhc_lb": 3960.0
+   },
+   "Ac": {
+    "min_path": 9.0,
+    "total_demand": 110.0,
+    "mhc_lb": 3960.0
+   }
+  },
+  "P": 20,
+  "F": 20,
+  "T": 6,
+  "ops": [
+   1,
+   5,
+   15,
+   60
+  ],
+  "off": {
+   "status": "OPTIMAL",
+   "obj": 18635.0,
+   "bound": 18635.0,
+   "gap": 0.0,
+   "lp": 14852.864583,
+   "runtime": 15.5,
+   "wall": 16.1,
+   "vars": 17560,
+   "binary": 10000,
+   "purchase": 5775.0,
+   "reconfig": 100.0,
+   "mhc": 12760.0,
+   "move": 0.0,
+   "machines": 8,
+   "reconfigs": 2,
+   "relocations": 0,
+   "move_distance": 0
+  },
+  "move_cost_flat": 0.0,
+  "joint": {
+   "status": "OPTIMAL",
+   "obj": 15165.0,
+   "bound": 15165.0,
+   "gap": 0.0,
+   "lp": 13697.864583,
+   "runtime": 13.8,
+   "wall": 15.8,
+   "vars": 55560,
+   "binary": 48000,
+   "purchase": 3285.0,
+   "reconfig": 0.0,
+   "mhc": 11880.0,
+   "move": 0.0,
+   "machines": 4,
+   "reconfigs": 0,
+   "relocations": 19,
+   "move_distance": 54.0
+  },
+  "gain_interval": [
+   3470.0,
+   3470.0
+  ],
+  "gain_point": 3470.0,
+  "gain_pct_point": 18.62,
+  "gain_pct_lb": 18.62,
+  "mhc_slack_off": 880.0,
+  "delta": {
+   "purchase": 2490.0,
+   "reconfig": 100.0,
+   "mhc": 880.0
+  },
+  "elapsed": 31.9
+ },
+ {
+  "id": "Y_Brev_only",
+  "base": "youssef_2007",
+  "hypothesis": "원본에 가깝게: A 원본 그대로 정방향, B만 4기에 역전 (부분 역전의 현실적 사례)",
+  "time_limit": 300,
+  "mhc_lb": 9940.0,
+  "mhc_lb_detail": {
+   "A": {
+    "min_path": 9.0,
+    "total_demand": 115.0,
+    "mhc_lb": 4140.0
+   },
+   "B": {
+    "min_path": 10.0,
+    "total_demand": 90.0,
+    "mhc_lb": 3600.0
+   },
+   "Br": {
+    "min_path": 10.0,
+    "total_demand": 55.0,
+    "mhc_lb": 2200.0
+   }
+  },
+  "P": 20,
+  "F": 36,
+  "T": 4,
+  "ops": [
+   1,
+   5,
+   6,
+   9,
+   12,
+   15,
+   16,
+   60
+  ],
+  "off": {
+   "status": "OPTIMAL",
+   "obj": 17600.0,
+   "bound": 17600.0,
+   "gap": 0.0,
+   "lp": 13832.65625,
+   "runtime": 42.5,
+   "wall": 43.3,
+   "vars": 20960,
+   "binary": 11760,
+   "purchase": 7560.0,
+   "reconfig": 100.0,
+   "mhc": 9940.0,
+   "move": 0.0,
+   "machines": 9,
+   "reconfigs": 2,
+   "relocations": 0,
+   "move_distance": 0
+  },
+  "move_cost_flat": 0.0,
+  "joint": {
+   "status": "OPTIMAL",
+   "obj": 17500.0,
+   "bound": 17500.0,
+   "gap": 0.0,
+   "lp": 13765.3125,
+   "runtime": 14.9,
+   "wall": 16.2,
+   "vars": 31220,
+   "binary": 22020,
+   "purchase": 7560.0,
+   "reconfig": 0.0,
+   "mhc": 9940.0,
+   "move": 0.0,
+   "machines": 9,
+   "reconfigs": 0,
+   "relocations": 20,
+   "move_distance": 43.0
+  },
+  "gain_interval": [
+   100.0,
+   100.0
+  ],
+  "gain_point": 100.0,
+  "gain_pct_point": 0.57,
+  "gain_pct_lb": 0.57,
+  "mhc_slack_off": 0.0,
+  "delta": {
+   "purchase": 0.0,
+   "reconfig": 100.0,
+   "mhc": 0.0
+  },
+  "elapsed": 59.6
+ },
+ {
+  "id": "M_allrev_20slot",
+  "base": "multi_part",
+  "hypothesis": "multi_part 3부품 전부 교대 역전, 20슬롯(15슬롯은 INFEASIBLE였음)",
+  "time_limit": 300,
+  "mhc_lb": 13860.0,
+  "mhc_lb_detail": {
+   "A": {
+    "min_path": 9.0,
+    "total_demand": 35.0,
+    "mhc_lb": 1260.0
+   },
+   "Ar": {
+    "min_path": 9.0,
+    "total_demand": 45.0,
+    "mhc_lb": 1620.0
+   },
+   "B": {
+    "min_path": 9.0,
+    "total_demand": 95.0,
+    "mhc_lb": 3420.0
+   },
+   "Br": {
+    "min_path": 9.0,
+    "total_demand": 90.0,
+    "mhc_lb": 3240.0
+   },
+   "C": {
+    "min_path": 9.0,
+    "total_demand": 40.0,
+    "mhc_lb": 1440.0
+   },
+   "Cr": {
+    "min_path": 9.0,
+    "total_demand": 80.0,
+    "mhc_lb": 2880.0
+   }
+  },
+  "P": 20,
+  "F": 20,
+  "T": 4,
+  "ops": [
+   2,
+   8,
+   11,
+   12,
+   17
+  ],
+  "off": {
+   "status": "TIME_LIMIT",
+   "obj": 38997.0,
+   "bound": 38112.597465,
+   "gap": 0.022679,
+   "lp": 36251.868169,
+   "runtime": 300.1,
+   "wall": 300.5,
+   "vars": 10200,
+   "binary": 3800,
+   "purchase": 20010.0,
+   "reconfig": 2275.0,
+   "mhc": 16712.0,
+   "move": 0.0,
+   "machines": 19,
+   "reconfigs": 12,
+   "relocations": 0,
+   "move_distance": 0
+  },
+  "move_cost_flat": 0.0,
+  "joint": {
+   "status": "TIME_LIMIT",
+   "obj": 37398.0,
+   "bound": 36829.033784,
+   "gap": 0.015214,
+   "lp": 35356.269004,
+   "runtime": 300.2,
+   "wall": 301.4,
+   "vars": 22740,
+   "binary": 16340,
+   "purchase": 20140.0,
+   "reconfig": 1950.0,
+   "mhc": 15308.0,
+   "move": 0.0,
+   "machines": 19,
+   "reconfigs": 7,
+   "relocations": 47,
+   "move_distance": 174.0
+  },
+  "gain_interval": [
+   714.6,
+   2168.0
+  ],
+  "gain_point": 1599.0,
+  "gain_pct_point": 4.1,
+  "gain_pct_lb": 1.83,
+  "mhc_slack_off": 2852.0,
+  "delta": {
+   "purchase": -130.0,
+   "reconfig": 325.0,
+   "mhc": 1404.0
+  },
+  "elapsed": 602.0
+ },
+ {
+  "id": "Y_reent_mix",
+  "base": "youssef_2007",
+  "hypothesis": "제품군 교대: P는 식각모듈 op15, Q는 op12 사용. 공용 op1/op5 클러스터 옆자리를 두 모듈이 다툼",
+  "time_limit": 300,
+  "mhc_lb": 8960.0,
+  "mhc_lb_detail": {
+   "P": {
+    "min_path": 14.0,
+    "total_demand": 80.0,
+    "mhc_lb": 4480.0
+   },
+   "Q": {
+    "min_path": 14.0,
+    "total_demand": 80.0,
+    "mhc_lb": 4480.0
+   }
+  },
+  "P": 20,
+  "F": 25,
+  "T": 4,
+  "ops": [
+   1,
+   5,
+   12,
+   15,
+   60
+  ],
+  "off": {
+   "status": "TIME_LIMIT",
+   "obj": 15445.0,
+   "bound": 14718.013243,
+   "gap": 0.047069,
+   "lp": 12478.75,
+   "runtime": 300.1,
+   "wall": 300.8,
+   "vars": 14900,
+   "binary": 8260,
+   "purchase": 5845.0,
+   "reconfig": 0.0,
+   "mhc": 9600.0,
+   "move": 0.0,
+   "machines": 7,
+   "reconfigs": 0,
+   "relocations": 0,
+   "move_distance": 0
+  },
+  "move_cost_flat": 0.0,
+  "joint": {
+   "status": "TIME_LIMIT",
+   "obj": 15495.0,
+   "bound": 14491.874813,
+   "gap": 0.064739,
+   "lp": 12478.75,
+   "runtime": 300.3,
+   "wall": 303.4,
+   "vars": 25160,
+   "binary": 18520,
+   "purchase": 5845.0,
+   "reconfig": 50.0,
+   "mhc": 9600.0,
+   "move": 0.0,
+   "machines": 7,
+   "reconfigs": 1,
+   "relocations": 2,
+   "move_distance": 4.0
+  },
+  "gain_interval": [
+   0.0,
+   953.1
+  ],
+  "gain_point": -50.0,
+  "gain_pct_point": -0.32,
+  "gain_pct_lb": 0.0,
+  "mhc_slack_off": 640.0,
+  "delta": {
+   "purchase": 0.0,
+   "reconfig": -50.0,
+   "mhc": 0.0
+  },
+  "elapsed": 604.3
+ },
+ {
+  "id": "Y_reent_mix_spec",
+  "base": "youssef_2007",
+  "hypothesis": "제품군 교대 + 특화",
+  "time_limit": 300,
+  "mhc_lb": 8960.0,
+  "mhc_lb_detail": {
+   "P": {
+    "min_path": 14.0,
+    "total_demand": 80.0,
+    "mhc_lb": 4480.0
+   },
+   "Q": {
+    "min_path": 14.0,
+    "total_demand": 80.0,
+    "mhc_lb": 4480.0
+   }
+  },
+  "P": 20,
+  "F": 25,
+  "T": 4,
+  "ops": [
+   1,
+   5,
+   12,
+   15,
+   60
+  ],
+  "off": {
+   "status": "OPTIMAL",
+   "obj": 16995.0,
+   "bound": 16995.0,
+   "gap": 0.0,
+   "lp": 12983.75,
+   "runtime": 260.0,
+   "wall": 262.5,
+   "vars": 14660,
+   "binary": 8020,
+   "purchase": 6705.0,
+   "reconfig": 50.0,
+   "mhc": 10240.0,
+   "move": 0.0,
+   "machines": 8,
+   "reconfigs": 1,
+   "relocations": 0,
+   "move_distance": 0
+  },
+  "move_cost_flat": 0.0,
+  "joint": {
+   "status": "TIME_LIMIT",
+   "obj": 16835.0,
+   "bound": 15504.315476,
+   "gap": 0.079043,
+   "lp": 12983.75,
+   "runtime": 300.2,
+   "wall": 304.5,
+   "vars": 43160,
+   "binary": 36520,
+   "purchase": 5265.0,
+   "reconfig": 50.0,
+   "mhc": 11520.0,
+   "move": 0.0,
+   "machines": 6,
+   "reconfigs": 1,
+   "relocations": 10,
+   "move_distance": 24.0
+  },
+  "gain_interval": [
+   160.0,
+   1490.7
+  ],
+  "gain_point": 160.0,
+  "gain_pct_point": 0.94,
+  "gain_pct_lb": 0.94,
+  "mhc_slack_off": 1280.0,
+  "delta": {
+   "purchase": 1440.0,
+   "reconfig": 0.0,
+   "mhc": -1280.0
+  },
+  "elapsed": 567.4
+ },
+ {
+  "id": "Y_reent_layers",
+  "base": "youssef_2007",
+  "hypothesis": "레이어 수 변화: 같은 공정인데 P는 2레이어, Q는 4레이어 - 필요 대수가 기간마다 달라짐",
+  "time_limit": 300,
+  "mhc_lb": 8960.0,
+  "mhc_lb_detail": {
+   "P2": {
+    "min_path": 11.0,
+    "total_demand": 80.0,
+    "mhc_lb": 3520.0
+   },
+   "Q4": {
+    "min_path": 17.0,
+    "total_demand": 80.0,
+    "mhc_lb": 5440.0
+   }
+  },
+  "P": 20,
+  "F": 20,
+  "T": 4,
+  "ops": [
+   1,
+   5,
+   15,
+   60
+  ],
+  "off": {
+   "status": "TIME_LIMIT",
+   "obj": 16235.0,
+   "bound": 15203.34974,
+   "gap": 0.063545,
+   "lp": 12713.75,
+   "runtime": 300.1,
+   "wall": 301.4,
+   "vars": 13120,
+   "binary": 6560,
+   "purchase": 5845.0,
+   "reconfig": 150.0,
+   "mhc": 10240.0,
+   "move": 0.0,
+   "machines": 7,
+   "reconfigs": 2,
+   "relocations": 0,
+   "move_distance": 0
+  },
+  "move_cost_flat": 0.0,
+  "joint": {
+   "status": "TIME_LIMIT",
+   "obj": 16285.0,
+   "bound": 14758.870842,
+   "gap": 0.093714,
+   "lp": 12713.75,
+   "runtime": 300.1,
+   "wall": 302.9,
+   "vars": 23380,
+   "binary": 16820,
+   "purchase": 5845.0,
+   "reconfig": 200.0,
+   "mhc": 10240.0,
+   "move": 0.0,
+   "machines": 7,
+   "reconfigs": 3,
+   "relocations": 0,
+   "move_distance": 0
+  },
+  "gain_interval": [
+   0.0,
+   1476.1
+  ],
+  "gain_point": -50.0,
+  "gain_pct_point": -0.31,
+  "gain_pct_lb": 0.0,
+  "mhc_slack_off": 1280.0,
+  "delta": {
+   "purchase": 0.0,
+   "reconfig": -50.0,
+   "mhc": 0.0
+  },
+  "elapsed": 604.4
+ },
+ {
+  "id": "Y_reent_mix3",
+  "base": "youssef_2007",
+  "hypothesis": "3제품군 순환(6기간): 식각모듈 op15 / op12 / op16 가 돌아가며 사용",
+  "time_limit": 300,
+  "mhc_lb": 13440.0,
+  "mhc_lb_detail": {
+   "P": {
+    "min_path": 14.0,
+    "total_demand": 80.0,
+    "mhc_lb": 4480.0
+   },
+   "Q": {
+    "min_path": 14.0,
+    "total_demand": 80.0,
+    "mhc_lb": 4480.0
+   },
+   "R": {
+    "min_path": 14.0,
+    "total_demand": 80.0,
+    "mhc_lb": 4480.0
+   }
+  },
+  "P": 20,
+  "F": 26,
+  "T": 6,
+  "ops": [
+   1,
+   5,
+   12,
+   15,
+   16,
+   60
+  ],
+  "off": {
+   "status": "TIME_LIMIT",
+   "obj": 20245.0,
+   "bound": 19239.770056,
+   "gap": 0.049653,
+   "lp": 17928.75,
+   "runtime": 300.2,
+   "wall": 304.8,
+   "vars": 23720,
+   "binary": 13640,
+   "purchase": 6705.0,
+   "reconfig": 100.0,
+   "mhc": 13440.0,
+   "move": 0.0,
+   "machines": 8,
+   "reconfigs": 2,
+   "relocations": 0,
+   "move_distance": 0
+  },
+  "move_cost_flat": 0.0,
+  "joint": {
+   "status": "TIME_LIMIT",
+   "obj": 20345.0,
+   "bound": 19041.896291,
+   "gap": 0.06405,
+   "lp": 17928.75,
+   "runtime": 300.1,
+   "wall": 304.8,
+   "vars": 40820,
+   "binary": 30740,
+   "purchase": 5845.0,
+   "reconfig": 100.0,
+   "mhc": 14400.0,
+   "move": 0.0,
+   "machines": 7,
+   "reconfigs": 2,
+   "relocations": 18,
+   "move_distance": 34.0
+  },
+  "gain_interval": [
+   0.0,
+   1203.1
+  ],
+  "gain_point": -100.0,
+  "gain_pct_point": -0.49,
+  "gain_pct_lb": 0.0,
+  "mhc_slack_off": 0.0,
+  "delta": {
+   "purchase": 860.0,
+   "reconfig": 0.0,
+   "mhc": -960.0
+  },
+  "elapsed": 609.8
+ },
+ {
+  "id": "Y_reent_mix_concurrent",
+  "base": "youssef_2007",
+  "hypothesis": "가장 현실적: 두 제품군이 공존하되 비중이 기간마다 이동 (P 주력 -> Q 주력)",
+  "time_limit": 300,
+  "mhc_lb": 12320.0,
+  "mhc_lb_detail": {
+   "P": {
+    "min_path": 14.0,
+    "total_demand": 110.0,
+    "mhc_lb": 6160.0
+   },
+   "Q": {
+    "min_path": 14.0,
+    "total_demand": 110.0,
+    "mhc_lb": 6160.0
+   }
+  },
+  "P": 20,
+  "F": 25,
+  "T": 4,
+  "ops": [
+   1,
+   5,
+   12,
+   15,
+   60
+  ],
+  "off": {
+   "status": "TIME_LIMIT",
+   "obj": 21365.0,
+   "bound": 19960.482373,
+   "gap": 0.065739,
+   "lp": 17158.28125,
+   "runtime": 300.1,
+   "wall": 302.5,
+   "vars": 19460,
+   "binary": 8260,
+   "purchase": 8165.0,
+   "reconfig": 0.0,
+   "mhc": 13200.0,
+   "move": 0.0,
+   "machines": 9,
+   "reconfigs": 0,
+   "relocations": 0,
+   "move_distance": 0
+  },
+  "move_cost_flat": 0.0,
+  "joint": {
+   "status": "TIME_LIMIT",
+   "obj": 22405.0,
+   "bound": 19819.079082,
+   "gap": 0.115417,
+   "lp": 17158.28125,
+   "runtime": 300.2,
+   "wall": 303.3,
+   "vars": 29720,
+   "binary": 18520,
+   "purchase": 8165.0,
+   "reconfig": 0.0,
+   "mhc": 14240.0,
+   "move": 0.0,
+   "machines": 9,
+   "reconfigs": 0,
+   "relocations": 18,
+   "move_distance": 43.0
+  },
+  "gain_interval": [
+   0.0,
+   1545.9
+  ],
+  "gain_point": -1040.0,
+  "gain_pct_point": -4.87,
+  "gain_pct_lb": 0.0,
+  "mhc_slack_off": 880.0,
+  "delta": {
+   "purchase": 0.0,
+   "reconfig": 0,
+   "mhc": -1040.0
+  },
+  "elapsed": 606.0
+ },
+ {
+  "id": "Y_reent_mix_x2",
+  "base": "youssef_2007",
+  "hypothesis": "제품군 교대 + 수요x2 (기계 수 증가)",
+  "time_limit": 300,
+  "mhc_lb": 17920.0,
+  "mhc_lb_detail": {
+   "P": {
+    "min_path": 14.0,
+    "total_demand": 160.0,
+    "mhc_lb": 8960.0
+   },
+   "Q": {
+    "min_path": 14.0,
+    "total_demand": 160.0,
+    "mhc_lb": 8960.0
+   }
+  },
+  "P": 20,
+  "F": 25,
+  "T": 4,
+  "ops": [
+   1,
+   5,
+   12,
+   15,
+   60
+  ],
+  "off": {
+   "status": "TIME_LIMIT",
+   "obj": 27795.0,
+   "bound": 27059.595519,
+   "gap": 0.026458,
+   "lp": 24957.5,
+   "runtime": 300.2,
+   "wall": 301.8,
+   "vars": 14900,
+   "binary": 8260,
+   "purchase": 8595.0,
+   "reconfig": 0.0,
+   "mhc": 19200.0,
+   "move": 0.0,
+   "machines": 9,
+   "reconfigs": 0,
+   "relocations": 0,
+   "move_distance": 0
+  },
+  "move_cost_flat": 0.0,
+  "joint": {
+   "status": "TIME_LIMIT",
+   "obj": 27795.0,
+   "bound": 26597.293109,
+   "gap": 0.043091,
+   "lp": 24957.5,
+   "runtime": 300.2,
+   "wall": 303.7,
+   "vars": 25160,
+   "binary": 18520,
+   "purchase": 8595.0,
+   "reconfig": 0.0,
+   "mhc": 19200.0,
+   "move": 0.0,
+   "machines": 9,
+   "reconfigs": 0,
+   "relocations": 0,
+   "move_distance": 0
+  },
+  "gain_interval": [
+   0.0,
+   1197.7
+  ],
+  "gain_point": 0.0,
+  "gain_pct_point": 0.0,
+  "gain_pct_lb": 0.0,
+  "mhc_slack_off": 1280.0,
+  "delta": {
+   "purchase": 0.0,
+   "reconfig": 0,
+   "mhc": 0.0
+  },
+  "elapsed": 605.7
+ },
+ {
+  "id": "R_ctrl_12",
+  "base": "youssef_2007",
+  "hypothesis": "대조군: re-entrant만 (3레이어 [1>5>15] 반복, 매 기간 동일 라우트), 12슬롯. 라우트 길이만으로는 이득 0이어야",
+  "time_limit": 600,
+  "mhc_lb": 8320.0,
+  "mhc_lb_detail": {
+   "P": {
+    "min_path": 13.0,
+    "total_demand": 160.0,
+    "mhc_lb": 8320.0
+   }
+  },
+  "P": 12,
+  "F": 20,
+  "T": 4,
+  "ops": [
+   1,
+   5,
+   15,
+   60
+  ],
+  "off": {
+   "status": "OPTIMAL",
+   "obj": 14585.0,
+   "bound": 14585.0,
+   "gap": 0.0,
+   "lp": 11838.75,
+   "runtime": 60.7,
+   "wall": 61.0,
+   "vars": 6336,
+   "binary": 3936,
+   "purchase": 4985.0,
+   "reconfig": 0.0,
+   "mhc": 9600.0,
+   "move": 0.0,
+   "machines": 6,
+   "reconfigs": 0,
+   "relocations": 0,
+   "move_distance": 0
+  },
+  "move_cost_flat": 0.0,
+  "joint": {
+   "status": "TIME_LIMIT",
+   "obj": 14585.0,
+   "bound": 14293.47457,
+   "gap": 0.019988,
+   "lp": 11838.75,
+   "runtime": 600.1,
+   "wall": 600.8,
+   "vars": 9900,
+   "binary": 7500,
+   "purchase": 4985.0,
+   "reconfig": 0.0,
+   "mhc": 9600.0,
+   "move": 0.0,
+   "machines": 6,
+   "reconfigs": 0,
+   "relocations": 0,
+   "move_distance": 0
+  },
+  "gain_interval": [
+   0.0,
+   291.5
+  ],
+  "gain_point": 0.0,
+  "gain_pct_point": 0.0,
+  "gain_pct_lb": 0.0,
+  "mhc_slack_off": 1280.0,
+  "delta": {
+   "purchase": 0.0,
+   "reconfig": 0,
+   "mhc": 0.0
+  },
+  "elapsed": 661.9
+ },
+ {
+  "id": "R_mix_12",
+  "base": "youssef_2007",
+  "hypothesis": "기본형: 제품군 교대 (P는 식각 op15, Q는 op12), 12슬롯",
+  "time_limit": 600,
+  "mhc_lb": 8320.0,
+  "mhc_lb_detail": {
+   "P": {
+    "min_path": 13.0,
+    "total_demand": 80.0,
+    "mhc_lb": 4160.0
+   },
+   "Q": {
+    "min_path": 13.0,
+    "total_demand": 80.0,
+    "mhc_lb": 4160.0
+   }
+  },
+  "P": 12,
+  "F": 25,
+  "T": 4,
+  "ops": [
+   1,
+   5,
+   12,
+   15,
+   60
+  ],
+  "off": {
+   "status": "OPTIMAL",
+   "obj": 14585.0,
+   "bound": 14585.0,
+   "gap": 0.0,
+   "lp": 11838.75,
+   "runtime": 63.8,
+   "wall": 64.2,
+   "vars": 7404,
+   "binary": 4956,
+   "purchase": 4985.0,
+   "reconfig": 0.0,
+   "mhc": 9600.0,
+   "move": 0.0,
+   "machines": 6,
+   "reconfigs": 0,
+   "relocations": 0,
+   "move_distance": 0
+  },
+  "move_cost_flat": 0.0,
+  "joint": {
+   "status": "TIME_LIMIT",
+   "obj": 14585.0,
+   "bound": 14247.723782,
+   "gap": 0.023125,
+   "lp": 11838.75,
+   "runtime": 600.2,
+   "wall": 600.9,
+   "vars": 10968,
+   "binary": 8520,
+   "purchase": 4985.0,
+   "reconfig": 0.0,
+   "mhc": 9600.0,
+   "move": 0.0,
+   "machines": 6,
+   "reconfigs": 0,
+   "relocations": 0,
+   "move_distance": 0
+  },
+  "gain_interval": [
+   0.0,
+   337.3
+  ],
+  "gain_point": 0.0,
+  "gain_pct_point": 0.0,
+  "gain_pct_lb": 0.0,
+  "mhc_slack_off": 1280.0,
+  "delta": {
+   "purchase": 0.0,
+   "reconfig": 0,
+   "mhc": 0.0
+  },
+  "elapsed": 665.2
+ },
+ {
+  "id": "R_layers_12",
+  "base": "youssef_2007",
+  "hypothesis": "레이어 수 변화: P 2레이어 / Q 4레이어 교대, 12슬롯",
+  "time_limit": 600,
+  "mhc_lb": 8960.0,
+  "mhc_lb_detail": {
+   "P2": {
+    "min_path": 11.0,
+    "total_demand": 80.0,
+    "mhc_lb": 3520.0
+   },
+   "Q4": {
+    "min_path": 17.0,
+    "total_demand": 80.0,
+    "mhc_lb": 5440.0
+   }
+  },
+  "P": 12,
+  "F": 20,
+  "T": 4,
+  "ops": [
+   1,
+   5,
+   15,
+   60
+  ],
+  "off": {
+   "status": "OPTIMAL",
+   "obj": 15595.0,
+   "bound": 15595.0,
+   "gap": 0.0,
+   "lp": 12096.666667,
+   "runtime": 196.2,
+   "wall": 196.6,
+   "vars": 6336,
+   "binary": 3936,
+   "purchase": 5845.0,
+   "reconfig": 150.0,
+   "mhc": 9600.0,
+   "move": 0.0,
+   "machines": 7,
+   "reconfigs": 2,
+   "relocations": 0,
+   "move_distance": 0
+  },
+  "move_cost_flat": 0.0,
+  "joint": {
+   "status": "TIME_LIMIT",
+   "obj": 15275.0,
+   "bound": 15004.629334,
+   "gap": 0.0177,
+   "lp": 12073.75,
+   "runtime": 600.1,
+   "wall": 601.1,
+   "vars": 9900,
+   "binary": 7500,
+   "purchase": 5845.0,
+   "reconfig": 150.0,
+   "mhc": 9280.0,
+   "move": 0.0,
+   "machines": 7,
+   "reconfigs": 2,
+   "relocations": 9,
+   "move_distance": 16.0
+  },
+  "gain_interval": [
+   320.0,
+   590.4
+  ],
+  "gain_point": 320.0,
+  "gain_pct_point": 2.05,
+  "gain_pct_lb": 2.05,
+  "mhc_slack_off": 640.0,
+  "delta": {
+   "purchase": 0.0,
+   "reconfig": 0.0,
+   "mhc": 320.0
+  },
+  "elapsed": 797.8
+ },
+ {
+  "id": "R_concurrent_15",
+  "base": "youssef_2007",
+  "hypothesis": "가장 현실적: 두 제품군 공존, 주력이 P->Q로 이동 (50,35,20,5 / 5,20,35,50), 15슬롯",
+  "time_limit": 600,
+  "mhc_lb": 12320.0,
+  "mhc_lb_detail": {
+   "P": {
+    "min_path": 14.0,
+    "total_demand": 110.0,
+    "mhc_lb": 6160.0
+   },
+   "Q": {
+    "min_path": 14.0,
+    "total_demand": 110.0,
+    "mhc_lb": 6160.0
+   }
+  },
+  "P": 15,
+  "F": 25,
+  "T": 4,
+  "ops": [
+   1,
+   5,
+   12,
+   15,
+   60
+  ],
+  "off": {
+   "status": "TIME_LIMIT",
+   "obj": 20485.0,
+   "bound": 20057.280175,
+   "gap": 0.02088,
+   "lp": 16278.28125,
+   "runtime": 600.1,
+   "wall": 600.7,
+   "vars": 12495,
+   "binary": 6195,
+   "purchase": 8165.0,
+   "reconfig": 0.0,
+   "mhc": 12320.0,
+   "move": 0.0,
+   "machines": 9,
+   "reconfigs": 0,
+   "relocations": 0,
+   "move_distance": 0
+  },
+  "move_cost_flat": 0.0,
+  "joint": {
+   "status": "TIME_LIMIT",
+   "obj": 20485.0,
+   "bound": 19609.833103,
+   "gap": 0.042722,
+   "lp": 16278.28125,
+   "runtime": 600.2,
+   "wall": 601.5,
+   "vars": 18165,
+   "binary": 11865,
+   "purchase": 8165.0,
+   "reconfig": 0.0,
+   "mhc": 12320.0,
+   "move": 0.0,
+   "machines": 9,
+   "reconfigs": 0,
+   "relocations": 0,
+   "move_distance": 0
+  },
+  "gain_interval": [
+   0.0,
+   875.2
+  ],
+  "gain_point": 0.0,
+  "gain_pct_point": 0.0,
+  "gain_pct_lb": 0.0,
+  "mhc_slack_off": 0.0,
+  "delta": {
+   "purchase": 0.0,
+   "reconfig": 0,
+   "mhc": 0.0
+  },
+  "elapsed": 1202.4
+ },
+ {
+  "id": "Y_orig_rM",
+  "base": "youssef_2007",
+  "hypothesis": "원본 Youssef + 논문 실제 모듈단가 - 재구성이 비싸지면 원본에서도 이득이 생기나",
+  "time_limit": 130,
+  "mhc_lb": 9940.0,
+  "mhc_lb_detail": {
+   "A": {
+    "min_path": 9.0,
+    "total_demand": 115.0,
+    "mhc_lb": 4140.0
+   },
+   "B": {
+    "min_path": 10.0,
+    "total_demand": 145.0,
+    "mhc_lb": 5800.0
+   }
+  },
+  "P": 20,
+  "F": 36,
+  "T": 4,
+  "ops": [
+   1,
+   5,
+   6,
+   9,
+   12,
+   15,
+   16,
+   60
+  ],
+  "off": {
+   "status": "OPTIMAL",
+   "obj": 17500.0,
+   "bound": 17500.0,
+   "gap": 0.0,
+   "lp": 13805.3125,
+   "runtime": 30.4,
+   "wall": 31.1,
+   "vars": 20960,
+   "binary": 11760,
+   "purchase": 7560.0,
+   "reconfig": 0.0,
+   "mhc": 9940.0,
+   "move": 0.0,
+   "machines": 9,
+   "reconfigs": 0,
+   "relocations": 0,
+   "move_distance": 0
+  },
+  "move_cost_flat": 0.0,
+  "joint": {
+   "status": "OPTIMAL",
+   "obj": 17500.0,
+   "bound": 17500.0,
+   "gap": 0.0,
+   "lp": 13765.3125,
+   "runtime": 41.2,
+   "wall": 42.9,
+   "vars": 31220,
+   "binary": 22020,
+   "purchase": 7560.0,
+   "reconfig": 0.0,
+   "mhc": 9940.0,
+   "move": 0.0,
+   "machines": 9,
+   "reconfigs": 0,
+   "relocations": 0,
+   "move_distance": 0
+  },
+  "gain_interval": [
+   0.0,
+   0.0
+  ],
+  "gain_point": 0.0,
+  "gain_pct_point": 0.0,
+  "gain_pct_lb": 0.0,
+  "mhc_slack_off": 0.0,
+  "delta": {
+   "purchase": 0.0,
+   "reconfig": 0,
+   "mhc": 0.0
+  },
+  "elapsed": 74.0
+ },
+ {
+  "id": "L_2v4_rM3",
+  "base": "youssef_2007",
+  "hypothesis": "반복 2vs4 + 모듈단가 x3 (재구성이 매우 비싼 공장)",
+  "time_limit": 130,
+  "mhc_lb": 8960.0,
+  "mhc_lb_detail": {
+   "P2": {
+    "min_path": 11.0,
+    "total_demand": 80.0,
+    "mhc_lb": 3520.0
+   },
+   "Q4": {
+    "min_path": 17.0,
+    "total_demand": 80.0,
+    "mhc_lb": 5440.0
+   }
+  },
+  "P": 10,
+  "F": 20,
+  "T": 4,
+  "ops": [
+   1,
+   5,
+   15,
+   60
+  ],
+  "off": {
+   "status": "OPTIMAL",
+   "obj": 16735.0,
+   "bound": 16735.0,
+   "gap": 0.0,
+   "lp": 13577.083333,
+   "runtime": 52.0,
+   "wall": 52.4,
+   "vars": 4960,
+   "binary": 3280,
+   "purchase": 7135.0,
+   "reconfig": 0.0,
+   "mhc": 9600.0,
+   "move": 0.0,
+   "machines": 8,
+   "reconfigs": 0,
+   "relocations": 0,
+   "move_distance": 0
+  },
+  "move_cost_flat": 0.0,
+  "joint": {
+   "status": "TIME_LIMIT",
+   "obj": 16735.0,
+   "bound": 16134.704639,
+   "gap": 0.035871,
+   "lp": 13577.083333,
+   "runtime": 130.1,
+   "wall": 130.7,
+   "vars": 7390,
+   "binary": 5710,
+   "purchase": 7135.0,
+   "reconfig": 0.0,
+   "mhc": 9600.0,
+   "move": 0.0,
+   "machines": 8,
+   "reconfigs": 0,
+   "relocations": 0,
+   "move_distance": 0
+  },
+  "gain_interval": [
+   0.0,
+   600.3
+  ],
+  "gain_point": 0.0,
+  "gain_pct_point": 0.0,
+  "gain_pct_lb": 0.0,
+  "mhc_slack_off": 640.0,
+  "delta": {
+   "purchase": 0.0,
+   "reconfig": 0,
+   "mhc": 0.0
+  },
+  "elapsed": 183.2
+ },
+ {
+  "id": "L_3v3_rM",
+  "base": "youssef_2007",
+  "hypothesis": "대조군: 반복 횟수 같음(3vs3) + 모듈단가 - 격차 없으면 0이어야",
+  "time_limit": 130,
+  "mhc_lb": 8960.0,
+  "mhc_lb_detail": {
+   "P3": {
+    "min_path": 14.0,
+    "total_demand": 80.0,
+    "mhc_lb": 4480.0
+   },
+   "Q3": {
+    "min_path": 14.0,
+    "total_demand": 80.0,
+    "mhc_lb": 4480.0
+   }
+  },
+  "P": 10,
+  "F": 20,
+  "T": 4,
+  "ops": [
+   1,
+   5,
+   15,
+   60
+  ],
+  "off": {
+   "status": "OPTIMAL",
+   "obj": 15445.0,
+   "bound": 15445.0,
+   "gap": 0.0,
+   "lp": 12478.75,
+   "runtime": 32.5,
+   "wall": 32.9,
+   "vars": 4960,
+   "binary": 3280,
+   "purchase": 5845.0,
+   "reconfig": 0.0,
+   "mhc": 9600.0,
+   "move": 0.0,
+   "machines": 7,
+   "reconfigs": 0,
+   "relocations": 0,
+   "move_distance": 0
+  },
+  "move_cost_flat": 0.0,
+  "joint": {
+   "status": "TIME_LIMIT",
+   "obj": 15445.0,
+   "bound": 14761.666667,
+   "gap": 0.044243,
+   "lp": 12478.75,
+   "runtime": 130.1,
+   "wall": 130.6,
+   "vars": 7390,
+   "binary": 5710,
+   "purchase": 5845.0,
+   "reconfig": 0.0,
+   "mhc": 9600.0,
+   "move": 0.0,
+   "machines": 7,
+   "reconfigs": 0,
+   "relocations": 0,
+   "move_distance": 0
+  },
+  "gain_interval": [
+   0.0,
+   683.3
+  ],
+  "gain_point": 0.0,
+  "gain_pct_point": 0.0,
+  "gain_pct_lb": 0.0,
+  "mhc_slack_off": 640.0,
+  "delta": {
+   "purchase": 0.0,
+   "reconfig": 0,
+   "mhc": 0.0
+  },
+  "elapsed": 163.8
+ },
+ {
+  "id": "L_2v6_rM",
+  "base": "youssef_2007",
+  "hypothesis": "반복 2회 vs 6회 (격차 4) + 모듈단가 - 격차가 클수록 이득 커지나",
+  "time_limit": 130,
+  "mhc_lb": 10880.0,
+  "mhc_lb_detail": {
+   "P2": {
+    "min_path": 11.0,
+    "total_demand": 80.0,
+    "mhc_lb": 3520.0
+   },
+   "Q6": {
+    "min_path": 23.0,
+    "total_demand": 80.0,
+    "mhc_lb": 7360.0
+   }
+  },
+  "P": 10,
+  "F": 20,
+  "T": 4,
+  "ops": [
+   1,
+   5,
+   15,
+   60
+  ],
+  "off": {
+   "status": "OPTIMAL",
+   "obj": 20585.0,
+   "bound": 20585.0,
+   "gap": 0.0,
+   "lp": 17693.75,
+   "runtime": 13.6,
+   "wall": 14.1,
+   "vars": 4960,
+   "binary": 3280,
+   "purchase": 7565.0,
+   "reconfig": 860.0,
+   "mhc": 12160.0,
+   "move": 0.0,
+   "machines": 9,
+   "reconfigs": 3,
+   "relocations": 0,
+   "move_distance": 0
+  },
+  "move_cost_flat": 0.0,
+  "joint": {
+   "status": "TIME_LIMIT",
+   "obj": 20585.0,
+   "bound": 20129.455868,
+   "gap": 0.02213,
+   "lp": 17693.75,
+   "runtime": 130.1,
+   "wall": 131.0,
+   "vars": 7390,
+   "binary": 5710,
+   "purchase": 7565.0,
+   "reconfig": 860.0,
+   "mhc": 12160.0,
+   "move": 0.0,
+   "machines": 9,
+   "reconfigs": 3,
+   "relocations": 0,
+   "move_distance": 0
+  },
+  "gain_interval": [
+   0.0,
+   455.5
+  ],
+  "gain_point": 0.0,
+  "gain_pct_point": 0.0,
+  "gain_pct_lb": 0.0,
+  "mhc_slack_off": 1280.0,
+  "delta": {
+   "purchase": 0.0,
+   "reconfig": 0.0,
+   "mhc": 0.0
+  },
+  "elapsed": 145.3
+ },
+ {
+  "id": "L_2v4_r1",
+  "base": "youssef_2007",
+  "hypothesis": "기준: 반복 2회 vs 4회 교대, 재구성 50/25 (=R_layers_12 재현)",
+  "time_limit": 330,
+  "mhc_lb": 8960.0,
+  "mhc_lb_detail": {
+   "P2": {
+    "min_path": 11.0,
+    "total_demand": 80.0,
+    "mhc_lb": 3520.0
+   },
+   "Q4": {
+    "min_path": 17.0,
+    "total_demand": 80.0,
+    "mhc_lb": 5440.0
+   }
+  },
+  "P": 10,
+  "F": 20,
+  "T": 4,
+  "ops": [
+   1,
+   5,
+   15,
+   60
+  ],
+  "off": {
+   "status": "OPTIMAL",
+   "obj": 16235.0,
+   "bound": 16235.0,
+   "gap": 0.0,
+   "lp": 12713.75,
+   "runtime": 68.1,
+   "wall": 68.4,
+   "vars": 4960,
+   "binary": 3280,
+   "purchase": 5845.0,
+   "reconfig": 150.0,
+   "mhc": 10240.0,
+   "move": 0.0,
+   "machines": 7,
+   "reconfigs": 2,
+   "relocations": 0,
+   "move_distance": 0
+  },
+  "move_cost_flat": 0.0,
+  "joint": {
+   "status": "TIME_LIMIT",
+   "obj": 16235.0,
+   "bound": 15769.504279,
+   "gap": 0.028672,
+   "lp": 12713.75,
+   "runtime": 330.1,
+   "wall": 330.9,
+   "vars": 7390,
+   "binary": 5710,
+   "purchase": 5845.0,
+   "reconfig": 150.0,
+   "mhc": 10240.0,
+   "move": 0.0,
+   "machines": 7,
+   "reconfigs": 2,
+   "relocations": 18,
+   "move_distance": 36.0
+  },
+  "gain_interval": [
+   0.0,
+   465.5
+  ],
+  "gain_point": 0.0,
+  "gain_pct_point": 0.0,
+  "gain_pct_lb": 0.0,
+  "mhc_slack_off": 1280.0,
+  "delta": {
+   "purchase": 0.0,
+   "reconfig": 0.0,
+   "mhc": 0.0
+  },
+  "elapsed": 399.3
+ },
+ {
+  "id": "L_2v4_rM",
+  "base": "youssef_2007",
+  "hypothesis": "반복 2vs4 + 논문 실제 모듈단가(280/140 등) - 재구성비 5.6배",
+  "time_limit": 330,
+  "mhc_lb": 8960.0,
+  "mhc_lb_detail": {
+   "P2": {
+    "min_path": 11.0,
+    "total_demand": 80.0,
+    "mhc_lb": 3520.0
+   },
+   "Q4": {
+    "min_path": 17.0,
+    "total_demand": 80.0,
+    "mhc_lb": 5440.0
+   }
+  },
+  "P": 10,
+  "F": 20,
+  "T": 4,
+  "ops": [
+   1,
+   5,
+   15,
+   60
+  ],
+  "off": {
+   "status": "OPTIMAL",
+   "obj": 16735.0,
+   "bound": 16735.0,
+   "gap": 0.0,
+   "lp": 13577.083333,
+   "runtime": 44.9,
+   "wall": 45.3,
+   "vars": 4960,
+   "binary": 3280,
+   "purchase": 6855.0,
+   "reconfig": 280.0,
+   "mhc": 9600.0,
+   "move": 0.0,
+   "machines": 8,
+   "reconfigs": 1,
+   "relocations": 0,
+   "move_distance": 0
+  },
+  "move_cost_flat": 0.0,
+  "joint": {
+   "status": "TIME_LIMIT",
+   "obj": 16735.0,
+   "bound": 16623.39898,
+   "gap": 0.006669,
+   "lp": 13577.083333,
+   "runtime": 330.2,
+   "wall": 330.8,
+   "vars": 7390,
+   "binary": 5710,
+   "purchase": 6855.0,
+   "reconfig": 280.0,
+   "mhc": 9600.0,
+   "move": 0.0,
+   "machines": 8,
+   "reconfigs": 1,
+   "relocations": 0,
+   "move_distance": 0
+  },
+  "gain_interval": [
+   0.0,
+   111.6
+  ],
+  "gain_point": 0.0,
+  "gain_pct_point": 0.0,
+  "gain_pct_lb": 0.0,
+  "mhc_slack_off": 640.0,
+  "delta": {
+   "purchase": 0.0,
+   "reconfig": 0.0,
+   "mhc": 0.0
+  },
+  "elapsed": 376.2
+ }
+]

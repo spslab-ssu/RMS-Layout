@@ -1,0 +1,33 @@
+{
+  "problem_name": "multi_part",
+  "model_type": "base",
+  "status": 2,
+  "status_name": "OPTIMAL",
+  "periods": [
+    1,
+    2,
+    3,
+    4
+  ],
+  "operations": [
+    2,
+    8,
+    11,
+    12,
+    17
+  ],
+  "runtime_seconds": 173154.46399998665,
+  "num_vars": 9800,
+  "num_constraints": 6528,
+  "num_binary_vars": 3800,
+  "num_integer_vars": 3800,
+  "node_count": 4667187.0,
+  "simplex_iterations": 1264973057.0,
+  "mip_gap": 0.0,
+  "best_bound": 35775.0,
+  "best_bound_c": 35775.0,
+  "lp_relaxation_bound": 32776.412058,
+  "lp_relaxation_seconds": 0.14699983596801758,
+  "num_cap_vars": 0,
+  "objective": 35775.0
+}
