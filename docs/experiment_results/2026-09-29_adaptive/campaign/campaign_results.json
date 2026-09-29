@@ -4590,5 +4590,897 @@
    "mhc": 0.0
   },
   "elapsed": 376.2
+ },
+ {
+  "id": "Y_orig_U",
+  "base": "youssef_2007",
+  "hypothesis": "U자형 도크만: Youssef 원본(이득 0 확정)에 입출구를 왼쪽으로 몰면 이득이 생기나",
+  "time_limit": 300,
+  "mhc_lb": 8440.0,
+  "mhc_lb_detail": {
+   "A": {
+    "min_path": 7.0,
+    "total_demand": 115.0,
+    "mhc_lb": 3220.0
+   },
+   "B": {
+    "min_path": 9.0,
+    "total_demand": 145.0,
+    "mhc_lb": 5220.0
+   }
+  },
+  "P": 20,
+  "F": 36,
+  "T": 4,
+  "ops": [
+   1,
+   5,
+   6,
+   9,
+   12,
+   15,
+   16,
+   60
+  ],
+  "off": {
+   "status": "OPTIMAL",
+   "obj": 16720.0,
+   "bound": 16720.0,
+   "gap": 0.0,
+   "lp": 12265.3125,
+   "runtime": 49.2,
+   "wall": 50.4,
+   "vars": 20960,
+   "binary": 11760,
+   "purchase": 7560.0,
+   "reconfig": 0.0,
+   "mhc": 9160.0,
+   "move": 0.0,
+   "machines": 9,
+   "reconfigs": 0,
+   "relocations": 0,
+   "move_distance": 0
+  },
+  "move_cost_flat": 0.0,
+  "joint": {
+   "status": "OPTIMAL",
+   "obj": 16720.0,
+   "bound": 16720.0,
+   "gap": 0.0,
+   "lp": 12265.3125,
+   "runtime": 70.0,
+   "wall": 72.7,
+   "vars": 31220,
+   "binary": 22020,
+   "purchase": 7560.0,
+   "reconfig": 0.0,
+   "mhc": 9160.0,
+   "move": 0.0,
+   "machines": 9,
+   "reconfigs": 0,
+   "relocations": 0,
+   "move_distance": 0
+  },
+  "gain_interval": [
+   0.0,
+   0.0
+  ],
+  "gain_point": 0.0,
+  "gain_pct_point": 0.0,
+  "gain_pct_lb": 0.0,
+  "mhc_slack_off": 720.0,
+  "delta": {
+   "purchase": 0.0,
+   "reconfig": 0,
+   "mhc": 0.0
+  },
+  "elapsed": 123.2
+ },
+ {
+  "id": "MP3_thru",
+  "base": "multi_part",
+  "hypothesis": "제품 3개(원본, 전부 2>12로 시작) x 통과형(입구 왼쪽, 출구 오른쪽) (기간별 총수요 36/56/52/44 고정, 20슬롯)",
+  "time_limit": 600,
+  "mhc_lb": 6768.0,
+  "mhc_lb_detail": {
+   "A": {
+    "min_path": 9.0,
+    "total_demand": 34.0,
+    "mhc_lb": 1224.0
+   },
+   "B": {
+    "min_path": 9.0,
+    "total_demand": 94.0,
+    "mhc_lb": 3384.0
+   },
+   "C": {
+    "min_path": 9.0,
+    "total_demand": 60.0,
+    "mhc_lb": 2160.0
+   }
+  },
+  "P": 20,
+  "F": 20,
+  "T": 4,
+  "ops": [
+   2,
+   8,
+   11,
+   12,
+   17
+  ],
+  "off": {
+   "status": "OPTIMAL",
+   "obj": 18844.0,
+   "bound": 18844.0,
+   "gap": 0.0,
+   "lp": 16762.143581,
+   "runtime": 324.4,
+   "wall": 324.9,
+   "vars": 9800,
+   "binary": 3800,
+   "purchase": 11230.0,
+   "reconfig": 650.0,
+   "mhc": 6964.0,
+   "move": 0.0,
+   "machines": 11,
+   "reconfigs": 3,
+   "relocations": 0,
+   "move_distance": 0
+  },
+  "move_cost_flat": 0.0,
+  "joint": {
+   "status": "TIME_LIMIT",
+   "obj": 18844.0,
+   "bound": 18482.693605,
+   "gap": 0.019174,
+   "lp": 16762.143581,
+   "runtime": 600.2,
+   "wall": 601.4,
+   "vars": 22340,
+   "binary": 16340,
+   "purchase": 11230.0,
+   "reconfig": 650.0,
+   "mhc": 6964.0,
+   "move": 0.0,
+   "machines": 11,
+   "reconfigs": 3,
+   "relocations": 3,
+   "move_distance": 10.0
+  },
+  "gain_interval": [
+   0.0,
+   361.3
+  ],
+  "gain_point": 0.0,
+  "gain_pct_point": 0.0,
+  "gain_pct_lb": 0.0,
+  "mhc_slack_off": 196.0,
+  "delta": {
+   "purchase": 0.0,
+   "reconfig": 0.0,
+   "mhc": 0.0
+  },
+  "elapsed": 926.4
+ },
+ {
+  "id": "MP3_L",
+  "base": "multi_part",
+  "hypothesis": "제품 3개(원본, 전부 2>12로 시작) x L자형(입구 왼쪽, 출구 아래) (기간별 총수요 36/56/52/44 고정, 20슬롯)",
+  "time_limit": 600,
+  "mhc_lb": 5640.0,
+  "mhc_lb_detail": {
+   "A": {
+    "min_path": 7.5,
+    "total_demand": 34.0,
+    "mhc_lb": 1020.0
+   },
+   "B": {
+    "min_path": 7.5,
+    "total_demand": 94.0,
+    "mhc_lb": 2820.0
+   },
+   "C": {
+    "min_path": 7.5,
+    "total_demand": 60.0,
+    "mhc_lb": 1800.0
+   }
+  },
+  "P": 20,
+  "F": 20,
+  "T": 4,
+  "ops": [
+   2,
+   8,
+   11,
+   12,
+   17
+  ],
+  "off": {
+   "status": "OPTIMAL",
+   "obj": 18224.0,
+   "bound": 18224.0,
+   "gap": 0.0,
+   "lp": 15892.598433,
+   "runtime": 282.0,
+   "wall": 282.9,
+   "vars": 9800,
+   "binary": 3800,
+   "purchase": 11230.0,
+   "reconfig": 650.0,
+   "mhc": 6344.0,
+   "move": 0.0,
+   "machines": 11,
+   "reconfigs": 3,
+   "relocations": 0,
+   "move_distance": 0
+  },
+  "move_cost_flat": 0.0,
+  "joint": {
+   "status": "TIME_LIMIT",
+   "obj": 18164.0,
+   "bound": 17742.13726,
+   "gap": 0.023225,
+   "lp": 15839.489287,
+   "runtime": 600.1,
+   "wall": 603.4,
+   "vars": 22340,
+   "binary": 16340,
+   "purchase": 11230.0,
+   "reconfig": 650.0,
+   "mhc": 6284.0,
+   "move": 0.0,
+   "machines": 11,
+   "reconfigs": 3,
+   "relocations": 8,
+   "move_distance": 14.0
+  },
+  "gain_interval": [
+   60.0,
+   481.9
+  ],
+  "gain_point": 60.0,
+  "gain_pct_point": 0.33,
+  "gain_pct_lb": 0.33,
+  "mhc_slack_off": 704.0,
+  "delta": {
+   "purchase": 0.0,
+   "reconfig": 0.0,
+   "mhc": 60.0
+  },
+  "elapsed": 886.4
+ },
+ {
+  "id": "MP3_U",
+  "base": "multi_part",
+  "hypothesis": "제품 3개(원본, 전부 2>12로 시작) x U자형(입출구 둘 다 왼쪽) (기간별 총수요 36/56/52/44 고정, 20슬롯)",
+  "time_limit": 600,
+  "mhc_lb": 5264.0,
+  "mhc_lb_detail": {
+   "A": {
+    "min_path": 7.0,
+    "total_demand": 34.0,
+    "mhc_lb": 952.0
+   },
+   "B": {
+    "min_path": 7.0,
+    "total_demand": 94.0,
+    "mhc_lb": 2632.0
+   },
+   "C": {
+    "min_path": 7.0,
+    "total_demand": 60.0,
+    "mhc_lb": 1680.0
+   }
+  },
+  "P": 20,
+  "F": 20,
+  "T": 4,
+  "ops": [
+   2,
+   8,
+   11,
+   12,
+   17
+  ],
+  "off": {
+   "status": "TIME_LIMIT",
+   "obj": 18534.0,
+   "bound": 18223.865936,
+   "gap": 0.016733,
+   "lp": 16029.049881,
+   "runtime": 600.1,
+   "wall": 600.8,
+   "vars": 9800,
+   "binary": 3800,
+   "purchase": 10320.0,
+   "reconfig": 1750.0,
+   "mhc": 6464.0,
+   "move": 0.0,
+   "machines": 10,
+   "reconfigs": 7,
+   "relocations": 0,
+   "move_distance": 0
+  },
+  "move_cost_flat": 0.0,
+  "joint": {
+   "status": "TIME_LIMIT",
+   "obj": 18414.0,
+   "bound": 17925.963669,
+   "gap": 0.026504,
+   "lp": 15964.135902,
+   "runtime": 600.1,
+   "wall": 603.3,
+   "vars": 22340,
+   "binary": 16340,
+   "purchase": 10320.0,
+   "reconfig": 1750.0,
+   "mhc": 6344.0,
+   "move": 0.0,
+   "machines": 10,
+   "reconfigs": 7,
+   "relocations": 13,
+   "move_distance": 32.0
+  },
+  "gain_interval": [
+   0.0,
+   608.0
+  ],
+  "gain_point": 120.0,
+  "gain_pct_point": 0.65,
+  "gain_pct_lb": 0.0,
+  "mhc_slack_off": 1200.0,
+  "delta": {
+   "purchase": 0.0,
+   "reconfig": 0.0,
+   "mhc": 120.0
+  },
+  "elapsed": 1204.3
+ },
+ {
+  "id": "MP7H_thru",
+  "base": "multi_part",
+  "hypothesis": "제품 7개(겹침 극대: 같은 4공정을 서로 다른 순서로) x 통과형(입구 왼쪽, 출구 오른쪽) (기간별 총수요 36/56/52/44 고정, 20슬롯)",
+  "time_limit": 600,
+  "mhc_lb": 6768.0,
+  "mhc_lb_detail": {
+   "H1": {
+    "min_path": 9.0,
+    "total_demand": 28.0,
+    "mhc_lb": 1008.0
+   },
+   "H2": {
+    "min_path": 9.0,
+    "total_demand": 26.0,
+    "mhc_lb": 936.0
+   },
+   "H3": {
+    "min_path": 9.0,
+    "total_demand": 26.0,
+    "mhc_lb": 936.0
+   },
+   "H4": {
+    "min_path": 9.0,
+    "total_demand": 26.0,
+    "mhc_lb": 936.0
+   },
+   "H5": {
+    "min_path": 9.0,
+    "total_demand": 26.0,
+    "mhc_lb": 936.0
+   },
+   "H6": {
+    "min_path": 9.0,
+    "total_demand": 28.0,
+    "mhc_lb": 1008.0
+   },
+   "H7": {
+    "min_path": 9.0,
+    "total_demand": 28.0,
+    "mhc_lb": 1008.0
+   }
+  },
+  "P": 20,
+  "F": 16,
+  "T": 4,
+  "ops": [
+   2,
+   11,
+   12,
+   17
+  ],
+  "off": {
+   "status": "TIME_LIMIT",
+   "obj": 20263.0,
+   "bound": 19775.01293,
+   "gap": 0.024083,
+   "lp": 18164.381818,
+   "runtime": 600.1,
+   "wall": 600.9,
+   "vars": 20780,
+   "binary": 3100,
+   "purchase": 11800.0,
+   "reconfig": 1075.0,
+   "mhc": 7388.0,
+   "move": 0.0,
+   "machines": 12,
+   "reconfigs": 4,
+   "relocations": 0,
+   "move_distance": 0
+  },
+  "move_cost_flat": 0.0,
+  "joint": {
+   "status": "TIME_LIMIT",
+   "obj": 20183.0,
+   "bound": 19515.860159,
+   "gap": 0.033055,
+   "lp": 18164.381818,
+   "runtime": 600.1,
+   "wall": 601.6,
+   "vars": 33320,
+   "binary": 15640,
+   "purchase": 11800.0,
+   "reconfig": 1075.0,
+   "mhc": 7308.0,
+   "move": 0.0,
+   "machines": 12,
+   "reconfigs": 4,
+   "relocations": 6,
+   "move_distance": 10.0
+  },
+  "gain_interval": [
+   0.0,
+   747.1
+  ],
+  "gain_point": 80.0,
+  "gain_pct_point": 0.39,
+  "gain_pct_lb": 0.0,
+  "mhc_slack_off": 620.0,
+  "delta": {
+   "purchase": 0.0,
+   "reconfig": 0.0,
+   "mhc": 80.0
+  },
+  "elapsed": 1202.7
+ },
+ {
+  "id": "MP7H_L",
+  "base": "multi_part",
+  "hypothesis": "제품 7개(겹침 극대: 같은 4공정을 서로 다른 순서로) x L자형(입구 왼쪽, 출구 아래) (기간별 총수요 36/56/52/44 고정, 20슬롯)",
+  "time_limit": 600,
+  "mhc_lb": 5640.0,
+  "mhc_lb_detail": {
+   "H1": {
+    "min_path": 7.5,
+    "total_demand": 28.0,
+    "mhc_lb": 840.0
+   },
+   "H2": {
+    "min_path": 7.5,
+    "total_demand": 26.0,
+    "mhc_lb": 780.0
+   },
+   "H3": {
+    "min_path": 7.5,
+    "total_demand": 26.0,
+    "mhc_lb": 780.0
+   },
+   "H4": {
+    "min_path": 7.5,
+    "total_demand": 26.0,
+    "mhc_lb": 780.0
+   },
+   "H5": {
+    "min_path": 7.5,
+    "total_demand": 26.0,
+    "mhc_lb": 780.0
+   },
+   "H6": {
+    "min_path": 7.5,
+    "total_demand": 28.0,
+    "mhc_lb": 840.0
+   },
+   "H7": {
+    "min_path": 7.5,
+    "total_demand": 28.0,
+    "mhc_lb": 840.0
+   }
+  },
+  "P": 20,
+  "F": 16,
+  "T": 4,
+  "ops": [
+   2,
+   11,
+   12,
+   17
+  ],
+  "off": {
+   "status": "TIME_LIMIT",
+   "obj": 19536.333333,
+   "bound": 19372.025136,
+   "gap": 0.00841,
+   "lp": 17416.094867,
+   "runtime": 600.1,
+   "wall": 601.1,
+   "vars": 20780,
+   "binary": 3100,
+   "purchase": 11800.0,
+   "reconfig": 1075.0,
+   "mhc": 6661.333333,
+   "move": 0.0,
+   "machines": 12,
+   "reconfigs": 4,
+   "relocations": 0,
+   "move_distance": 0
+  },
+  "move_cost_flat": 0.0,
+  "joint": {
+   "status": "TIME_LIMIT",
+   "obj": 19535.0,
+   "bound": 18703.174414,
+   "gap": 0.042581,
+   "lp": 17383.984519,
+   "runtime": 600.2,
+   "wall": 602.7,
+   "vars": 33320,
+   "binary": 15640,
+   "purchase": 11800.0,
+   "reconfig": 1075.0,
+   "mhc": 6660.0,
+   "move": 0.0,
+   "machines": 12,
+   "reconfigs": 4,
+   "relocations": 3,
+   "move_distance": 9.0
+  },
+  "gain_interval": [
+   0.0,
+   833.2
+  ],
+  "gain_point": 1.3,
+  "gain_pct_point": 0.01,
+  "gain_pct_lb": 0.0,
+  "mhc_slack_off": 1021.3,
+  "delta": {
+   "purchase": 0.0,
+   "reconfig": 0.0,
+   "mhc": 1.3
+  },
+  "elapsed": 1203.9
+ },
+ {
+  "id": "MP7H_U",
+  "base": "multi_part",
+  "hypothesis": "제품 7개(겹침 극대: 같은 4공정을 서로 다른 순서로) x U자형(입출구 둘 다 왼쪽) (기간별 총수요 36/56/52/44 고정, 20슬롯)",
+  "time_limit": 600,
+  "mhc_lb": 5264.0,
+  "mhc_lb_detail": {
+   "H1": {
+    "min_path": 7.0,
+    "total_demand": 28.0,
+    "mhc_lb": 784.0
+   },
+   "H2": {
+    "min_path": 7.0,
+    "total_demand": 26.0,
+    "mhc_lb": 728.0
+   },
+   "H3": {
+    "min_path": 7.0,
+    "total_demand": 26.0,
+    "mhc_lb": 728.0
+   },
+   "H4": {
+    "min_path": 7.0,
+    "total_demand": 26.0,
+    "mhc_lb": 728.0
+   },
+   "H5": {
+    "min_path": 7.0,
+    "total_demand": 26.0,
+    "mhc_lb": 728.0
+   },
+   "H6": {
+    "min_path": 7.0,
+    "total_demand": 28.0,
+    "mhc_lb": 784.0
+   },
+   "H7": {
+    "min_path": 7.0,
+    "total_demand": 28.0,
+    "mhc_lb": 784.0
+   }
+  },
+  "P": 20,
+  "F": 16,
+  "T": 4,
+  "ops": [
+   2,
+   11,
+   12,
+   17
+  ],
+  "off": {
+   "status": "TIME_LIMIT",
+   "obj": 19402.0,
+   "bound": 18658.624215,
+   "gap": 0.038314,
+   "lp": 17317.264358,
+   "runtime": 600.1,
+   "wall": 601.0,
+   "vars": 20780,
+   "binary": 3100,
+   "purchase": 12105.0,
+   "reconfig": 825.0,
+   "mhc": 6472.0,
+   "move": 0.0,
+   "machines": 12,
+   "reconfigs": 3,
+   "relocations": 0,
+   "move_distance": 0
+  },
+  "move_cost_flat": 0.0,
+  "joint": {
+   "status": "TIME_LIMIT",
+   "obj": 19287.0,
+   "bound": 18705.375632,
+   "gap": 0.030156,
+   "lp": 17267.477468,
+   "runtime": 600.2,
+   "wall": 602.7,
+   "vars": 33320,
+   "binary": 15640,
+   "purchase": 11800.0,
+   "reconfig": 1075.0,
+   "mhc": 6412.0,
+   "move": 0.0,
+   "machines": 12,
+   "reconfigs": 4,
+   "relocations": 10,
+   "move_distance": 22.0
+  },
+  "gain_interval": [
+   0.0,
+   696.6
+  ],
+  "gain_point": 115.0,
+  "gain_pct_point": 0.59,
+  "gain_pct_lb": 0.0,
+  "mhc_slack_off": 1208.0,
+  "delta": {
+   "purchase": 305.0,
+   "reconfig": -250.0,
+   "mhc": 60.0
+  },
+  "elapsed": 1203.9
+ },
+ {
+  "id": "MP7_thru",
+  "base": "multi_part",
+  "hypothesis": "제품 7개(경로 다양, 공정 12개) x 통과형(입구 왼쪽, 출구 오른쪽) (기간별 총수요 36/56/52/44 고정, 20슬롯)",
+  "time_limit": 600,
+  "mhc_lb": 6768.0,
+  "mhc_lb_detail": {
+   "A": {
+    "min_path": 9.0,
+    "total_demand": 13.0,
+    "mhc_lb": 468.0
+   },
+   "B": {
+    "min_path": 9.0,
+    "total_demand": 37.0,
+    "mhc_lb": 1332.0
+   },
+   "C": {
+    "min_path": 9.0,
+    "total_demand": 24.0,
+    "mhc_lb": 864.0
+   },
+   "D": {
+    "min_path": 9.0,
+    "total_demand": 21.0,
+    "mhc_lb": 756.0
+   },
+   "E": {
+    "min_path": 9.0,
+    "total_demand": 30.0,
+    "mhc_lb": 1080.0
+   },
+   "F": {
+    "min_path": 9.0,
+    "total_demand": 34.0,
+    "mhc_lb": 1224.0
+   },
+   "G": {
+    "min_path": 9.0,
+    "total_demand": 29.0,
+    "mhc_lb": 1044.0
+   }
+  },
+  "P": 20,
+  "F": 45,
+  "T": 4,
+  "ops": [
+   2,
+   4,
+   6,
+   8,
+   9,
+   11,
+   12,
+   13,
+   15,
+   16,
+   17,
+   20
+  ],
+  "off": {
+   "status": "TIME_LIMIT",
+   "obj": 22259.0,
+   "bound": 21209.827095,
+   "gap": 0.047135,
+   "lp": 15603.542707,
+   "runtime": 600.1,
+   "wall": 601.2,
+   "vars": 29960,
+   "binary": 11400,
+   "purchase": 13790.0,
+   "reconfig": 1125.0,
+   "mhc": 7344.0,
+   "move": 0.0,
+   "machines": 15,
+   "reconfigs": 6,
+   "relocations": 0,
+   "move_distance": 0
+  },
+  "move_cost_flat": 0.0,
+  "joint": {
+   "status": "TIME_LIMIT",
+   "obj": 22217.0,
+   "bound": 21026.152199,
+   "gap": 0.053601,
+   "lp": 15603.542707,
+   "runtime": 600.2,
+   "wall": 603.9,
+   "vars": 49340,
+   "binary": 30780,
+   "purchase": 13930.0,
+   "reconfig": 975.0,
+   "mhc": 7312.0,
+   "move": 0.0,
+   "machines": 15,
+   "reconfigs": 6,
+   "relocations": 11,
+   "move_distance": 35.0
+  },
+  "gain_interval": [
+   0.0,
+   1232.8
+  ],
+  "gain_point": 42.0,
+  "gain_pct_point": 0.19,
+  "gain_pct_lb": 0.0,
+  "mhc_slack_off": 576.0,
+  "delta": {
+   "purchase": -140.0,
+   "reconfig": 150.0,
+   "mhc": 32.0
+  },
+  "elapsed": 1205.2
+ },
+ {
+  "id": "MP7_U",
+  "base": "multi_part",
+  "hypothesis": "제품 7개(경로 다양, 공정 12개) x U자형(입출구 둘 다 왼쪽) (기간별 총수요 36/56/52/44 고정, 20슬롯)",
+  "time_limit": 600,
+  "mhc_lb": 5264.0,
+  "mhc_lb_detail": {
+   "A": {
+    "min_path": 7.0,
+    "total_demand": 13.0,
+    "mhc_lb": 364.0
+   },
+   "B": {
+    "min_path": 7.0,
+    "total_demand": 37.0,
+    "mhc_lb": 1036.0
+   },
+   "C": {
+    "min_path": 7.0,
+    "total_demand": 24.0,
+    "mhc_lb": 672.0
+   },
+   "D": {
+    "min_path": 7.0,
+    "total_demand": 21.0,
+    "mhc_lb": 588.0
+   },
+   "E": {
+    "min_path": 7.0,
+    "total_demand": 30.0,
+    "mhc_lb": 840.0
+   },
+   "F": {
+    "min_path": 7.0,
+    "total_demand": 34.0,
+    "mhc_lb": 952.0
+   },
+   "G": {
+    "min_path": 7.0,
+    "total_demand": 29.0,
+    "mhc_lb": 812.0
+   }
+  },
+  "P": 20,
+  "F": 45,
+  "T": 4,
+  "ops": [
+   2,
+   4,
+   6,
+   8,
+   9,
+   11,
+   12,
+   13,
+   15,
+   16,
+   17,
+   20
+  ],
+  "off": {
+   "status": "TIME_LIMIT",
+   "obj": 22003.0,
+   "bound": 20525.349339,
+   "gap": 0.067157,
+   "lp": 14282.459037,
+   "runtime": 600.2,
+   "wall": 603.1,
+   "vars": 29960,
+   "binary": 11400,
+   "purchase": 14040.0,
+   "reconfig": 875.0,
+   "mhc": 7088.0,
+   "move": 0.0,
+   "machines": 15,
+   "reconfigs": 4,
+   "relocations": 0,
+   "move_distance": 0
+  },
+  "move_cost_flat": 0.0,
+  "joint": {
+   "status": "TIME_LIMIT",
+   "obj": 21851.0,
+   "bound": 19944.421957,
+   "gap": 0.087254,
+   "lp": 14173.825897,
+   "runtime": 600.2,
+   "wall": 611.9,
+   "vars": 49340,
+   "binary": 30780,
+   "purchase": 14040.0,
+   "reconfig": 875.0,
+   "mhc": 6936.0,
+   "move": 0.0,
+   "machines": 15,
+   "reconfigs": 5,
+   "relocations": 23,
+   "move_distance": 65.0
+  },
+  "gain_interval": [
+   0.0,
+   2058.6
+  ],
+  "gain_point": 152.0,
+  "gain_pct_point": 0.69,
+  "gain_pct_lb": 0.0,
+  "mhc_slack_off": 1824.0,
+  "delta": {
+   "purchase": 0.0,
+   "reconfig": 0.0,
+   "mhc": 152.0
+  },
+  "elapsed": 1215.1
  }
 ]
