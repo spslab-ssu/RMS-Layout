@@ -8779,5 +8779,427 @@
    "mhc": 92.0
   },
   "elapsed": 483.8
+ },
+ {
+  "id": "F_5p_20",
+  "base": "youssef_2007",
+  "hypothesis": "최종 확인: 5품종(레이어2~6) 점진전환, 20슬롯, 루프1>5>15+꼬리60, 부하 불균형, 이동비 0. 1500초.",
+  "time_limit": 1500,
+  "mhc_lb": 7208.0,
+  "mhc_lb_detail": {
+   "L2": {
+    "min_path": 11.0,
+    "total_demand": 24.0,
+    "mhc_lb": 1056.0
+   },
+   "L3": {
+    "min_path": 14.0,
+    "total_demand": 19.0,
+    "mhc_lb": 1064.0
+   },
+   "L4": {
+    "min_path": 17.0,
+    "total_demand": 20.0,
+    "mhc_lb": 1360.0
+   },
+   "L5": {
+    "min_path": 20.0,
+    "total_demand": 19.0,
+    "mhc_lb": 1520.0
+   },
+   "L6": {
+    "min_path": 23.0,
+    "total_demand": 24.0,
+    "mhc_lb": 2208.0
+   }
+  },
+  "P": 20,
+  "F": 20,
+  "T": 4,
+  "ops": [
+   1,
+   5,
+   15,
+   60
+  ],
+  "off": {
+   "status": "TIME_LIMIT",
+   "obj": 14259.0,
+   "bound": 13438.703547,
+   "gap": 0.057528,
+   "lp": 10380.604167,
+   "runtime": 1500.0,
+   "wall": 1500.5,
+   "vars": 14320,
+   "binary": 2000,
+   "purchase": 5845.0,
+   "reconfig": 150.0,
+   "mhc": 8264.0,
+   "move": 0.0,
+   "machines": 7,
+   "reconfigs": 3,
+   "relocations": 0,
+   "move_distance": 0
+  },
+  "move_cost_flat": 0.0,
+  "joint": {
+   "status": "TIME_LIMIT",
+   "obj": 14163.0,
+   "bound": 12261.702262,
+   "gap": 0.134244,
+   "lp": 10380.604167,
+   "runtime": 1500.3,
+   "wall": 1502.5,
+   "vars": 123760,
+   "binary": 2000,
+   "purchase": 5845.0,
+   "reconfig": 150.0,
+   "mhc": 8168.0,
+   "move": 0.0,
+   "machines": 7,
+   "reconfigs": 3,
+   "relocations": 21,
+   "move_distance": 41.0
+  },
+  "gain_interval": [
+   0.0,
+   1997.3
+  ],
+  "gain_point": 96.0,
+  "gain_pct_point": 0.67,
+  "gain_pct_lb": 0.0,
+  "mhc_slack_off": 1056.0,
+  "delta": {
+   "purchase": 0.0,
+   "reconfig": 0.0,
+   "mhc": 96.0
+  },
+  "elapsed": 3003.0
+ },
+ {
+  "id": "C_LP2",
+  "base": "youssef_2007",
+  "hypothesis": "순환 길이 2공정 [1, 5] + 꼬리60 (12슬롯 4x3, 교대, 수요40, 이동비0)",
+  "time_limit": 240,
+  "mhc_lb": 7040.0,
+  "mhc_lb_detail": {
+   "L2": {
+    "min_path": 9.0,
+    "total_demand": 80.0,
+    "mhc_lb": 2880.0
+   },
+   "L4": {
+    "min_path": 13.0,
+    "total_demand": 80.0,
+    "mhc_lb": 4160.0
+   }
+  },
+  "P": 12,
+  "F": 15,
+  "T": 4,
+  "ops": [
+   1,
+   5,
+   60
+  ],
+  "off": {
+   "status": "OPTIMAL",
+   "obj": 11265.0,
+   "bound": 11265.0,
+   "gap": 0.0,
+   "lp": 10070.416667,
+   "runtime": 2.7,
+   "wall": 2.8,
+   "vars": 4740,
+   "binary": 2916,
+   "purchase": 4125.0,
+   "reconfig": 100.0,
+   "mhc": 7040.0,
+   "move": 0.0,
+   "machines": 5,
+   "reconfigs": 2,
+   "relocations": 0,
+   "move_distance": 0
+  },
+  "move_cost_flat": 0.0,
+  "joint": {
+   "status": "OPTIMAL",
+   "obj": 11265.0,
+   "bound": 11265.0,
+   "gap": 0.0,
+   "lp": 10070.416667,
+   "runtime": 8.2,
+   "wall": 8.8,
+   "vars": 8304,
+   "binary": 6480,
+   "purchase": 4125.0,
+   "reconfig": 100.0,
+   "mhc": 7040.0,
+   "move": 0.0,
+   "machines": 5,
+   "reconfigs": 2,
+   "relocations": 4,
+   "move_distance": 10.0
+  },
+  "gain_interval": [
+   0.0,
+   0.0
+  ],
+  "gain_point": 0.0,
+  "gain_pct_point": 0.0,
+  "gain_pct_lb": 0.0,
+  "mhc_slack_off": 0.0,
+  "delta": {
+   "purchase": 0.0,
+   "reconfig": 0.0,
+   "mhc": 0.0
+  },
+  "elapsed": 11.7
+ },
+ {
+  "id": "C_LP3",
+  "base": "youssef_2007",
+  "hypothesis": "순환 길이 3공정 [1, 5, 15] + 꼬리60 (12슬롯 4x3, 교대, 수요40, 이동비0)",
+  "time_limit": 240,
+  "mhc_lb": 8960.0,
+  "mhc_lb_detail": {
+   "L2": {
+    "min_path": 11.0,
+    "total_demand": 80.0,
+    "mhc_lb": 3520.0
+   },
+   "L4": {
+    "min_path": 17.0,
+    "total_demand": 80.0,
+    "mhc_lb": 5440.0
+   }
+  },
+  "P": 12,
+  "F": 20,
+  "T": 4,
+  "ops": [
+   1,
+   5,
+   15,
+   60
+  ],
+  "off": {
+   "status": "OPTIMAL",
+   "obj": 15595.0,
+   "bound": 15595.0,
+   "gap": 0.0,
+   "lp": 12096.666667,
+   "runtime": 170.9,
+   "wall": 171.3,
+   "vars": 6336,
+   "binary": 3936,
+   "purchase": 5845.0,
+   "reconfig": 150.0,
+   "mhc": 9600.0,
+   "move": 0.0,
+   "machines": 7,
+   "reconfigs": 2,
+   "relocations": 0,
+   "move_distance": 0
+  },
+  "move_cost_flat": 0.0,
+  "joint": {
+   "status": "TIME_LIMIT",
+   "obj": 15275.0,
+   "bound": 14803.534583,
+   "gap": 0.030865,
+   "lp": 12073.75,
+   "runtime": 240.1,
+   "wall": 241.0,
+   "vars": 9900,
+   "binary": 7500,
+   "purchase": 5845.0,
+   "reconfig": 150.0,
+   "mhc": 9280.0,
+   "move": 0.0,
+   "machines": 7,
+   "reconfigs": 2,
+   "relocations": 9,
+   "move_distance": 16.0
+  },
+  "gain_interval": [
+   320.0,
+   791.5
+  ],
+  "gain_point": 320.0,
+  "gain_pct_point": 2.05,
+  "gain_pct_lb": 2.05,
+  "mhc_slack_off": 640.0,
+  "delta": {
+   "purchase": 0.0,
+   "reconfig": 0.0,
+   "mhc": 320.0
+  },
+  "elapsed": 412.4
+ },
+ {
+  "id": "C_LP4",
+  "base": "youssef_2007",
+  "hypothesis": "순환 길이 4공정 [1, 5, 15, 16] + 꼬리60 (12슬롯 4x3, 교대, 수요40, 이동비0)",
+  "time_limit": 240,
+  "mhc_lb": 10880.0,
+  "mhc_lb_detail": {
+   "L2": {
+    "min_path": 13.0,
+    "total_demand": 80.0,
+    "mhc_lb": 4160.0
+   },
+   "L4": {
+    "min_path": 21.0,
+    "total_demand": 80.0,
+    "mhc_lb": 6720.0
+   }
+  },
+  "P": 12,
+  "F": 21,
+  "T": 4,
+  "ops": [
+   1,
+   5,
+   15,
+   16,
+   60
+  ],
+  "off": {
+   "status": "TIME_LIMIT",
+   "obj": 20445.0,
+   "bound": 20304.621302,
+   "gap": 0.006866,
+   "lp": 17143.75,
+   "runtime": 240.1,
+   "wall": 240.6,
+   "vars": 7116,
+   "binary": 4140,
+   "purchase": 8725.0,
+   "reconfig": 200.0,
+   "mhc": 11520.0,
+   "move": 0.0,
+   "machines": 10,
+   "reconfigs": 4,
+   "relocations": 0,
+   "move_distance": 0
+  },
+  "move_cost_flat": 0.0,
+  "joint": {
+   "status": "TIME_LIMIT",
+   "obj": 20445.0,
+   "bound": 19657.424242,
+   "gap": 0.038522,
+   "lp": 17143.75,
+   "runtime": 240.1,
+   "wall": 240.8,
+   "vars": 10680,
+   "binary": 7704,
+   "purchase": 8725.0,
+   "reconfig": 200.0,
+   "mhc": 11520.0,
+   "move": 0.0,
+   "machines": 10,
+   "reconfigs": 4,
+   "relocations": 0,
+   "move_distance": 0
+  },
+  "gain_interval": [
+   0.0,
+   787.6
+  ],
+  "gain_point": 0.0,
+  "gain_pct_point": 0.0,
+  "gain_pct_lb": 0.0,
+  "mhc_slack_off": 640.0,
+  "delta": {
+   "purchase": 0.0,
+   "reconfig": 0.0,
+   "mhc": 0.0
+  },
+  "elapsed": 481.5
+ },
+ {
+  "id": "C_LP5",
+  "base": "youssef_2007",
+  "hypothesis": "순환 길이 5공정 [1, 5, 15, 16, 9] + 꼬리60 (12슬롯 4x3, 교대, 수요40, 이동비0)",
+  "time_limit": 240,
+  "mhc_lb": 12800.0,
+  "mhc_lb_detail": {
+   "L2": {
+    "min_path": 15.0,
+    "total_demand": 80.0,
+    "mhc_lb": 4800.0
+   },
+   "L4": {
+    "min_path": 25.0,
+    "total_demand": 80.0,
+    "mhc_lb": 8000.0
+   }
+  },
+  "P": 12,
+  "F": 22,
+  "T": 4,
+  "ops": [
+   1,
+   5,
+   9,
+   15,
+   16,
+   60
+  ],
+  "off": {
+   "status": "TIME_LIMIT",
+   "obj": 25395.0,
+   "bound": 23265.728904,
+   "gap": 0.083846,
+   "lp": 20130.416667,
+   "runtime": 240.0,
+   "wall": 240.5,
+   "vars": 7896,
+   "binary": 4344,
+   "purchase": 9735.0,
+   "reconfig": 300.0,
+   "mhc": 15360.0,
+   "move": 0.0,
+   "machines": 11,
+   "reconfigs": 5,
+   "relocations": 0,
+   "move_distance": 0
+  },
+  "move_cost_flat": 0.0,
+  "joint": {
+   "status": "TIME_LIMIT",
+   "obj": 25395.0,
+   "bound": 22968.233463,
+   "gap": 0.095561,
+   "lp": 20130.416667,
+   "runtime": 240.1,
+   "wall": 240.9,
+   "vars": 11460,
+   "binary": 7908,
+   "purchase": 9735.0,
+   "reconfig": 300.0,
+   "mhc": 15360.0,
+   "move": 0.0,
+   "machines": 11,
+   "reconfigs": 5,
+   "relocations": 0,
+   "move_distance": 0
+  },
+  "gain_interval": [
+   0.0,
+   2426.8
+  ],
+  "gain_point": 0.0,
+  "gain_pct_point": 0.0,
+  "gain_pct_lb": 0.0,
+  "mhc_slack_off": 2560.0,
+  "delta": {
+   "purchase": 0.0,
+   "reconfig": 0.0,
+   "mhc": 0.0
+  },
+  "elapsed": 481.6
  }
 ]
