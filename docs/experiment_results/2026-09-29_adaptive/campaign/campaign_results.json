@@ -5563,5 +5563,3221 @@
    "mhc": 0.0
   },
   "elapsed": 1202.8
+ },
+ {
+  "id": "R_layers_12_a010",
+  "base": "youssef_2007",
+  "hypothesis": "이동비 스윕: R_layers_12에 논문식 C_j(alpha + beta*D), alpha=0.01 beta=0.002",
+  "time_limit": 600,
+  "mhc_lb": 8960.0,
+  "mhc_lb_detail": {
+   "P2": {
+    "min_path": 11.0,
+    "total_demand": 80.0,
+    "mhc_lb": 3520.0
+   },
+   "Q4": {
+    "min_path": 17.0,
+    "total_demand": 80.0,
+    "mhc_lb": 5440.0
+   }
+  },
+  "P": 12,
+  "F": 20,
+  "T": 4,
+  "ops": [
+   1,
+   5,
+   15,
+   60
+  ],
+  "off": {
+   "status": "OPTIMAL",
+   "obj": 15595.0,
+   "bound": 15595.0,
+   "gap": 0.0,
+   "lp": 12096.666667,
+   "runtime": 147.5,
+   "wall": 147.7,
+   "vars": 6336,
+   "binary": 3936,
+   "purchase": 5845.0,
+   "reconfig": 150.0,
+   "mhc": 9600.0,
+   "move": 0.0,
+   "machines": 7,
+   "reconfigs": 2,
+   "relocations": 0,
+   "move_distance": 0
+  },
+  "move_cost_flat": 0.0,
+  "joint": {
+   "status": "TIME_LIMIT",
+   "obj": 15502.78,
+   "bound": 14923.862991,
+   "gap": 0.037343,
+   "lp": 12075.9,
+   "runtime": 600.2,
+   "wall": 601.5,
+   "vars": 9900,
+   "binary": 7500,
+   "purchase": 4985.0,
+   "reconfig": 200.0,
+   "mhc": 10240.0,
+   "move": 77.78,
+   "machines": 6,
+   "reconfigs": 3,
+   "relocations": 6,
+   "move_distance": 8.0
+  },
+  "gain_interval": [
+   92.2,
+   671.1
+  ],
+  "gain_point": 92.2,
+  "gain_pct_point": 0.59,
+  "gain_pct_lb": 0.59,
+  "mhc_slack_off": 640.0,
+  "delta": {
+   "purchase": 860.0,
+   "reconfig": -50.0,
+   "mhc": -640.0
+  },
+  "elapsed": 749.4
+ },
+ {
+  "id": "R_layers_12_a020",
+  "base": "youssef_2007",
+  "hypothesis": "이동비 스윕: R_layers_12에 논문식 C_j(alpha + beta*D), alpha=0.02 beta=0.004",
+  "time_limit": 600,
+  "mhc_lb": 8960.0,
+  "mhc_lb_detail": {
+   "P2": {
+    "min_path": 11.0,
+    "total_demand": 80.0,
+    "mhc_lb": 3520.0
+   },
+   "Q4": {
+    "min_path": 17.0,
+    "total_demand": 80.0,
+    "mhc_lb": 5440.0
+   }
+  },
+  "P": 12,
+  "F": 20,
+  "T": 4,
+  "ops": [
+   1,
+   5,
+   15,
+   60
+  ],
+  "off": {
+   "status": "OPTIMAL",
+   "obj": 15595.0,
+   "bound": 15595.0,
+   "gap": 0.0,
+   "lp": 12096.666667,
+   "runtime": 308.8,
+   "wall": 310.2,
+   "vars": 6336,
+   "binary": 3936,
+   "purchase": 5845.0,
+   "reconfig": 150.0,
+   "mhc": 9600.0,
+   "move": 0.0,
+   "machines": 7,
+   "reconfigs": 2,
+   "relocations": 0,
+   "move_distance": 0
+  },
+  "move_cost_flat": 0.0,
+  "joint": {
+   "status": "TIME_LIMIT",
+   "obj": 15367.16,
+   "bound": 14979.903441,
+   "gap": 0.0252,
+   "lp": 12078.05,
+   "runtime": 600.1,
+   "wall": 602.2,
+   "vars": 9900,
+   "binary": 7500,
+   "purchase": 5845.0,
+   "reconfig": 150.0,
+   "mhc": 9280.0,
+   "move": 92.16,
+   "machines": 7,
+   "reconfigs": 2,
+   "relocations": 3,
+   "move_distance": 9.0
+  },
+  "gain_interval": [
+   227.8,
+   615.1
+  ],
+  "gain_point": 227.8,
+  "gain_pct_point": 1.46,
+  "gain_pct_lb": 1.46,
+  "mhc_slack_off": 640.0,
+  "delta": {
+   "purchase": 0.0,
+   "reconfig": 0.0,
+   "mhc": 320.0
+  },
+  "elapsed": 912.9
+ },
+ {
+  "id": "A_6x2",
+  "base": "youssef_2007",
+  "hypothesis": "격자 6x2 (12슬롯). 점진전환 P70/50/30/10 Q6/18/30/42, 작업량 480 고정",
+  "time_limit": 600,
+  "mhc_lb": 11776.0,
+  "mhc_lb_detail": {
+   "P": {
+    "min_path": 10.0,
+    "total_demand": 160.0,
+    "mhc_lb": 6400.0
+   },
+   "Q": {
+    "min_path": 14.0,
+    "total_demand": 96.0,
+    "mhc_lb": 5376.0
+   }
+  },
+  "P": 12,
+  "F": 12,
+  "T": 4,
+  "ops": [
+   1,
+   5,
+   15,
+   16
+  ],
+  "off": {
+   "status": "OPTIMAL",
+   "obj": 20166.0,
+   "bound": 20166.0,
+   "gap": 0.0,
+   "lp": 16935.166667,
+   "runtime": 3.9,
+   "wall": 4.0,
+   "vars": 4848,
+   "binary": 2448,
+   "purchase": 7910.0,
+   "reconfig": 0.0,
+   "mhc": 12256.0,
+   "move": 0.0,
+   "machines": 8,
+   "reconfigs": 0,
+   "relocations": 0,
+   "move_distance": 0
+  },
+  "move_cost_flat": 0.0,
+  "joint": {
+   "status": "OPTIMAL",
+   "obj": 20166.0,
+   "bound": 20166.0,
+   "gap": 0.0,
+   "lp": 16935.166667,
+   "runtime": 10.4,
+   "wall": 10.8,
+   "vars": 6828,
+   "binary": 4428,
+   "purchase": 7910.0,
+   "reconfig": 0.0,
+   "mhc": 12256.0,
+   "move": 0.0,
+   "machines": 8,
+   "reconfigs": 0,
+   "relocations": 0,
+   "move_distance": 0
+  },
+  "gain_interval": [
+   0.0,
+   0.0
+  ],
+  "gain_point": 0.0,
+  "gain_pct_point": 0.0,
+  "gain_pct_lb": 0.0,
+  "mhc_slack_off": 480.0,
+  "delta": {
+   "purchase": 0.0,
+   "reconfig": 0,
+   "mhc": 0.0
+  },
+  "elapsed": 14.8
+ },
+ {
+  "id": "A_4x3",
+  "base": "youssef_2007",
+  "hypothesis": "격자 4x3 (12슬롯). 점진전환 P70/50/30/10 Q6/18/30/42, 작업량 480 고정",
+  "time_limit": 600,
+  "mhc_lb": 10752.0,
+  "mhc_lb_detail": {
+   "P": {
+    "min_path": 9.0,
+    "total_demand": 160.0,
+    "mhc_lb": 5760.0
+   },
+   "Q": {
+    "min_path": 13.0,
+    "total_demand": 96.0,
+    "mhc_lb": 4992.0
+   }
+  },
+  "P": 12,
+  "F": 12,
+  "T": 4,
+  "ops": [
+   1,
+   5,
+   15,
+   16
+  ],
+  "off": {
+   "status": "OPTIMAL",
+   "obj": 18530.0,
+   "bound": 18530.0,
+   "gap": 0.0,
+   "lp": 16103.166667,
+   "runtime": 5.1,
+   "wall": 5.3,
+   "vars": 4848,
+   "binary": 2448,
+   "purchase": 7330.0,
+   "reconfig": 0.0,
+   "mhc": 11200.0,
+   "move": 0.0,
+   "machines": 7,
+   "reconfigs": 0,
+   "relocations": 0,
+   "move_distance": 0
+  },
+  "move_cost_flat": 0.0,
+  "joint": {
+   "status": "OPTIMAL",
+   "obj": 18530.0,
+   "bound": 18530.0,
+   "gap": 0.0,
+   "lp": 16103.166667,
+   "runtime": 9.4,
+   "wall": 9.7,
+   "vars": 6828,
+   "binary": 4428,
+   "purchase": 7330.0,
+   "reconfig": 0.0,
+   "mhc": 11200.0,
+   "move": 0.0,
+   "machines": 7,
+   "reconfigs": 0,
+   "relocations": 0,
+   "move_distance": 0
+  },
+  "gain_interval": [
+   0.0,
+   0.0
+  ],
+  "gain_point": 0.0,
+  "gain_pct_point": 0.0,
+  "gain_pct_lb": 0.0,
+  "mhc_slack_off": 448.0,
+  "delta": {
+   "purchase": 0.0,
+   "reconfig": 0,
+   "mhc": 0.0
+  },
+  "elapsed": 15.1
+ },
+ {
+  "id": "A_3x4",
+  "base": "youssef_2007",
+  "hypothesis": "격자 3x4 (12슬롯). 점진전환 P70/50/30/10 Q6/18/30/42, 작업량 480 고정",
+  "time_limit": 600,
+  "mhc_lb": 11776.0,
+  "mhc_lb_detail": {
+   "P": {
+    "min_path": 10.0,
+    "total_demand": 160.0,
+    "mhc_lb": 6400.0
+   },
+   "Q": {
+    "min_path": 14.0,
+    "total_demand": 96.0,
+    "mhc_lb": 5376.0
+   }
+  },
+  "P": 12,
+  "F": 12,
+  "T": 4,
+  "ops": [
+   1,
+   5,
+   15,
+   16
+  ],
+  "off": {
+   "status": "OPTIMAL",
+   "obj": 19266.0,
+   "bound": 19266.0,
+   "gap": 0.0,
+   "lp": 16935.166667,
+   "runtime": 4.1,
+   "wall": 4.3,
+   "vars": 4848,
+   "binary": 2448,
+   "purchase": 7330.0,
+   "reconfig": 0.0,
+   "mhc": 11936.0,
+   "move": 0.0,
+   "machines": 7,
+   "reconfigs": 0,
+   "relocations": 0,
+   "move_distance": 0
+  },
+  "move_cost_flat": 0.0,
+  "joint": {
+   "status": "OPTIMAL",
+   "obj": 19266.0,
+   "bound": 19266.0,
+   "gap": 0.0,
+   "lp": 16935.166667,
+   "runtime": 10.2,
+   "wall": 10.5,
+   "vars": 6828,
+   "binary": 4428,
+   "purchase": 7330.0,
+   "reconfig": 0.0,
+   "mhc": 11936.0,
+   "move": 0.0,
+   "machines": 7,
+   "reconfigs": 0,
+   "relocations": 0,
+   "move_distance": 0
+  },
+  "gain_interval": [
+   0.0,
+   0.0
+  ],
+  "gain_point": 0.0,
+  "gain_pct_point": 0.0,
+  "gain_pct_lb": 0.0,
+  "mhc_slack_off": 160.0,
+  "delta": {
+   "purchase": 0.0,
+   "reconfig": 0,
+   "mhc": 0.0
+  },
+  "elapsed": 14.9
+ },
+ {
+  "id": "A_2x6",
+  "base": "youssef_2007",
+  "hypothesis": "격자 2x6 (12슬롯). 점진전환 P70/50/30/10 Q6/18/30/42, 작업량 480 고정",
+  "time_limit": 600,
+  "mhc_lb": 11776.0,
+  "mhc_lb_detail": {
+   "P": {
+    "min_path": 10.0,
+    "total_demand": 160.0,
+    "mhc_lb": 6400.0
+   },
+   "Q": {
+    "min_path": 14.0,
+    "total_demand": 96.0,
+    "mhc_lb": 5376.0
+   }
+  },
+  "P": 12,
+  "F": 12,
+  "T": 4,
+  "ops": [
+   1,
+   5,
+   15,
+   16
+  ],
+  "off": {
+   "status": "OPTIMAL",
+   "obj": 19782.0,
+   "bound": 19782.0,
+   "gap": 0.0,
+   "lp": 16935.166667,
+   "runtime": 10.5,
+   "wall": 10.7,
+   "vars": 4848,
+   "binary": 2448,
+   "purchase": 7910.0,
+   "reconfig": 0.0,
+   "mhc": 11872.0,
+   "move": 0.0,
+   "machines": 8,
+   "reconfigs": 0,
+   "relocations": 0,
+   "move_distance": 0
+  },
+  "move_cost_flat": 0.0,
+  "joint": {
+   "status": "OPTIMAL",
+   "obj": 19782.0,
+   "bound": 19782.0,
+   "gap": 0.0,
+   "lp": 16935.166667,
+   "runtime": 15.3,
+   "wall": 15.7,
+   "vars": 6828,
+   "binary": 4428,
+   "purchase": 7910.0,
+   "reconfig": 0.0,
+   "mhc": 11872.0,
+   "move": 0.0,
+   "machines": 8,
+   "reconfigs": 0,
+   "relocations": 0,
+   "move_distance": 0
+  },
+  "gain_interval": [
+   0.0,
+   0.0
+  ],
+  "gain_point": 0.0,
+  "gain_pct_point": 0.0,
+  "gain_pct_lb": 0.0,
+  "mhc_slack_off": 96.0,
+  "delta": {
+   "purchase": 0.0,
+   "reconfig": 0,
+   "mhc": 0.0
+  },
+  "elapsed": 26.5
+ },
+ {
+  "id": "A_5x4",
+  "base": "youssef_2007",
+  "hypothesis": "격자 5x4 (20슬롯). off에 1200초",
+  "time_limit": 1200,
+  "mhc_lb": 11776.0,
+  "mhc_lb_detail": {
+   "P": {
+    "min_path": 10.0,
+    "total_demand": 160.0,
+    "mhc_lb": 6400.0
+   },
+   "Q": {
+    "min_path": 14.0,
+    "total_demand": 96.0,
+    "mhc_lb": 5376.0
+   }
+  },
+  "P": 20,
+  "F": 12,
+  "T": 4,
+  "ops": [
+   1,
+   5,
+   15,
+   16
+  ],
+  "off": {
+   "status": "OPTIMAL",
+   "obj": 19974.0,
+   "bound": 19974.0,
+   "gap": 0.0,
+   "lp": 16935.166667,
+   "runtime": 40.9,
+   "wall": 41.2,
+   "vars": 10640,
+   "binary": 4080,
+   "purchase": 7910.0,
+   "reconfig": 0.0,
+   "mhc": 12064.0,
+   "move": 0.0,
+   "machines": 8,
+   "reconfigs": 0,
+   "relocations": 0,
+   "move_distance": 0
+  },
+  "move_cost_flat": 0.0,
+  "joint": {
+   "status": "OPTIMAL",
+   "obj": 19974.0,
+   "bound": 19974.0,
+   "gap": 0.0,
+   "lp": 16935.166667,
+   "runtime": 211.4,
+   "wall": 212.2,
+   "vars": 16340,
+   "binary": 9780,
+   "purchase": 7910.0,
+   "reconfig": 0.0,
+   "mhc": 12064.0,
+   "move": 0.0,
+   "machines": 8,
+   "reconfigs": 0,
+   "relocations": 17,
+   "move_distance": 38.0
+  },
+  "gain_interval": [
+   0.0,
+   0.0
+  ],
+  "gain_point": 0.0,
+  "gain_pct_point": 0.0,
+  "gain_pct_lb": 0.0,
+  "mhc_slack_off": 288.0,
+  "delta": {
+   "purchase": 0.0,
+   "reconfig": 0,
+   "mhc": 0.0
+  },
+  "elapsed": 253.5
+ },
+ {
+  "id": "X_alt_bal",
+  "base": "youssef_2007",
+  "hypothesis": "2x2 분해: 믹스=alt 부하=bal (12슬롯 4x3, 루프 1>16, 레이어 2 vs 4)",
+  "time_limit": 300,
+  "mhc_lb": 10752.0,
+  "mhc_lb_detail": {
+   "L2": {
+    "min_path": 9.0,
+    "total_demand": 160.0,
+    "mhc_lb": 5760.0
+   },
+   "L4": {
+    "min_path": 13.0,
+    "total_demand": 96.0,
+    "mhc_lb": 4992.0
+   }
+  },
+  "P": 12,
+  "F": 12,
+  "T": 4,
+  "ops": [
+   1,
+   5,
+   15,
+   16
+  ],
+  "off": {
+   "status": "OPTIMAL",
+   "obj": 18914.0,
+   "bound": 18914.0,
+   "gap": 0.0,
+   "lp": 16245.333333,
+   "runtime": 8.6,
+   "wall": 8.8,
+   "vars": 4848,
+   "binary": 2448,
+   "purchase": 7330.0,
+   "reconfig": 0.0,
+   "mhc": 11584.0,
+   "move": 0.0,
+   "machines": 7,
+   "reconfigs": 0,
+   "relocations": 0,
+   "move_distance": 0
+  },
+  "move_cost_flat": 0.0,
+  "joint": {
+   "status": "OPTIMAL",
+   "obj": 18914.0,
+   "bound": 18914.0,
+   "gap": 0.0,
+   "lp": 16245.333333,
+   "runtime": 18.2,
+   "wall": 18.6,
+   "vars": 6828,
+   "binary": 4428,
+   "purchase": 7330.0,
+   "reconfig": 0.0,
+   "mhc": 11584.0,
+   "move": 0.0,
+   "machines": 7,
+   "reconfigs": 0,
+   "relocations": 0,
+   "move_distance": 0
+  },
+  "gain_interval": [
+   0.0,
+   0.0
+  ],
+  "gain_point": 0.0,
+  "gain_pct_point": 0.0,
+  "gain_pct_lb": 0.0,
+  "mhc_slack_off": 832.0,
+  "delta": {
+   "purchase": 0.0,
+   "reconfig": 0,
+   "mhc": 0.0
+  },
+  "elapsed": 27.5
+ },
+ {
+  "id": "X_alt_unbal",
+  "base": "youssef_2007",
+  "hypothesis": "2x2 분해: 믹스=alt 부하=unbal (12슬롯 4x3, 루프 1>16, 레이어 2 vs 4)",
+  "time_limit": 300,
+  "mhc_lb": 16896.0,
+  "mhc_lb_detail": {
+   "L2": {
+    "min_path": 9.0,
+    "total_demand": 192.0,
+    "mhc_lb": 6912.0
+   },
+   "L4": {
+    "min_path": 13.0,
+    "total_demand": 192.0,
+    "mhc_lb": 9984.0
+   }
+  },
+  "P": 12,
+  "F": 12,
+  "T": 4,
+  "ops": [
+   1,
+   5,
+   15,
+   16
+  ],
+  "off": {
+   "status": "OPTIMAL",
+   "obj": 30528.0,
+   "bound": 30528.0,
+   "gap": 0.0,
+   "lp": 27020.0,
+   "runtime": 8.9,
+   "wall": 9.2,
+   "vars": 4848,
+   "binary": 2448,
+   "purchase": 11220.0,
+   "reconfig": 300.0,
+   "mhc": 19008.0,
+   "move": 0.0,
+   "machines": 12,
+   "reconfigs": 6,
+   "relocations": 0,
+   "move_distance": 0
+  },
+  "move_cost_flat": 0.0,
+  "joint": {
+   "status": "OPTIMAL",
+   "obj": 30528.0,
+   "bound": 30528.0,
+   "gap": 0.0,
+   "lp": 27020.0,
+   "runtime": 11.7,
+   "wall": 12.3,
+   "vars": 6828,
+   "binary": 4428,
+   "purchase": 11220.0,
+   "reconfig": 300.0,
+   "mhc": 19008.0,
+   "move": 0.0,
+   "machines": 12,
+   "reconfigs": 6,
+   "relocations": 0,
+   "move_distance": 0
+  },
+  "gain_interval": [
+   0.0,
+   0.0
+  ],
+  "gain_point": 0.0,
+  "gain_pct_point": 0.0,
+  "gain_pct_lb": 0.0,
+  "mhc_slack_off": 2112.0,
+  "delta": {
+   "purchase": 0.0,
+   "reconfig": 0.0,
+   "mhc": 0.0
+  },
+  "elapsed": 21.6
+ },
+ {
+  "id": "X_grad_bal",
+  "base": "youssef_2007",
+  "hypothesis": "2x2 분해: 믹스=grad 부하=bal (12슬롯 4x3, 루프 1>16, 레이어 2 vs 4)",
+  "time_limit": 300,
+  "mhc_lb": 10752.0,
+  "mhc_lb_detail": {
+   "L2": {
+    "min_path": 9.0,
+    "total_demand": 160.0,
+    "mhc_lb": 5760.0
+   },
+   "L4": {
+    "min_path": 13.0,
+    "total_demand": 96.0,
+    "mhc_lb": 4992.0
+   }
+  },
+  "P": 12,
+  "F": 12,
+  "T": 4,
+  "ops": [
+   1,
+   5,
+   15,
+   16
+  ],
+  "off": {
+   "status": "OPTIMAL",
+   "obj": 18530.0,
+   "bound": 18530.0,
+   "gap": 0.0,
+   "lp": 16175.833333,
+   "runtime": 6.1,
+   "wall": 6.3,
+   "vars": 4848,
+   "binary": 2448,
+   "purchase": 7330.0,
+   "reconfig": 0.0,
+   "mhc": 11200.0,
+   "move": 0.0,
+   "machines": 7,
+   "reconfigs": 0,
+   "relocations": 0,
+   "move_distance": 0
+  },
+  "move_cost_flat": 0.0,
+  "joint": {
+   "status": "OPTIMAL",
+   "obj": 18530.0,
+   "bound": 18530.0,
+   "gap": 0.0,
+   "lp": 16175.833333,
+   "runtime": 13.6,
+   "wall": 14.1,
+   "vars": 6828,
+   "binary": 4428,
+   "purchase": 7330.0,
+   "reconfig": 0.0,
+   "mhc": 11200.0,
+   "move": 0.0,
+   "machines": 7,
+   "reconfigs": 0,
+   "relocations": 0,
+   "move_distance": 0
+  },
+  "gain_interval": [
+   0.0,
+   0.0
+  ],
+  "gain_point": 0.0,
+  "gain_pct_point": 0.0,
+  "gain_pct_lb": 0.0,
+  "mhc_slack_off": 448.0,
+  "delta": {
+   "purchase": 0.0,
+   "reconfig": 0,
+   "mhc": 0.0
+  },
+  "elapsed": 20.5
+ },
+ {
+  "id": "X_grad_unbal",
+  "base": "youssef_2007",
+  "hypothesis": "2x2 분해: 믹스=grad 부하=unbal (12슬롯 4x3, 루프 1>16, 레이어 2 vs 4)",
+  "time_limit": 300,
+  "mhc_lb": 16896.0,
+  "mhc_lb_detail": {
+   "L2": {
+    "min_path": 9.0,
+    "total_demand": 192.0,
+    "mhc_lb": 6912.0
+   },
+   "L4": {
+    "min_path": 13.0,
+    "total_demand": 192.0,
+    "mhc_lb": 9984.0
+   }
+  },
+  "P": 12,
+  "F": 12,
+  "T": 4,
+  "ops": [
+   1,
+   5,
+   15,
+   16
+  ],
+  "off": {
+   "status": "OPTIMAL",
+   "obj": 30048.0,
+   "bound": 30048.0,
+   "gap": 0.0,
+   "lp": 26676.708333,
+   "runtime": 8.5,
+   "wall": 9.1,
+   "vars": 4848,
+   "binary": 2448,
+   "purchase": 11220.0,
+   "reconfig": 300.0,
+   "mhc": 18528.0,
+   "move": 0.0,
+   "machines": 12,
+   "reconfigs": 6,
+   "relocations": 0,
+   "move_distance": 0
+  },
+  "move_cost_flat": 0.0,
+  "joint": {
+   "status": "OPTIMAL",
+   "obj": 30048.0,
+   "bound": 30048.0,
+   "gap": 0.0,
+   "lp": 26676.708333,
+   "runtime": 22.2,
+   "wall": 22.9,
+   "vars": 6828,
+   "binary": 4428,
+   "purchase": 11220.0,
+   "reconfig": 300.0,
+   "mhc": 18528.0,
+   "move": 0.0,
+   "machines": 12,
+   "reconfigs": 6,
+   "relocations": 0,
+   "move_distance": 0
+  },
+  "gain_interval": [
+   0.0,
+   0.0
+  ],
+  "gain_point": 0.0,
+  "gain_pct_point": 0.0,
+  "gain_pct_lb": 0.0,
+  "mhc_slack_off": 1632.0,
+  "delta": {
+   "purchase": 0.0,
+   "reconfig": 0.0,
+   "mhc": 0.0
+  },
+  "elapsed": 32.1
+ },
+ {
+  "id": "Z_A",
+  "base": "youssef_2007",
+  "hypothesis": "재현: R_layers_12 (기대 320)",
+  "time_limit": 300,
+  "mhc_lb": 8960.0,
+  "mhc_lb_detail": {
+   "P": {
+    "min_path": 11.0,
+    "total_demand": 80.0,
+    "mhc_lb": 3520.0
+   },
+   "Q": {
+    "min_path": 17.0,
+    "total_demand": 80.0,
+    "mhc_lb": 5440.0
+   }
+  },
+  "P": 12,
+  "F": 20,
+  "T": 4,
+  "ops": [
+   1,
+   5,
+   15,
+   60
+  ],
+  "off": {
+   "status": "OPTIMAL",
+   "obj": 15595.0,
+   "bound": 15595.0,
+   "gap": 0.0,
+   "lp": 12096.666667,
+   "runtime": 155.9,
+   "wall": 156.2,
+   "vars": 6336,
+   "binary": 3936,
+   "purchase": 5845.0,
+   "reconfig": 150.0,
+   "mhc": 9600.0,
+   "move": 0.0,
+   "machines": 7,
+   "reconfigs": 2,
+   "relocations": 0,
+   "move_distance": 0
+  },
+  "move_cost_flat": 0.0,
+  "joint": {
+   "status": "TIME_LIMIT",
+   "obj": 15275.0,
+   "bound": 14803.534583,
+   "gap": 0.030865,
+   "lp": 12073.75,
+   "runtime": 300.1,
+   "wall": 301.5,
+   "vars": 9900,
+   "binary": 7500,
+   "purchase": 5845.0,
+   "reconfig": 150.0,
+   "mhc": 9280.0,
+   "move": 0.0,
+   "machines": 7,
+   "reconfigs": 2,
+   "relocations": 9,
+   "move_distance": 16.0
+  },
+  "gain_interval": [
+   320.0,
+   791.5
+  ],
+  "gain_point": 320.0,
+  "gain_pct_point": 2.05,
+  "gain_pct_lb": 2.05,
+  "mhc_slack_off": 640.0,
+  "delta": {
+   "purchase": 0.0,
+   "reconfig": 0.0,
+   "mhc": 320.0
+  },
+  "elapsed": 457.8
+ },
+ {
+  "id": "Z_B",
+  "base": "youssef_2007",
+  "hypothesis": "꼬리 op60 제거",
+  "time_limit": 300,
+  "mhc_lb": 7680.0,
+  "mhc_lb_detail": {
+   "P": {
+    "min_path": 9.0,
+    "total_demand": 80.0,
+    "mhc_lb": 2880.0
+   },
+   "Q": {
+    "min_path": 15.0,
+    "total_demand": 80.0,
+    "mhc_lb": 4800.0
+   }
+  },
+  "P": 12,
+  "F": 11,
+  "T": 4,
+  "ops": [
+   1,
+   5,
+   15
+  ],
+  "off": {
+   "status": "OPTIMAL",
+   "obj": 14570.0,
+   "bound": 14570.0,
+   "gap": 0.0,
+   "lp": 11250.0,
+   "runtime": 57.2,
+   "wall": 57.4,
+   "vars": 4068,
+   "binary": 2244,
+   "purchase": 5460.0,
+   "reconfig": 150.0,
+   "mhc": 8960.0,
+   "move": 0.0,
+   "machines": 6,
+   "reconfigs": 3,
+   "relocations": 0,
+   "move_distance": 0
+  },
+  "move_cost_flat": 0.0,
+  "joint": {
+   "status": "TIME_LIMIT",
+   "obj": 14570.0,
+   "bound": 14181.858148,
+   "gap": 0.02664,
+   "lp": 11250.0,
+   "runtime": 300.1,
+   "wall": 300.6,
+   "vars": 6048,
+   "binary": 4224,
+   "purchase": 5460.0,
+   "reconfig": 150.0,
+   "mhc": 8960.0,
+   "move": 0.0,
+   "machines": 6,
+   "reconfigs": 3,
+   "relocations": 9,
+   "move_distance": 20.0
+  },
+  "gain_interval": [
+   0.0,
+   388.1
+  ],
+  "gain_point": 0.0,
+  "gain_pct_point": 0.0,
+  "gain_pct_lb": 0.0,
+  "mhc_slack_off": 1280.0,
+  "delta": {
+   "purchase": 0.0,
+   "reconfig": 0.0,
+   "mhc": 0.0
+  },
+  "elapsed": 358.1
+ },
+ {
+  "id": "Z_F",
+  "base": "youssef_2007",
+  "hypothesis": "꼬리를 60 -> 15 (M2 기계 불가)",
+  "time_limit": 300,
+  "mhc_lb": 8960.0,
+  "mhc_lb_detail": {
+   "P": {
+    "min_path": 11.0,
+    "total_demand": 80.0,
+    "mhc_lb": 3520.0
+   },
+   "Q": {
+    "min_path": 17.0,
+    "total_demand": 80.0,
+    "mhc_lb": 5440.0
+   }
+  },
+  "P": 12,
+  "F": 11,
+  "T": 4,
+  "ops": [
+   1,
+   5,
+   15
+  ],
+  "off": {
+   "status": "OPTIMAL",
+   "obj": 15320.0,
+   "bound": 15320.0,
+   "gap": 0.0,
+   "lp": 12096.666667,
+   "runtime": 137.1,
+   "wall": 137.3,
+   "vars": 4596,
+   "binary": 2244,
+   "purchase": 6320.0,
+   "reconfig": 200.0,
+   "mhc": 8800.0,
+   "move": 0.0,
+   "machines": 7,
+   "reconfigs": 3,
+   "relocations": 0,
+   "move_distance": 0
+  },
+  "move_cost_flat": 0.0,
+  "joint": {
+   "status": "TIME_LIMIT",
+   "obj": 15320.0,
+   "bound": 14798.488184,
+   "gap": 0.034041,
+   "lp": 12096.666667,
+   "runtime": 300.1,
+   "wall": 300.7,
+   "vars": 6576,
+   "binary": 4224,
+   "purchase": 6320.0,
+   "reconfig": 200.0,
+   "mhc": 8800.0,
+   "move": 0.0,
+   "machines": 7,
+   "reconfigs": 3,
+   "relocations": 5,
+   "move_distance": 16.0
+  },
+  "gain_interval": [
+   0.0,
+   521.5
+  ],
+  "gain_point": 0.0,
+  "gain_pct_point": 0.0,
+  "gain_pct_lb": 0.0,
+  "mhc_slack_off": -160.0,
+  "delta": {
+   "purchase": 0.0,
+   "reconfig": 0.0,
+   "mhc": 0.0
+  },
+  "elapsed": 438.1
+ },
+ {
+  "id": "Z_D",
+  "base": "youssef_2007",
+  "hypothesis": "루프를 1>5>15 -> 1>16 (꼬리 60 유지)",
+  "time_limit": 300,
+  "mhc_lb": 7040.0,
+  "mhc_lb_detail": {
+   "P": {
+    "min_path": 9.0,
+    "total_demand": 80.0,
+    "mhc_lb": 2880.0
+   },
+   "Q": {
+    "min_path": 13.0,
+    "total_demand": 80.0,
+    "mhc_lb": 4160.0
+   }
+  },
+  "P": 12,
+  "F": 15,
+  "T": 4,
+  "ops": [
+   1,
+   16,
+   60
+  ],
+  "off": {
+   "status": "OPTIMAL",
+   "obj": 11265.0,
+   "bound": 11265.0,
+   "gap": 0.0,
+   "lp": 10070.416667,
+   "runtime": 4.1,
+   "wall": 4.3,
+   "vars": 4740,
+   "binary": 2916,
+   "purchase": 4125.0,
+   "reconfig": 100.0,
+   "mhc": 7040.0,
+   "move": 0.0,
+   "machines": 5,
+   "reconfigs": 2,
+   "relocations": 0,
+   "move_distance": 0
+  },
+  "move_cost_flat": 0.0,
+  "joint": {
+   "status": "OPTIMAL",
+   "obj": 11265.0,
+   "bound": 11265.0,
+   "gap": 0.0,
+   "lp": 10070.416667,
+   "runtime": 8.4,
+   "wall": 9.1,
+   "vars": 8304,
+   "binary": 6480,
+   "purchase": 4125.0,
+   "reconfig": 100.0,
+   "mhc": 7040.0,
+   "move": 0.0,
+   "machines": 5,
+   "reconfigs": 2,
+   "relocations": 4,
+   "move_distance": 10.0
+  },
+  "gain_interval": [
+   0.0,
+   0.0
+  ],
+  "gain_point": 0.0,
+  "gain_pct_point": 0.0,
+  "gain_pct_lb": 0.0,
+  "mhc_slack_off": 0.0,
+  "delta": {
+   "purchase": 0.0,
+   "reconfig": 0.0,
+   "mhc": 0.0
+  },
+  "elapsed": 13.5
+ },
+ {
+  "id": "Z_E",
+  "base": "youssef_2007",
+  "hypothesis": "내 설계를 수요 40으로 (머리5 + 루프1>16 + 꼬리15)",
+  "time_limit": 300,
+  "mhc_lb": 7040.0,
+  "mhc_lb_detail": {
+   "P": {
+    "min_path": 9.0,
+    "total_demand": 80.0,
+    "mhc_lb": 2880.0
+   },
+   "Q": {
+    "min_path": 13.0,
+    "total_demand": 80.0,
+    "mhc_lb": 4160.0
+   }
+  },
+  "P": 12,
+  "F": 12,
+  "T": 4,
+  "ops": [
+   1,
+   5,
+   15,
+   16
+  ],
+  "off": {
+   "status": "OPTIMAL",
+   "obj": 12750.0,
+   "bound": 12750.0,
+   "gap": 0.0,
+   "lp": 10778.333333,
+   "runtime": 1.0,
+   "wall": 1.2,
+   "vars": 4848,
+   "binary": 2448,
+   "purchase": 5610.0,
+   "reconfig": 100.0,
+   "mhc": 7040.0,
+   "move": 0.0,
+   "machines": 6,
+   "reconfigs": 2,
+   "relocations": 0,
+   "move_distance": 0
+  },
+  "move_cost_flat": 0.0,
+  "joint": {
+   "status": "OPTIMAL",
+   "obj": 12750.0,
+   "bound": 12750.0,
+   "gap": 0.0,
+   "lp": 10778.333333,
+   "runtime": 5.2,
+   "wall": 5.8,
+   "vars": 6828,
+   "binary": 4428,
+   "purchase": 5610.0,
+   "reconfig": 100.0,
+   "mhc": 7040.0,
+   "move": 0.0,
+   "machines": 6,
+   "reconfigs": 2,
+   "relocations": 0,
+   "move_distance": 0
+  },
+  "gain_interval": [
+   0.0,
+   0.0
+  ],
+  "gain_point": 0.0,
+  "gain_pct_point": 0.0,
+  "gain_pct_lb": 0.0,
+  "mhc_slack_off": 0.0,
+  "delta": {
+   "purchase": 0.0,
+   "reconfig": 0.0,
+   "mhc": 0.0
+  },
+  "elapsed": 7.2
+ },
+ {
+  "id": "Z_G",
+  "base": "youssef_2007",
+  "hypothesis": "루프에 병목 2개(5,16) + 꼬리 60",
+  "time_limit": 300,
+  "mhc_lb": 8960.0,
+  "mhc_lb_detail": {
+   "P": {
+    "min_path": 11.0,
+    "total_demand": 80.0,
+    "mhc_lb": 3520.0
+   },
+   "Q": {
+    "min_path": 17.0,
+    "total_demand": 80.0,
+    "mhc_lb": 5440.0
+   }
+  },
+  "P": 12,
+  "F": 16,
+  "T": 4,
+  "ops": [
+   1,
+   5,
+   16,
+   60
+  ],
+  "off": {
+   "status": "OPTIMAL",
+   "obj": 16755.0,
+   "bound": 16755.0,
+   "gap": 0.0,
+   "lp": 13910.416667,
+   "runtime": 147.6,
+   "wall": 147.9,
+   "vars": 5520,
+   "binary": 3120,
+   "purchase": 7005.0,
+   "reconfig": 150.0,
+   "mhc": 9600.0,
+   "move": 0.0,
+   "machines": 8,
+   "reconfigs": 3,
+   "relocations": 0,
+   "move_distance": 0
+  },
+  "move_cost_flat": 0.0,
+  "joint": {
+   "status": "OPTIMAL",
+   "obj": 16435.0,
+   "bound": 16435.0,
+   "gap": 0.0,
+   "lp": 13910.416667,
+   "runtime": 112.4,
+   "wall": 113.0,
+   "vars": 9084,
+   "binary": 6684,
+   "purchase": 7005.0,
+   "reconfig": 150.0,
+   "mhc": 9280.0,
+   "move": 0.0,
+   "machines": 8,
+   "reconfigs": 3,
+   "relocations": 12,
+   "move_distance": 32.0
+  },
+  "gain_interval": [
+   320.0,
+   320.0
+  ],
+  "gain_point": 320.0,
+  "gain_pct_point": 1.91,
+  "gain_pct_lb": 1.91,
+  "mhc_slack_off": 640.0,
+  "delta": {
+   "purchase": 0.0,
+   "reconfig": 0.0,
+   "mhc": 320.0
+  },
+  "elapsed": 261.0
+ },
+ {
+  "id": "DEN_840",
+  "base": "youssef_2007",
+  "hypothesis": "밀도 스윕(20슬롯 5x4, 교대 P2/Q4): 목표 부하 840",
+  "time_limit": 300,
+  "mhc_lb": 19400.0,
+  "mhc_lb_detail": {
+   "P2": {
+    "min_path": 11.0,
+    "total_demand": 240.0,
+    "mhc_lb": 10560.0
+   },
+   "Q4": {
+    "min_path": 17.0,
+    "total_demand": 130.0,
+    "mhc_lb": 8840.0
+   }
+  },
+  "P": 20,
+  "F": 20,
+  "T": 4,
+  "ops": [
+   1,
+   5,
+   15,
+   60
+  ],
+  "off": {
+   "status": "TIME_LIMIT",
+   "obj": 30215.0,
+   "bound": 28833.870758,
+   "gap": 0.04571,
+   "lp": 26985.416667,
+   "runtime": 300.1,
+   "wall": 300.6,
+   "vars": 13120,
+   "binary": 6560,
+   "purchase": 9625.0,
+   "reconfig": 150.0,
+   "mhc": 20440.0,
+   "move": 0.0,
+   "machines": 10,
+   "reconfigs": 3,
+   "relocations": 0,
+   "move_distance": 0
+  },
+  "move_cost_flat": 0.0,
+  "joint": {
+   "status": "TIME_LIMIT",
+   "obj": 30215.0,
+   "bound": 28363.241548,
+   "gap": 0.061286,
+   "lp": 26985.416667,
+   "runtime": 300.2,
+   "wall": 301.7,
+   "vars": 23380,
+   "binary": 16820,
+   "purchase": 9625.0,
+   "reconfig": 150.0,
+   "mhc": 20440.0,
+   "move": 0.0,
+   "machines": 10,
+   "reconfigs": 3,
+   "relocations": 0,
+   "move_distance": 0
+  },
+  "gain_interval": [
+   0.0,
+   1851.8
+  ],
+  "gain_point": 0.0,
+  "gain_pct_point": 0.0,
+  "gain_pct_lb": 0.0,
+  "mhc_slack_off": 1040.0,
+  "delta": {
+   "purchase": 0.0,
+   "reconfig": 0.0,
+   "mhc": 0.0
+  },
+  "elapsed": 602.4
+ },
+ {
+  "id": "DEN_1200",
+  "base": "youssef_2007",
+  "hypothesis": "밀도 스윕(20슬롯 5x4, 교대 P2/Q4): 목표 부하 1200",
+  "time_limit": 300,
+  "mhc_lb": 27560.0,
+  "mhc_lb_detail": {
+   "P2": {
+    "min_path": 11.0,
+    "total_demand": 342.0,
+    "mhc_lb": 15048.0
+   },
+   "Q4": {
+    "min_path": 17.0,
+    "total_demand": 184.0,
+    "mhc_lb": 12512.0
+   }
+  },
+  "P": 20,
+  "F": 20,
+  "T": 4,
+  "ops": [
+   1,
+   5,
+   15,
+   60
+  ],
+  "off": {
+   "status": "TIME_LIMIT",
+   "obj": 43352.0,
+   "bound": 40765.073249,
+   "gap": 0.059673,
+   "lp": 38328.697917,
+   "runtime": 300.1,
+   "wall": 300.7,
+   "vars": 13120,
+   "binary": 6560,
+   "purchase": 14480.0,
+   "reconfig": 200.0,
+   "mhc": 28672.0,
+   "move": 0.0,
+   "machines": 15,
+   "reconfigs": 4,
+   "relocations": 0,
+   "move_distance": 0
+  },
+  "move_cost_flat": 0.0,
+  "joint": {
+   "status": "TIME_LIMIT",
+   "obj": 43352.0,
+   "bound": 40572.41113,
+   "gap": 0.064117,
+   "lp": 38328.697917,
+   "runtime": 300.2,
+   "wall": 301.5,
+   "vars": 23380,
+   "binary": 16820,
+   "purchase": 14480.0,
+   "reconfig": 200.0,
+   "mhc": 28672.0,
+   "move": 0.0,
+   "machines": 15,
+   "reconfigs": 4,
+   "relocations": 0,
+   "move_distance": 0
+  },
+  "gain_interval": [
+   0.0,
+   2779.6
+  ],
+  "gain_point": 0.0,
+  "gain_pct_point": 0.0,
+  "gain_pct_lb": 0.0,
+  "mhc_slack_off": 1112.0,
+  "delta": {
+   "purchase": 0.0,
+   "reconfig": 0.0,
+   "mhc": 0.0
+  },
+  "elapsed": 602.4
+ },
+ {
+  "id": "DEN_1400",
+  "base": "youssef_2007",
+  "hypothesis": "밀도 스윕(20슬롯 5x4, 교대 P2/Q4): 목표 부하 1400",
+  "time_limit": 300,
+  "mhc_lb": 32288.0,
+  "mhc_lb_detail": {
+   "P2": {
+    "min_path": 11.0,
+    "total_demand": 400.0,
+    "mhc_lb": 17600.0
+   },
+   "Q4": {
+    "min_path": 17.0,
+    "total_demand": 216.0,
+    "mhc_lb": 14688.0
+   }
+  },
+  "P": 20,
+  "F": 20,
+  "T": 4,
+  "ops": [
+   1,
+   5,
+   15,
+   60
+  ],
+  "off": {
+   "status": "TIME_LIMIT",
+   "obj": 50276.0,
+   "bound": 47520.61084,
+   "gap": 0.054805,
+   "lp": 44908.75,
+   "runtime": 300.1,
+   "wall": 300.8,
+   "vars": 13120,
+   "binary": 6560,
+   "purchase": 16650.0,
+   "reconfig": 250.0,
+   "mhc": 33376.0,
+   "move": 0.0,
+   "machines": 18,
+   "reconfigs": 4,
+   "relocations": 0,
+   "move_distance": 0
+  },
+  "move_cost_flat": 0.0,
+  "joint": {
+   "status": "TIME_LIMIT",
+   "obj": 50276.0,
+   "bound": 47211.809139,
+   "gap": 0.060947,
+   "lp": 44908.75,
+   "runtime": 300.2,
+   "wall": 301.6,
+   "vars": 23380,
+   "binary": 16820,
+   "purchase": 16650.0,
+   "reconfig": 250.0,
+   "mhc": 33376.0,
+   "move": 0.0,
+   "machines": 18,
+   "reconfigs": 4,
+   "relocations": 0,
+   "move_distance": 0
+  },
+  "gain_interval": [
+   0.0,
+   3064.2
+  ],
+  "gain_point": 0.0,
+  "gain_pct_point": 0.0,
+  "gain_pct_lb": 0.0,
+  "mhc_slack_off": 1088.0,
+  "delta": {
+   "purchase": 0.0,
+   "reconfig": 0.0,
+   "mhc": 0.0
+  },
+  "elapsed": 602.6
+ },
+ {
+  "id": "DEN_1600",
+  "base": "youssef_2007",
+  "hypothesis": "밀도 스윕(20슬롯 5x4, 교대 P2/Q4): 목표 부하 1600",
+  "time_limit": 300,
+  "mhc_lb": 36880.0,
+  "mhc_lb_detail": {
+   "P2": {
+    "min_path": 11.0,
+    "total_demand": 458.0,
+    "mhc_lb": 20152.0
+   },
+   "Q4": {
+    "min_path": 17.0,
+    "total_demand": 246.0,
+    "mhc_lb": 16728.0
+   }
+  },
+  "P": 20,
+  "F": 20,
+  "T": 4,
+  "ops": [
+   1,
+   5,
+   15,
+   60
+  ],
+  "off": {
+   "status": "TIME_LIMIT",
+   "obj": 56674.0,
+   "bound": 54419.504196,
+   "gap": 0.03978,
+   "lp": 51287.96875,
+   "runtime": 300.1,
+   "wall": 300.8,
+   "vars": 13120,
+   "binary": 6560,
+   "purchase": 17530.0,
+   "reconfig": 200.0,
+   "mhc": 38944.0,
+   "move": 0.0,
+   "machines": 18,
+   "reconfigs": 4,
+   "relocations": 0,
+   "move_distance": 0
+  },
+  "move_cost_flat": 0.0,
+  "joint": {
+   "status": "TIME_LIMIT",
+   "obj": 56674.0,
+   "bound": 53910.858979,
+   "gap": 0.048755,
+   "lp": 51287.96875,
+   "runtime": 300.1,
+   "wall": 301.7,
+   "vars": 23380,
+   "binary": 16820,
+   "purchase": 17530.0,
+   "reconfig": 200.0,
+   "mhc": 38944.0,
+   "move": 0.0,
+   "machines": 18,
+   "reconfigs": 4,
+   "relocations": 2,
+   "move_distance": 4.0
+  },
+  "gain_interval": [
+   0.0,
+   2763.1
+  ],
+  "gain_point": 0.0,
+  "gain_pct_point": 0.0,
+  "gain_pct_lb": 0.0,
+  "mhc_slack_off": 2064.0,
+  "delta": {
+   "purchase": 0.0,
+   "reconfig": 0.0,
+   "mhc": 0.0
+  },
+  "elapsed": 602.5
+ },
+ {
+  "id": "DEN_1800",
+  "base": "youssef_2007",
+  "hypothesis": "밀도 스윕(20슬롯 5x4, 교대 P2/Q4): 목표 부하 1800",
+  "time_limit": 300,
+  "mhc_lb": 41384.0,
+  "mhc_lb_detail": {
+   "P2": {
+    "min_path": 11.0,
+    "total_demand": 514.0,
+    "mhc_lb": 22616.0
+   },
+   "Q4": {
+    "min_path": 17.0,
+    "total_demand": 276.0,
+    "mhc_lb": 18768.0
+   }
+  },
+  "P": 20,
+  "F": 20,
+  "T": 4,
+  "ops": [
+   1,
+   5,
+   15,
+   60
+  ],
+  "off": {
+   "status": "TIME_LIMIT",
+   "obj": 64686.0,
+   "bound": 61423.216602,
+   "gap": 0.05044,
+   "lp": 57551.09375,
+   "runtime": 300.1,
+   "wall": 300.6,
+   "vars": 13120,
+   "binary": 6560,
+   "purchase": 19270.0,
+   "reconfig": 200.0,
+   "mhc": 45216.0,
+   "move": 0.0,
+   "machines": 19,
+   "reconfigs": 4,
+   "relocations": 0,
+   "move_distance": 0
+  },
+  "move_cost_flat": 0.0,
+  "joint": {
+   "status": "TIME_LIMIT",
+   "obj": 64686.0,
+   "bound": 60653.618876,
+   "gap": 0.062338,
+   "lp": 57551.09375,
+   "runtime": 300.2,
+   "wall": 301.5,
+   "vars": 23380,
+   "binary": 16820,
+   "purchase": 19270.0,
+   "reconfig": 200.0,
+   "mhc": 45216.0,
+   "move": 0.0,
+   "machines": 19,
+   "reconfigs": 4,
+   "relocations": 0,
+   "move_distance": 0
+  },
+  "gain_interval": [
+   0.0,
+   4032.4
+  ],
+  "gain_point": 0.0,
+  "gain_pct_point": 0.0,
+  "gain_pct_lb": 0.0,
+  "mhc_slack_off": 3832.0,
+  "delta": {
+   "purchase": 0.0,
+   "reconfig": 0.0,
+   "mhc": 0.0
+  },
+  "elapsed": 602.3
+ },
+ {
+  "id": "DEN_2000",
+  "base": "youssef_2007",
+  "hypothesis": "밀도 스윕(20슬롯 5x4, 교대 P2/Q4): 목표 부하 2000",
+  "time_limit": 300,
+  "mhc_lb": 46112.0,
+  "mhc_lb_detail": {
+   "P2": {
+    "min_path": 11.0,
+    "total_demand": 572.0,
+    "mhc_lb": 25168.0
+   },
+   "Q4": {
+    "min_path": 17.0,
+    "total_demand": 308.0,
+    "mhc_lb": 20944.0
+   }
+  },
+  "P": 20,
+  "F": 20,
+  "T": 4,
+  "ops": [
+   1,
+   5,
+   15,
+   60
+  ],
+  "off": {
+   "status": "TIME_LIMIT",
+   "obj": 73106.0,
+   "bound": 68941.154534,
+   "gap": 0.05697,
+   "lp": 64131.145833,
+   "runtime": 300.1,
+   "wall": 300.9,
+   "vars": 13120,
+   "binary": 6560,
+   "purchase": 20430.0,
+   "reconfig": 500.0,
+   "mhc": 52176.0,
+   "move": 0.0,
+   "machines": 19,
+   "reconfigs": 6,
+   "relocations": 0,
+   "move_distance": 0
+  },
+  "move_cost_flat": 0.0,
+  "joint": {
+   "status": "TIME_LIMIT",
+   "obj": 72956.0,
+   "bound": 68241.512238,
+   "gap": 0.064621,
+   "lp": 64131.145833,
+   "runtime": 300.1,
+   "wall": 301.3,
+   "vars": 23380,
+   "binary": 16820,
+   "purchase": 20430.0,
+   "reconfig": 350.0,
+   "mhc": 52176.0,
+   "move": 0.0,
+   "machines": 19,
+   "reconfigs": 5,
+   "relocations": 3,
+   "move_distance": 8.0
+  },
+  "gain_interval": [
+   0.0,
+   4864.5
+  ],
+  "gain_point": 150.0,
+  "gain_pct_point": 0.21,
+  "gain_pct_lb": 0.0,
+  "mhc_slack_off": 6064.0,
+  "delta": {
+   "purchase": 0.0,
+   "reconfig": 150.0,
+   "mhc": 0.0
+  },
+  "elapsed": 602.3
+ },
+ {
+  "id": "ZD_840",
+  "base": "youssef_2007",
+  "hypothesis": "z엔진 밀도 스윕(20슬롯 5x4, 교대): 부하 840",
+  "time_limit": 300,
+  "mhc_lb": 19400.0,
+  "mhc_lb_detail": {
+   "P2": {
+    "min_path": 11.0,
+    "total_demand": 240.0,
+    "mhc_lb": 10560.0
+   },
+   "Q4": {
+    "min_path": 17.0,
+    "total_demand": 130.0,
+    "mhc_lb": 8840.0
+   }
+  },
+  "P": 20,
+  "F": 20,
+  "T": 4,
+  "ops": [
+   1,
+   5,
+   15,
+   60
+  ],
+  "off": {
+   "status": "TIME_LIMIT",
+   "obj": 30215.0,
+   "bound": 29315.179784,
+   "gap": 0.029781,
+   "lp": 26985.416667,
+   "runtime": 300.1,
+   "wall": 300.4,
+   "vars": 14320,
+   "binary": 2000,
+   "purchase": 9625.0,
+   "reconfig": 150.0,
+   "mhc": 20440.0,
+   "move": 0.0,
+   "machines": 10,
+   "reconfigs": 3,
+   "relocations": 0,
+   "move_distance": 0
+  },
+  "move_cost_flat": 0.0,
+  "joint": {
+   "status": "TIME_LIMIT",
+   "obj": 29985.0,
+   "bound": 28315.359122,
+   "gap": 0.055683,
+   "lp": 26985.416667,
+   "runtime": 300.4,
+   "wall": 302.8,
+   "vars": 123760,
+   "binary": 2000,
+   "purchase": 9345.0,
+   "reconfig": 200.0,
+   "mhc": 20440.0,
+   "move": 0.0,
+   "machines": 10,
+   "reconfigs": 4,
+   "relocations": 20,
+   "move_distance": 50.0
+  },
+  "gain_interval": [
+   0.0,
+   1899.6
+  ],
+  "gain_point": 230.0,
+  "gain_pct_point": 0.76,
+  "gain_pct_lb": 0.0,
+  "mhc_slack_off": 1040.0,
+  "delta": {
+   "purchase": 280.0,
+   "reconfig": -50.0,
+   "mhc": 0.0
+  },
+  "elapsed": 603.3
+ },
+ {
+  "id": "ZD_1200",
+  "base": "youssef_2007",
+  "hypothesis": "z엔진 밀도 스윕(20슬롯 5x4, 교대): 부하 1200",
+  "time_limit": 300,
+  "mhc_lb": 27560.0,
+  "mhc_lb_detail": {
+   "P2": {
+    "min_path": 11.0,
+    "total_demand": 342.0,
+    "mhc_lb": 15048.0
+   },
+   "Q4": {
+    "min_path": 17.0,
+    "total_demand": 184.0,
+    "mhc_lb": 12512.0
+   }
+  },
+  "P": 20,
+  "F": 20,
+  "T": 4,
+  "ops": [
+   1,
+   5,
+   15,
+   60
+  ],
+  "off": {
+   "status": "TIME_LIMIT",
+   "obj": 42917.0,
+   "bound": 40728.945582,
+   "gap": 0.050983,
+   "lp": 38328.697917,
+   "runtime": 300.0,
+   "wall": 300.5,
+   "vars": 14320,
+   "binary": 2000,
+   "purchase": 14095.0,
+   "reconfig": 150.0,
+   "mhc": 28672.0,
+   "move": 0.0,
+   "machines": 14,
+   "reconfigs": 3,
+   "relocations": 0,
+   "move_distance": 0
+  },
+  "move_cost_flat": 0.0,
+  "joint": {
+   "status": "TIME_LIMIT",
+   "obj": 42867.0,
+   "bound": 40432.391838,
+   "gap": 0.056794,
+   "lp": 38328.697917,
+   "runtime": 300.1,
+   "wall": 302.4,
+   "vars": 123760,
+   "binary": 2000,
+   "purchase": 14095.0,
+   "reconfig": 100.0,
+   "mhc": 28672.0,
+   "move": 0.0,
+   "machines": 14,
+   "reconfigs": 2,
+   "relocations": 30,
+   "move_distance": 76.0
+  },
+  "gain_interval": [
+   0.0,
+   2484.6
+  ],
+  "gain_point": 50.0,
+  "gain_pct_point": 0.12,
+  "gain_pct_lb": 0.0,
+  "mhc_slack_off": 1112.0,
+  "delta": {
+   "purchase": 0.0,
+   "reconfig": 50.0,
+   "mhc": 0.0
+  },
+  "elapsed": 603.0
+ },
+ {
+  "id": "ZD_1600",
+  "base": "youssef_2007",
+  "hypothesis": "z엔진 밀도 스윕(20슬롯 5x4, 교대): 부하 1600",
+  "time_limit": 300,
+  "mhc_lb": 36880.0,
+  "mhc_lb_detail": {
+   "P2": {
+    "min_path": 11.0,
+    "total_demand": 458.0,
+    "mhc_lb": 20152.0
+   },
+   "Q4": {
+    "min_path": 17.0,
+    "total_demand": 246.0,
+    "mhc_lb": 16728.0
+   }
+  },
+  "P": 20,
+  "F": 20,
+  "T": 4,
+  "ops": [
+   1,
+   5,
+   15,
+   60
+  ],
+  "off": {
+   "status": "TIME_LIMIT",
+   "obj": 56674.0,
+   "bound": 54393.378242,
+   "gap": 0.040241,
+   "lp": 51287.96875,
+   "runtime": 300.1,
+   "wall": 300.5,
+   "vars": 14320,
+   "binary": 2000,
+   "purchase": 17530.0,
+   "reconfig": 200.0,
+   "mhc": 38944.0,
+   "move": 0.0,
+   "machines": 18,
+   "reconfigs": 4,
+   "relocations": 0,
+   "move_distance": 0
+  },
+  "move_cost_flat": 0.0,
+  "joint": {
+   "status": "TIME_LIMIT",
+   "obj": 56530.0,
+   "bound": 53719.77452,
+   "gap": 0.049712,
+   "lp": 51287.96875,
+   "runtime": 300.3,
+   "wall": 302.8,
+   "vars": 123760,
+   "binary": 2000,
+   "purchase": 17530.0,
+   "reconfig": 200.0,
+   "mhc": 38800.0,
+   "move": 0.0,
+   "machines": 18,
+   "reconfigs": 2,
+   "relocations": 51,
+   "move_distance": 124.0
+  },
+  "gain_interval": [
+   0.0,
+   2954.2
+  ],
+  "gain_point": 144.0,
+  "gain_pct_point": 0.25,
+  "gain_pct_lb": 0.0,
+  "mhc_slack_off": 2064.0,
+  "delta": {
+   "purchase": 0.0,
+   "reconfig": 0.0,
+   "mhc": 144.0
+  },
+  "elapsed": 603.4
+ },
+ {
+  "id": "ZD_2000",
+  "base": "youssef_2007",
+  "hypothesis": "z엔진 밀도 스윕(20슬롯 5x4, 교대): 부하 2000",
+  "time_limit": 300,
+  "mhc_lb": 46112.0,
+  "mhc_lb_detail": {
+   "P2": {
+    "min_path": 11.0,
+    "total_demand": 572.0,
+    "mhc_lb": 25168.0
+   },
+   "Q4": {
+    "min_path": 17.0,
+    "total_demand": 308.0,
+    "mhc_lb": 20944.0
+   }
+  },
+  "P": 20,
+  "F": 20,
+  "T": 4,
+  "ops": [
+   1,
+   5,
+   15,
+   60
+  ],
+  "off": {
+   "status": "TIME_LIMIT",
+   "obj": 73482.0,
+   "bound": 69420.538181,
+   "gap": 0.055272,
+   "lp": 64131.145833,
+   "runtime": 300.1,
+   "wall": 300.5,
+   "vars": 14320,
+   "binary": 2000,
+   "purchase": 21010.0,
+   "reconfig": 200.0,
+   "mhc": 52272.0,
+   "move": 0.0,
+   "machines": 20,
+   "reconfigs": 4,
+   "relocations": 0,
+   "move_distance": 0
+  },
+  "move_cost_flat": 0.0,
+  "joint": {
+   "status": "TIME_LIMIT",
+   "obj": 73252.0,
+   "bound": 68231.178018,
+   "gap": 0.068542,
+   "lp": 64131.145833,
+   "runtime": 300.2,
+   "wall": 302.8,
+   "vars": 123760,
+   "binary": 2000,
+   "purchase": 21010.0,
+   "reconfig": 250.0,
+   "mhc": 51992.0,
+   "move": 0.0,
+   "machines": 20,
+   "reconfigs": 4,
+   "relocations": 49,
+   "move_distance": 140.0
+  },
+  "gain_interval": [
+   0.0,
+   5250.8
+  ],
+  "gain_point": 230.0,
+  "gain_pct_point": 0.31,
+  "gain_pct_lb": 0.0,
+  "mhc_slack_off": 6160.0,
+  "delta": {
+   "purchase": 0.0,
+   "reconfig": -50.0,
+   "mhc": 280.0
+  },
+  "elapsed": 603.4
+ },
+ {
+  "id": "T_2p_alt",
+  "base": "youssef_2007",
+  "hypothesis": "15슬롯 5x3, 루프1>5>15+꼬리60, 2품종(레이어2,4) 교대",
+  "time_limit": 240,
+  "mhc_lb": 17920.0,
+  "mhc_lb_detail": {
+   "L2": {
+    "min_path": 10.0,
+    "total_demand": 240.0,
+    "mhc_lb": 9600.0
+   },
+   "L4": {
+    "min_path": 16.0,
+    "total_demand": 130.0,
+    "mhc_lb": 8320.0
+   }
+  },
+  "P": 15,
+  "F": 20,
+  "T": 4,
+  "ops": [
+   1,
+   5,
+   15,
+   60
+  ],
+  "off": {
+   "status": "OPTIMAL",
+   "obj": 28825.0,
+   "bound": 28825.0,
+   "gap": 0.0,
+   "lp": 25505.416667,
+   "runtime": 135.9,
+   "wall": 136.1,
+   "vars": 9540,
+   "binary": 1500,
+   "purchase": 9345.0,
+   "reconfig": 200.0,
+   "mhc": 19280.0,
+   "move": 0.0,
+   "machines": 10,
+   "reconfigs": 4,
+   "relocations": 0,
+   "move_distance": 0
+  },
+  "move_cost_flat": 0.0,
+  "joint": {
+   "status": "TIME_LIMIT",
+   "obj": 28795.0,
+   "bound": 27490.396256,
+   "gap": 0.045307,
+   "lp": 25505.416667,
+   "runtime": 240.7,
+   "wall": 242.0,
+   "vars": 70020,
+   "binary": 1500,
+   "purchase": 9345.0,
+   "reconfig": 250.0,
+   "mhc": 19200.0,
+   "move": 0.0,
+   "machines": 10,
+   "reconfigs": 4,
+   "relocations": 22,
+   "move_distance": 55.0
+  },
+  "gain_interval": [
+   30.0,
+   1334.6
+  ],
+  "gain_point": 30.0,
+  "gain_pct_point": 0.1,
+  "gain_pct_lb": 0.1,
+  "mhc_slack_off": 1360.0,
+  "delta": {
+   "purchase": 0.0,
+   "reconfig": -50.0,
+   "mhc": 80.0
+  },
+  "elapsed": 378.2
+ },
+ {
+  "id": "T_2p_grad",
+  "base": "youssef_2007",
+  "hypothesis": "15슬롯, 2품종 점진전환",
+  "time_limit": 240,
+  "mhc_lb": 17856.0,
+  "mhc_lb_detail": {
+   "L2": {
+    "min_path": 10.0,
+    "total_demand": 240.0,
+    "mhc_lb": 9600.0
+   },
+   "L4": {
+    "min_path": 16.0,
+    "total_demand": 129.0,
+    "mhc_lb": 8256.0
+   }
+  },
+  "P": 15,
+  "F": 20,
+  "T": 4,
+  "ops": [
+   1,
+   5,
+   15,
+   60
+  ],
+  "off": {
+   "status": "TIME_LIMIT",
+   "obj": 28721.0,
+   "bound": 28314.244993,
+   "gap": 0.014162,
+   "lp": 25337.427083,
+   "runtime": 240.0,
+   "wall": 240.3,
+   "vars": 9540,
+   "binary": 1500,
+   "purchase": 9345.0,
+   "reconfig": 200.0,
+   "mhc": 19176.0,
+   "move": 0.0,
+   "machines": 10,
+   "reconfigs": 4,
+   "relocations": 0,
+   "move_distance": 0
+  },
+  "move_cost_flat": 0.0,
+  "joint": {
+   "status": "TIME_LIMIT",
+   "obj": 28721.0,
+   "bound": 27267.417694,
+   "gap": 0.05061,
+   "lp": 25337.427083,
+   "runtime": 240.3,
+   "wall": 241.7,
+   "vars": 70020,
+   "binary": 1500,
+   "purchase": 9345.0,
+   "reconfig": 200.0,
+   "mhc": 19176.0,
+   "move": 0.0,
+   "machines": 10,
+   "reconfigs": 4,
+   "relocations": 18,
+   "move_distance": 38.0
+  },
+  "gain_interval": [
+   0.0,
+   1453.6
+  ],
+  "gain_point": 0.0,
+  "gain_pct_point": 0.0,
+  "gain_pct_lb": 0.0,
+  "mhc_slack_off": 1320.0,
+  "delta": {
+   "purchase": 0.0,
+   "reconfig": 0.0,
+   "mhc": 0.0
+  },
+  "elapsed": 482.1
+ },
+ {
+  "id": "T_3p_alt",
+  "base": "youssef_2007",
+  "hypothesis": "15슬롯, 3품종(레이어2,3,4) 교대",
+  "time_limit": 240,
+  "mhc_lb": 18464.0,
+  "mhc_lb_detail": {
+   "L2": {
+    "min_path": 10.0,
+    "total_demand": 240.0,
+    "mhc_lb": 9600.0
+   },
+   "L3": {
+    "min_path": 14.0,
+    "total_demand": 84.0,
+    "mhc_lb": 4704.0
+   },
+   "L4": {
+    "min_path": 16.0,
+    "total_demand": 65.0,
+    "mhc_lb": 4160.0
+   }
+  },
+  "P": 15,
+  "F": 20,
+  "T": 4,
+  "ops": [
+   1,
+   5,
+   15,
+   60
+  ],
+  "off": {
+   "status": "OPTIMAL",
+   "obj": 28785.0,
+   "bound": 28785.0,
+   "gap": 0.0,
+   "lp": 25713.416667,
+   "runtime": 81.1,
+   "wall": 81.3,
+   "vars": 9540,
+   "binary": 1500,
+   "purchase": 9345.0,
+   "reconfig": 200.0,
+   "mhc": 19240.0,
+   "move": 0.0,
+   "machines": 10,
+   "reconfigs": 3,
+   "relocations": 0,
+   "move_distance": 0
+  },
+  "move_cost_flat": 0.0,
+  "joint": {
+   "status": "TIME_LIMIT",
+   "obj": 28755.0,
+   "bound": 27757.402037,
+   "gap": 0.034693,
+   "lp": 25713.416667,
+   "runtime": 240.2,
+   "wall": 241.7,
+   "vars": 70020,
+   "binary": 1500,
+   "purchase": 9345.0,
+   "reconfig": 250.0,
+   "mhc": 19160.0,
+   "move": 0.0,
+   "machines": 10,
+   "reconfigs": 5,
+   "relocations": 22,
+   "move_distance": 48.0
+  },
+  "gain_interval": [
+   30.0,
+   1027.6
+  ],
+  "gain_point": 30.0,
+  "gain_pct_point": 0.1,
+  "gain_pct_lb": 0.1,
+  "mhc_slack_off": 776.0,
+  "delta": {
+   "purchase": 0.0,
+   "reconfig": -50.0,
+   "mhc": 80.0
+  },
+  "elapsed": 323.1
+ },
+ {
+  "id": "T_3p_grad",
+  "base": "youssef_2007",
+  "hypothesis": "15슬롯, 3품종 점진전환",
+  "time_limit": 240,
+  "mhc_lb": 18200.0,
+  "mhc_lb_detail": {
+   "L2": {
+    "min_path": 10.0,
+    "total_demand": 159.0,
+    "mhc_lb": 6360.0
+   },
+   "L3": {
+    "min_path": 14.0,
+    "total_demand": 112.0,
+    "mhc_lb": 6272.0
+   },
+   "L4": {
+    "min_path": 16.0,
+    "total_demand": 87.0,
+    "mhc_lb": 5568.0
+   }
+  },
+  "P": 15,
+  "F": 20,
+  "T": 4,
+  "ops": [
+   1,
+   5,
+   15,
+   60
+  ],
+  "off": {
+   "status": "TIME_LIMIT",
+   "obj": 29567.0,
+   "bound": 28603.978839,
+   "gap": 0.032571,
+   "lp": 25262.28125,
+   "runtime": 240.0,
+   "wall": 240.3,
+   "vars": 9540,
+   "binary": 1500,
+   "purchase": 10335.0,
+   "reconfig": 0.0,
+   "mhc": 19232.0,
+   "move": 0.0,
+   "machines": 10,
+   "reconfigs": 0,
+   "relocations": 0,
+   "move_distance": 0
+  },
+  "move_cost_flat": 0.0,
+  "joint": {
+   "status": "TIME_LIMIT",
+   "obj": 29567.0,
+   "bound": 27464.031511,
+   "gap": 0.071126,
+   "lp": 25262.28125,
+   "runtime": 240.3,
+   "wall": 241.9,
+   "vars": 70020,
+   "binary": 1500,
+   "purchase": 10335.0,
+   "reconfig": 0.0,
+   "mhc": 19232.0,
+   "move": 0.0,
+   "machines": 10,
+   "reconfigs": 0,
+   "relocations": 20,
+   "move_distance": 46.0
+  },
+  "gain_interval": [
+   0.0,
+   2103.0
+  ],
+  "gain_point": 0.0,
+  "gain_pct_point": 0.0,
+  "gain_pct_lb": 0.0,
+  "mhc_slack_off": 1032.0,
+  "delta": {
+   "purchase": 0.0,
+   "reconfig": 0,
+   "mhc": 0.0
+  },
+  "elapsed": 482.3
+ },
+ {
+  "id": "T_5p_grad",
+  "base": "youssef_2007",
+  "hypothesis": "15슬롯, 5품종(레이어2~6) 점진전환",
+  "time_limit": 240,
+  "mhc_lb": 17280.0,
+  "mhc_lb_detail": {
+   "L2": {
+    "min_path": 10.0,
+    "total_demand": 109.0,
+    "mhc_lb": 4360.0
+   },
+   "L3": {
+    "min_path": 14.0,
+    "total_demand": 60.0,
+    "mhc_lb": 3360.0
+   },
+   "L4": {
+    "min_path": 16.0,
+    "total_demand": 48.0,
+    "mhc_lb": 3072.0
+   },
+   "L5": {
+    "min_path": 20.0,
+    "total_demand": 36.0,
+    "mhc_lb": 2880.0
+   },
+   "L6": {
+    "min_path": 22.0,
+    "total_demand": 41.0,
+    "mhc_lb": 3608.0
+   }
+  },
+  "P": 15,
+  "F": 20,
+  "T": 4,
+  "ops": [
+   1,
+   5,
+   15,
+   60
+  ],
+  "off": {
+   "status": "TIME_LIMIT",
+   "obj": 28697.0,
+   "bound": 27665.287014,
+   "gap": 0.035952,
+   "lp": 24432.083333,
+   "runtime": 240.0,
+   "wall": 240.4,
+   "vars": 9540,
+   "binary": 1500,
+   "purchase": 11495.0,
+   "reconfig": 50.0,
+   "mhc": 17152.0,
+   "move": 0.0,
+   "machines": 12,
+   "reconfigs": 1,
+   "relocations": 0,
+   "move_distance": 0
+  },
+  "move_cost_flat": 0.0,
+  "joint": {
+   "status": "TIME_LIMIT",
+   "obj": 28671.0,
+   "bound": 26448.398223,
+   "gap": 0.077521,
+   "lp": 24432.083333,
+   "runtime": 240.2,
+   "wall": 242.1,
+   "vars": 70020,
+   "binary": 1500,
+   "purchase": 11495.0,
+   "reconfig": 0.0,
+   "mhc": 17176.0,
+   "move": 0.0,
+   "machines": 12,
+   "reconfigs": 0,
+   "relocations": 21,
+   "move_distance": 62.0
+  },
+  "gain_interval": [
+   0.0,
+   2248.6
+  ],
+  "gain_point": 26.0,
+  "gain_pct_point": 0.09,
+  "gain_pct_lb": 0.0,
+  "mhc_slack_off": -128.0,
+  "delta": {
+   "purchase": 0.0,
+   "reconfig": 50.0,
+   "mhc": -24.0
+  },
+  "elapsed": 482.5
+ },
+ {
+  "id": "T_5p_alt",
+  "base": "youssef_2007",
+  "hypothesis": "15슬롯, 5품종 교대",
+  "time_limit": 240,
+  "mhc_lb": 17824.0,
+  "mhc_lb_detail": {
+   "L2": {
+    "min_path": 10.0,
+    "total_demand": 120.0,
+    "mhc_lb": 4800.0
+   },
+   "L3": {
+    "min_path": 14.0,
+    "total_demand": 84.0,
+    "mhc_lb": 4704.0
+   },
+   "L4": {
+    "min_path": 16.0,
+    "total_demand": 65.0,
+    "mhc_lb": 4160.0
+   },
+   "L5": {
+    "min_path": 20.0,
+    "total_demand": 52.0,
+    "mhc_lb": 4160.0
+   },
+   "L6": {
+    "min_path": 22.0,
+    "total_demand": 0.0,
+    "mhc_lb": 0.0
+   }
+  },
+  "P": 15,
+  "F": 20,
+  "T": 4,
+  "ops": [
+   1,
+   5,
+   15,
+   60
+  ],
+  "off": {
+   "status": "TIME_LIMIT",
+   "obj": 28721.0,
+   "bound": 27689.453095,
+   "gap": 0.035916,
+   "lp": 24865.416667,
+   "runtime": 240.0,
+   "wall": 240.3,
+   "vars": 9540,
+   "binary": 1500,
+   "purchase": 9345.0,
+   "reconfig": 200.0,
+   "mhc": 19176.0,
+   "move": 0.0,
+   "machines": 10,
+   "reconfigs": 4,
+   "relocations": 0,
+   "move_distance": 0
+  },
+  "move_cost_flat": 0.0,
+  "joint": {
+   "status": "TIME_LIMIT",
+   "obj": 28721.0,
+   "bound": 26519.865342,
+   "gap": 0.076639,
+   "lp": 24865.416667,
+   "runtime": 240.1,
+   "wall": 241.5,
+   "vars": 70020,
+   "binary": 1500,
+   "purchase": 9345.0,
+   "reconfig": 200.0,
+   "mhc": 19176.0,
+   "move": 0.0,
+   "machines": 10,
+   "reconfigs": 3,
+   "relocations": 18,
+   "move_distance": 46.0
+  },
+  "gain_interval": [
+   0.0,
+   2201.1
+  ],
+  "gain_point": 0.0,
+  "gain_pct_point": 0.0,
+  "gain_pct_lb": 0.0,
+  "mhc_slack_off": 1352.0,
+  "delta": {
+   "purchase": 0.0,
+   "reconfig": 0.0,
+   "mhc": 0.0
+  },
+  "elapsed": 481.9
+ },
+ {
+  "id": "W_bal12",
+  "base": "youssef_2007",
+  "hypothesis": "Z_A와 동일하나 부하 균형(280 고정)",
+  "time_limit": 240,
+  "mhc_lb": 6512.0,
+  "mhc_lb_detail": {
+   "L2": {
+    "min_path": 11.0,
+    "total_demand": 80.0,
+    "mhc_lb": 3520.0
+   },
+   "L4": {
+    "min_path": 17.0,
+    "total_demand": 44.0,
+    "mhc_lb": 2992.0
+   }
+  },
+  "P": 12,
+  "F": 20,
+  "T": 4,
+  "ops": [
+   1,
+   5,
+   15,
+   60
+  ],
+  "off": {
+   "status": "OPTIMAL",
+   "obj": 11849.0,
+   "bound": 11849.0,
+   "gap": 0.0,
+   "lp": 8597.638889,
+   "runtime": 73.9,
+   "wall": 74.1,
+   "vars": 7056,
+   "binary": 1200,
+   "purchase": 4985.0,
+   "reconfig": 0.0,
+   "mhc": 6864.0,
+   "move": 0.0,
+   "machines": 6,
+   "reconfigs": 0,
+   "relocations": 0,
+   "move_distance": 0
+  },
+  "move_cost_flat": 0.0,
+  "joint": {
+   "status": "TIME_LIMIT",
+   "obj": 11849.0,
+   "bound": 11252.323242,
+   "gap": 0.050357,
+   "lp": 8566.083333,
+   "runtime": 240.2,
+   "wall": 241.2,
+   "vars": 45072,
+   "binary": 1200,
+   "purchase": 4985.0,
+   "reconfig": 0.0,
+   "mhc": 6864.0,
+   "move": 0.0,
+   "machines": 6,
+   "reconfigs": 0,
+   "relocations": 6,
+   "move_distance": 6.0
+  },
+  "gain_interval": [
+   0.0,
+   596.7
+  ],
+  "gain_point": 0.0,
+  "gain_pct_point": 0.0,
+  "gain_pct_lb": 0.0,
+  "mhc_slack_off": 352.0,
+  "delta": {
+   "purchase": 0.0,
+   "reconfig": 0,
+   "mhc": 0.0
+  },
+  "elapsed": 315.4
+ },
+ {
+  "id": "W_d40_15",
+  "base": "youssef_2007",
+  "hypothesis": "Z_A 수요(40) 그대로 15슬롯",
+  "time_limit": 240,
+  "mhc_lb": 8320.0,
+  "mhc_lb_detail": {
+   "L2": {
+    "min_path": 10.0,
+    "total_demand": 80.0,
+    "mhc_lb": 3200.0
+   },
+   "L4": {
+    "min_path": 16.0,
+    "total_demand": 80.0,
+    "mhc_lb": 5120.0
+   }
+  },
+  "P": 15,
+  "F": 20,
+  "T": 4,
+  "ops": [
+   1,
+   5,
+   15,
+   60
+  ],
+  "off": {
+   "status": "OPTIMAL",
+   "obj": 15595.0,
+   "bound": 15595.0,
+   "gap": 0.0,
+   "lp": 12093.75,
+   "runtime": 140.9,
+   "wall": 141.2,
+   "vars": 9540,
+   "binary": 1500,
+   "purchase": 5845.0,
+   "reconfig": 150.0,
+   "mhc": 9600.0,
+   "move": 0.0,
+   "machines": 7,
+   "reconfigs": 3,
+   "relocations": 0,
+   "move_distance": 0
+  },
+  "move_cost_flat": 0.0,
+  "joint": {
+   "status": "TIME_LIMIT",
+   "obj": 15595.0,
+   "bound": 14251.624187,
+   "gap": 0.086141,
+   "lp": 12073.75,
+   "runtime": 240.3,
+   "wall": 241.7,
+   "vars": 70020,
+   "binary": 1500,
+   "purchase": 5845.0,
+   "reconfig": 150.0,
+   "mhc": 9600.0,
+   "move": 0.0,
+   "machines": 7,
+   "reconfigs": 2,
+   "relocations": 15,
+   "move_distance": 33.0
+  },
+  "gain_interval": [
+   0.0,
+   1343.4
+  ],
+  "gain_point": 0.0,
+  "gain_pct_point": 0.0,
+  "gain_pct_lb": 0.0,
+  "mhc_slack_off": 1280.0,
+  "delta": {
+   "purchase": 0.0,
+   "reconfig": 0.0,
+   "mhc": 0.0
+  },
+  "elapsed": 383.0
+ },
+ {
+  "id": "W_d40_20",
+  "base": "youssef_2007",
+  "hypothesis": "Z_A 수요(40) 그대로 20슬롯",
+  "time_limit": 240,
+  "mhc_lb": 8960.0,
+  "mhc_lb_detail": {
+   "L2": {
+    "min_path": 11.0,
+    "total_demand": 80.0,
+    "mhc_lb": 3520.0
+   },
+   "L4": {
+    "min_path": 17.0,
+    "total_demand": 80.0,
+    "mhc_lb": 5440.0
+   }
+  },
+  "P": 20,
+  "F": 20,
+  "T": 4,
+  "ops": [
+   1,
+   5,
+   15,
+   60
+  ],
+  "off": {
+   "status": "TIME_LIMIT",
+   "obj": 16235.0,
+   "bound": 15426.199444,
+   "gap": 0.049818,
+   "lp": 12713.75,
+   "runtime": 240.1,
+   "wall": 240.4,
+   "vars": 14320,
+   "binary": 2000,
+   "purchase": 5845.0,
+   "reconfig": 150.0,
+   "mhc": 10240.0,
+   "move": 0.0,
+   "machines": 7,
+   "reconfigs": 3,
+   "relocations": 0,
+   "move_distance": 0
+  },
+  "move_cost_flat": 0.0,
+  "joint": {
+   "status": "TIME_LIMIT",
+   "obj": 16235.0,
+   "bound": 14569.947212,
+   "gap": 0.102559,
+   "lp": 12713.75,
+   "runtime": 240.2,
+   "wall": 242.4,
+   "vars": 123760,
+   "binary": 2000,
+   "purchase": 5845.0,
+   "reconfig": 150.0,
+   "mhc": 10240.0,
+   "move": 0.0,
+   "machines": 7,
+   "reconfigs": 3,
+   "relocations": 10,
+   "move_distance": 22.0
+  },
+  "gain_interval": [
+   0.0,
+   1665.1
+  ],
+  "gain_point": 0.0,
+  "gain_pct_point": 0.0,
+  "gain_pct_lb": 0.0,
+  "mhc_slack_off": 1280.0,
+  "delta": {
+   "purchase": 0.0,
+   "reconfig": 0.0,
+   "mhc": 0.0
+  },
+  "elapsed": 482.9
+ },
+ {
+  "id": "W_d80_12",
+  "base": "youssef_2007",
+  "hypothesis": "Z_A 12슬롯에 수요 2배",
+  "time_limit": 240,
+  "mhc_lb": 17920.0,
+  "mhc_lb_detail": {
+   "L2": {
+    "min_path": 11.0,
+    "total_demand": 160.0,
+    "mhc_lb": 7040.0
+   },
+   "L4": {
+    "min_path": 17.0,
+    "total_demand": 160.0,
+    "mhc_lb": 10880.0
+   }
+  },
+  "P": 12,
+  "F": 20,
+  "T": 4,
+  "ops": [
+   1,
+   5,
+   15,
+   60
+  ],
+  "off": {
+   "status": "TIME_LIMIT",
+   "obj": 29405.0,
+   "bound": 29075.115504,
+   "gap": 0.011219,
+   "lp": 24263.333333,
+   "runtime": 240.1,
+   "wall": 240.3,
+   "vars": 7056,
+   "binary": 1200,
+   "purchase": 9435.0,
+   "reconfig": 450.0,
+   "mhc": 19520.0,
+   "move": 0.0,
+   "machines": 11,
+   "reconfigs": 7,
+   "relocations": 0,
+   "move_distance": 0
+  },
+  "move_cost_flat": 0.0,
+  "joint": {
+   "status": "TIME_LIMIT",
+   "obj": 29365.0,
+   "bound": 27903.600647,
+   "gap": 0.049767,
+   "lp": 24167.5,
+   "runtime": 240.2,
+   "wall": 241.3,
+   "vars": 45072,
+   "binary": 1200,
+   "purchase": 9605.0,
+   "reconfig": 400.0,
+   "mhc": 19360.0,
+   "move": 0.0,
+   "machines": 11,
+   "reconfigs": 6,
+   "relocations": 23,
+   "move_distance": 48.0
+  },
+  "gain_interval": [
+   0.0,
+   1501.4
+  ],
+  "gain_point": 40.0,
+  "gain_pct_point": 0.14,
+  "gain_pct_lb": 0.0,
+  "mhc_slack_off": 1600.0,
+  "delta": {
+   "purchase": -170.0,
+   "reconfig": 50.0,
+   "mhc": 160.0
+  },
+  "elapsed": 481.7
+ },
+ {
+  "id": "W_3p_15",
+  "base": "youssef_2007",
+  "hypothesis": "3품종 점진, 부하 불균형, 15슬롯",
+  "time_limit": 240,
+  "mhc_lb": 8536.0,
+  "mhc_lb_detail": {
+   "L2": {
+    "min_path": 10.0,
+    "total_demand": 53.0,
+    "mhc_lb": 2120.0
+   },
+   "L3": {
+    "min_path": 14.0,
+    "total_demand": 54.0,
+    "mhc_lb": 3024.0
+   },
+   "L4": {
+    "min_path": 16.0,
+    "total_demand": 53.0,
+    "mhc_lb": 3392.0
+   }
+  },
+  "P": 15,
+  "F": 20,
+  "T": 4,
+  "ops": [
+   1,
+   5,
+   15,
+   60
+  ],
+  "off": {
+   "status": "TIME_LIMIT",
+   "obj": 15593.0,
+   "bound": 15088.084411,
+   "gap": 0.032381,
+   "lp": 11977.583333,
+   "runtime": 240.0,
+   "wall": 240.5,
+   "vars": 9540,
+   "binary": 1500,
+   "purchase": 6705.0,
+   "reconfig": 100.0,
+   "mhc": 8788.0,
+   "move": 0.0,
+   "machines": 8,
+   "reconfigs": 2,
+   "relocations": 0,
+   "move_distance": 0
+  },
+  "move_cost_flat": 0.0,
+  "joint": {
+   "status": "TIME_LIMIT",
+   "obj": 15593.0,
+   "bound": 13958.384837,
+   "gap": 0.10483,
+   "lp": 11977.583333,
+   "runtime": 240.3,
+   "wall": 241.8,
+   "vars": 70020,
+   "binary": 1500,
+   "purchase": 6705.0,
+   "reconfig": 100.0,
+   "mhc": 8788.0,
+   "move": 0.0,
+   "machines": 8,
+   "reconfigs": 2,
+   "relocations": 14,
+   "move_distance": 26.0
+  },
+  "gain_interval": [
+   0.0,
+   1634.6
+  ],
+  "gain_point": 0.0,
+  "gain_pct_point": 0.0,
+  "gain_pct_lb": 0.0,
+  "mhc_slack_off": 252.0,
+  "delta": {
+   "purchase": 0.0,
+   "reconfig": 0.0,
+   "mhc": 0.0
+  },
+  "elapsed": 482.3
+ },
+ {
+  "id": "W_5p_20",
+  "base": "youssef_2007",
+  "hypothesis": "5품종 점진, 부하 불균형, 20슬롯",
+  "time_limit": 240,
+  "mhc_lb": 7208.0,
+  "mhc_lb_detail": {
+   "L2": {
+    "min_path": 11.0,
+    "total_demand": 24.0,
+    "mhc_lb": 1056.0
+   },
+   "L3": {
+    "min_path": 14.0,
+    "total_demand": 19.0,
+    "mhc_lb": 1064.0
+   },
+   "L4": {
+    "min_path": 17.0,
+    "total_demand": 20.0,
+    "mhc_lb": 1360.0
+   },
+   "L5": {
+    "min_path": 20.0,
+    "total_demand": 19.0,
+    "mhc_lb": 1520.0
+   },
+   "L6": {
+    "min_path": 23.0,
+    "total_demand": 24.0,
+    "mhc_lb": 2208.0
+   }
+  },
+  "P": 20,
+  "F": 20,
+  "T": 4,
+  "ops": [
+   1,
+   5,
+   15,
+   60
+  ],
+  "off": {
+   "status": "TIME_LIMIT",
+   "obj": 14259.0,
+   "bound": 12616.145333,
+   "gap": 0.115215,
+   "lp": 10380.604167,
+   "runtime": 240.1,
+   "wall": 240.6,
+   "vars": 14320,
+   "binary": 2000,
+   "purchase": 5845.0,
+   "reconfig": 150.0,
+   "mhc": 8264.0,
+   "move": 0.0,
+   "machines": 7,
+   "reconfigs": 3,
+   "relocations": 0,
+   "move_distance": 0
+  },
+  "move_cost_flat": 0.0,
+  "joint": {
+   "status": "TIME_LIMIT",
+   "obj": 14167.0,
+   "bound": 12095.018696,
+   "gap": 0.146254,
+   "lp": 10380.604167,
+   "runtime": 240.2,
+   "wall": 243.1,
+   "vars": 123760,
+   "binary": 2000,
+   "purchase": 5845.0,
+   "reconfig": 150.0,
+   "mhc": 8172.0,
+   "move": 0.0,
+   "machines": 7,
+   "reconfigs": 3,
+   "relocations": 21,
+   "move_distance": 41.0
+  },
+  "gain_interval": [
+   0.0,
+   2164.0
+  ],
+  "gain_point": 92.0,
+  "gain_pct_point": 0.65,
+  "gain_pct_lb": 0.0,
+  "mhc_slack_off": 1056.0,
+  "delta": {
+   "purchase": 0.0,
+   "reconfig": 0.0,
+   "mhc": 92.0
+  },
+  "elapsed": 483.8
  }
 ]

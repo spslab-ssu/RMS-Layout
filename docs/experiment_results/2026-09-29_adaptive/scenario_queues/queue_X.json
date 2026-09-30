@@ -1,0 +1,126 @@
+[
+ {
+  "id": "X_alt_bal",
+  "base": "youssef_2007",
+  "hypothesis": "2x2 분해: 믹스=alt 부하=bal (12슬롯 4x3, 루프 1>16, 레이어 2 vs 4)",
+  "demands": [
+   {
+    "part": "L2",
+    "periods": [
+     80,
+     0,
+     80,
+     0
+    ],
+    "seq": "5>1>16>1>16>15"
+   },
+   {
+    "part": "L4",
+    "periods": [
+     0,
+     48,
+     0,
+     48
+    ],
+    "seq": "5>1>16>1>16>1>16>1>16>15"
+   }
+  ],
+  "grid": {
+   "cols": 4,
+   "rows": 3
+  }
+ },
+ {
+  "id": "X_alt_unbal",
+  "base": "youssef_2007",
+  "hypothesis": "2x2 분해: 믹스=alt 부하=unbal (12슬롯 4x3, 루프 1>16, 레이어 2 vs 4)",
+  "demands": [
+   {
+    "part": "L2",
+    "periods": [
+     96,
+     0,
+     96,
+     0
+    ],
+    "seq": "5>1>16>1>16>15"
+   },
+   {
+    "part": "L4",
+    "periods": [
+     0,
+     96,
+     0,
+     96
+    ],
+    "seq": "5>1>16>1>16>1>16>1>16>15"
+   }
+  ],
+  "grid": {
+   "cols": 4,
+   "rows": 3
+  }
+ },
+ {
+  "id": "X_grad_bal",
+  "base": "youssef_2007",
+  "hypothesis": "2x2 분해: 믹스=grad 부하=bal (12슬롯 4x3, 루프 1>16, 레이어 2 vs 4)",
+  "demands": [
+   {
+    "part": "L2",
+    "periods": [
+     71,
+     50,
+     30,
+     9
+    ],
+    "seq": "5>1>16>1>16>15"
+   },
+   {
+    "part": "L4",
+    "periods": [
+     6,
+     18,
+     30,
+     42
+    ],
+    "seq": "5>1>16>1>16>1>16>1>16>15"
+   }
+  ],
+  "grid": {
+   "cols": 4,
+   "rows": 3
+  }
+ },
+ {
+  "id": "X_grad_unbal",
+  "base": "youssef_2007",
+  "hypothesis": "2x2 분해: 믹스=grad 부하=unbal (12슬롯 4x3, 루프 1>16, 레이어 2 vs 4)",
+  "demands": [
+   {
+    "part": "L2",
+    "periods": [
+     85,
+     60,
+     36,
+     11
+    ],
+    "seq": "5>1>16>1>16>15"
+   },
+   {
+    "part": "L4",
+    "periods": [
+     11,
+     36,
+     60,
+     85
+    ],
+    "seq": "5>1>16>1>16>1>16>1>16>15"
+   }
+  ],
+  "grid": {
+   "cols": 4,
+   "rows": 3
+  }
+ }
+]

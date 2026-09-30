@@ -26,7 +26,9 @@ sys.path.insert(0, str(REPO))
 import config  # noqa: E402
 from Src.data import load_instance  # noqa: E402
 from scratchpad import campaign_gen  # noqa: E402
-from scratchpad import saffar_w_adaptive as engine  # noqa: E402
+from scratchpad import saffar_w_adaptive as engine_w  # noqa: E402
+from scratchpad import milp_adaptive_flat as engine_z  # noqa: E402
+engine = engine_w  # 기본 엔진 (spec["engine"]="z"로 시나리오별 교체)
 from Src.output import save_solution  # noqa: E402
 
 QUEUE = Path(sys.argv[1])
@@ -112,7 +114,8 @@ def run_one(spec: dict) -> dict:
             row["P"] = len(inst.install_locations); row["F"] = len(inst.feasible_pairs); row["T"] = len(inst.periods)
             row["ops"] = inst.operations
         t0 = time.time()
-        sol = engine.solve_milp(inst, shim)
+        eng = engine_z if spec.get("engine") == "z" else engine_w
+        sol = eng.solve_milp(inst, shim)
         wall = time.time() - t0
         s, cb = sol.summary, sol.cost_breakdown
         row[mode] = {
