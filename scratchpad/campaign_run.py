@@ -93,7 +93,14 @@ def run_one(spec: dict) -> dict:
     off_dir = None
     for mode in ("off", "joint"):
         shim = make_shim(data_dir, mode, OUT_ROOT / sid / ("gurobi_%s.log" % mode))
-        shim.MOVE_COST_FLAT = float(spec.get("move_cost_flat", 0.0))   # 손익분기 스윕용
+        # 이동비 정의 두 가지. spec에 alpha/beta가 있으면 논문식 C_j(alpha + beta*D),
+        # 없으면 기존대로 flat 단가 x 거리 (MOVE_COST_FLAT이 None이 아니면 엔진이 flat 분기를 탄다).
+        if "alpha" in spec or "beta" in spec:
+            shim.MOVE_COST_FLAT = None
+            shim.ALPHA = float(spec.get("alpha", 0.0))
+            shim.BETA = float(spec.get("beta", 0.0))
+        else:
+            shim.MOVE_COST_FLAT = float(spec.get("move_cost_flat", 0.0))   # 손익분기 스윕용
         if mode == "joint" and off_dir is not None:      # off 해를 joint의 MIP start로
             shim.USE_WARM_START = True
             shim.WARM_START_DIR = off_dir

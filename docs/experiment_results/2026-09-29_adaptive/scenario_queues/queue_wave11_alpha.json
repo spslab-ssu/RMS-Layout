@@ -1,0 +1,84 @@
+[
+ {
+  "base": "youssef_2007",
+  "demands": [
+   {
+    "part": "P2",
+    "periods": [
+     40,
+     0,
+     40,
+     0
+    ],
+    "seq": "1>5>15>1>5>15>60"
+   },
+   {
+    "part": "Q4",
+    "periods": [
+     0,
+     40,
+     0,
+     40
+    ],
+    "seq": "1>5>15>1>5>15>1>5>15>1>5>15>60"
+   }
+  ],
+  "grid": {
+   "cols": 4,
+   "rows": 3,
+   "start": [
+    -2,
+    1.0
+   ],
+   "end": [
+    5,
+    1.0
+   ]
+  },
+  "id": "R_layers_12_a010",
+  "hypothesis": "이동비 스윕: R_layers_12에 논문식 C_j(alpha + beta*D), alpha=0.01 beta=0.002",
+  "alpha": 0.01,
+  "beta": 0.002
+ },
+ {
+  "base": "youssef_2007",
+  "demands": [
+   {
+    "part": "P2",
+    "periods": [
+     40,
+     0,
+     40,
+     0
+    ],
+    "seq": "1>5>15>1>5>15>60"
+   },
+   {
+    "part": "Q4",
+    "periods": [
+     0,
+     40,
+     0,
+     40
+    ],
+    "seq": "1>5>15>1>5>15>1>5>15>1>5>15>60"
+   }
+  ],
+  "grid": {
+   "cols": 4,
+   "rows": 3,
+   "start": [
+    -2,
+    1.0
+   ],
+   "end": [
+    5,
+    1.0
+   ]
+  },
+  "id": "R_layers_12_a020",
+  "hypothesis": "이동비 스윕: R_layers_12에 논문식 C_j(alpha + beta*D), alpha=0.02 beta=0.004",
+  "alpha": 0.02,
+  "beta": 0.004
+ }
+]

@@ -5482,5 +5482,86 @@
    "mhc": 152.0
   },
   "elapsed": 1215.1
+ },
+ {
+  "id": "R_layers_20",
+  "base": "youssef_2007",
+  "hypothesis": "R_layers_12를 원본 20슬롯(5x4, 통과형 도크)으로 확대 — 슬롯 수가 이득에 미치는 영향 확인. 이동비 0.",
+  "time_limit": 600,
+  "mhc_lb": 8960.0,
+  "mhc_lb_detail": {
+   "P2": {
+    "min_path": 11.0,
+    "total_demand": 80.0,
+    "mhc_lb": 3520.0
+   },
+   "Q4": {
+    "min_path": 17.0,
+    "total_demand": 80.0,
+    "mhc_lb": 5440.0
+   }
+  },
+  "P": 20,
+  "F": 20,
+  "T": 4,
+  "ops": [
+   1,
+   5,
+   15,
+   60
+  ],
+  "off": {
+   "status": "TIME_LIMIT",
+   "obj": 16235.0,
+   "bound": 15761.918521,
+   "gap": 0.02914,
+   "lp": 12713.75,
+   "runtime": 600.1,
+   "wall": 600.9,
+   "vars": 13120,
+   "binary": 6560,
+   "purchase": 5845.0,
+   "reconfig": 150.0,
+   "mhc": 10240.0,
+   "move": 0.0,
+   "machines": 7,
+   "reconfigs": 2,
+   "relocations": 0,
+   "move_distance": 0
+  },
+  "move_cost_flat": 0.0,
+  "joint": {
+   "status": "TIME_LIMIT",
+   "obj": 16235.0,
+   "bound": 14774.763509,
+   "gap": 0.089944,
+   "lp": 12713.75,
+   "runtime": 600.1,
+   "wall": 601.8,
+   "vars": 23380,
+   "binary": 16820,
+   "purchase": 5845.0,
+   "reconfig": 150.0,
+   "mhc": 10240.0,
+   "move": 0.0,
+   "machines": 7,
+   "reconfigs": 2,
+   "relocations": 0,
+   "move_distance": 0
+  },
+  "gain_interval": [
+   0.0,
+   1460.2
+  ],
+  "gain_point": 0.0,
+  "gain_pct_point": 0.0,
+  "gain_pct_lb": 0.0,
+  "mhc_slack_off": 1280.0,
+  "delta": {
+   "purchase": 0.0,
+   "reconfig": 0.0,
+   "mhc": 0.0
+  },
+  "elapsed": 1202.8
  }
 ]
