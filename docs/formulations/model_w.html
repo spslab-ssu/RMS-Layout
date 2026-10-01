@@ -450,10 +450,6 @@ v'_{plp'l't} D_{pp'} MHC
             joint에서는 <span style="color:var(--chg);font-weight:600">"j′를 달고 방금 p로 들어온 기계"</span>의 것이다.</div>
         
           <div class="tex"><button type="button">LaTeX 복사</button><code>y_{pj'jlt} \le \sum_{l' : (j',l') \in F} s_{pj'l'(t-1)}
-\qquad
-\forall p \in P,\ (j',j) \in R,\ (j,l) \in F,\ t \in T \setminus \{1\} \qquad(7)
-
-y_{pj'jlt} \le \sum_{l' : (j',l') \in F} s_{pj'l'(t-1)}
 + \sum_{k \in P,\, k \neq p} w_{kpj't}
 \qquad
 \forall p \in P,\ (j',j) \in R,\ (j,l) \in F,\ t \in T \setminus \{1\} \qquad(7')</code></div>
@@ -470,11 +466,7 @@ y_{pj'jlt} \le \sum_{l' : (j',l') \in F} s_{pj'l'(t-1)}
             p의 기계가 떠나고 다른 기계가 들어왔는데도 "떠난 기계의 configuration"으로 현재 상태를 정당화할 수 있다.
             두 기계가 자리를 맞바꾸는 것만으로 machine type을 넘나드는 무료 변신이 가능해진다.</div>
         
-          <div class="tex"><button type="button">LaTeX 복사</button><code>\sum_{k \in P,\, k \neq p} w_{kpjt} \le \sum_{l : (j,l) \in F} s_{pjlt}
-\qquad
-\forall p \in P,\ j \in J,\ t \in T \setminus \{1\} \qquad(18a)
-
-\sum_{k \in P,\, k \neq p} w_{kpjt}
+          <div class="tex"><button type="button">LaTeX 복사</button><code>\sum_{k \in P,\, k \neq p} w_{kpjt}
 \le \sum_{l : (j,l) \in F} s_{pjlt}
 + \sum_{(j'',l) : (j,j'') \in R} y_{pjj''lt}
 \qquad
@@ -843,12 +835,7 @@ v'_{plp'l't} \le v_{p'l't} q_{ll't}
 &amp; x_{pjl},\ s_{pjlt},\ y_{pj'jlt},\ w_{kpjt} \in \{0,1\} \tag{16'}
 \end{align}
 
-% ---- 이동 정책 ----
-% off      : w 를 생성하지 않음 (이동 항이 전부 0). 논문 원형과 동치.
-% separate : 이동과 재구성을 같은 기간에 함께 하지 못하게 한다. (7') 과 (18a') 대신
-%            y_{pj'jlt} <= sum_{l' : (j',l') in F} s_{pj'l'(t-1)}                     (7)
-%            sum_{k in P, k != p} w_{kpjt} <= sum_{l : (j,l) in F} s_{pjlt}           (18a)
-% joint    : (7') 과 (18a') 을 사용 (위 본문). 이동과 재구성을 같은 기간에 함께 허용.
+% ---- 위 식은 joint 정책 : 이동과 재구성을 같은 기간에 함께 허용 ----
 
 % ---- 선택적 강화식 (config 단위 보존, 없어도 타당) ----
 % sum_{l : (j,l) in F} s_{pjlt}
