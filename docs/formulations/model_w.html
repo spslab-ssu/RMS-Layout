@@ -345,7 +345,7 @@ v'_{plp'l't} &amp;\geq 0 &amp;&amp; \forall p,p' \in P,\ l,l' \in L,\ t \in T
             각각 정확히 한 번 지불한다. w를 도착 configuration으로도 인덱싱하지 않기 때문이다.
             같은 config 안의 operation 변경과 제자리 유지는 변수가 없으므로 비용 0이다.</div>
         
-          <div class="tex"><button type="button">LaTeX 복사</button><code>\begin{aligned}
+          <div class="tex" id="obj-tex"><button type="button">LaTeX 복사</button><code>\begin{aligned}
 \min \quad
 &amp; \sum_{p \in P}\sum_{j \in J}\sum_{l \in L} C_j x_{pjl} \qquad (1')\\
 &amp;+ \sum_{t \in T \setminus \{1\}}\sum_{p \in P}\sum_{(j',j) \in R}\sum_{l : (j,l) \in F}
@@ -372,9 +372,9 @@ v'_{plp'l't} D_{pp'} MHC
           <div class="chg">삭제 → (19)가 대체. <b>논문에서 삭제되는 식은 이것 하나뿐이다.</b></div>
           <div class="ann why">x에 기간 인덱스가 없어 (2)는 기계를 구매한 위치에 영구 결박한다 — 위치 고정(robust) 가정의 본체다.</div>
         
-          <div class="tex"><button type="button">LaTeX 복사</button><code>% 삭제 — 이 식이 기계를 구매 위치에 영구 결박한다
-s_{pjlt} \le \sum_{j' \in J}\sum_{l' \in L} x_{pj'l'}
-\quad \forall p \in P,\ j \in J,\ l \in L,\ t \in T \tag{2}</code></div>
+          <div class="tex"><button type="button">LaTeX 복사</button><code>s_{pjlt} \le \sum_{j' \in J}\sum_{l' \in L} x_{pj'l'}
+\qquad
+\forall p \in P,\ j \in J,\ l \in L,\ t \in T</code></div>
         </div></div>
       </div>
 
@@ -384,7 +384,9 @@ s_{pjlt} \le \sum_{j' \in J}\sum_{l' \in L} x_{pj'l'}
           <div class="ann">한 위치의 RMT는 한 period에 하나의 configuration과 하나의 operation만 가진다.
             <span class="why">adaptive에서는 "이미 찬 슬롯으로의 이동"과 "한 슬롯에 두 대 도착"을 막는 유일한 식이 된다.</span></div>
         
-          <div class="tex"><button type="button">LaTeX 복사</button><code>\sum_{(j,l) \in F} s_{pjlt} \le 1 \quad \forall p \in P,\ t \in T \tag{3}</code></div>
+          <div class="tex"><button type="button">LaTeX 복사</button><code>\sum_{(j,l) \in F} s_{pjlt} \le 1
+\qquad
+\forall p \in P,\ t \in T \qquad(3)</code></div>
         </div></div>
       </div>
 
@@ -393,7 +395,9 @@ s_{pjlt} \le \sum_{j' \in J}\sum_{l' \in L} x_{pj'l'}
           <div class="math"><span class="up">∑</span><sub>(j,l)∈F</sub> x<sub>pjl</sub> <span class="up">≤</span> 1   <span class="up">∀</span>p <span class="up">∈</span> P</div>
           <div class="ann">위치당 최대 1대 구매. <span class="why">(3)과 (4′)가 함의하지만 구현에서는 명시한다.</span></div>
         
-          <div class="tex"><button type="button">LaTeX 복사</button><code>\sum_{(j,l) \in F} x_{pjl} \le 1 \quad \forall p \in P \tag{3'}</code></div>
+          <div class="tex"><button type="button">LaTeX 복사</button><code>\sum_{(j,l) \in F} x_{pjl} \le 1
+\qquad
+\forall p \in P \qquad(3')</code></div>
         </div></div>
       </div>
 
@@ -403,7 +407,9 @@ s_{pjlt} \le \sum_{j' \in J}\sum_{l' \in L} x_{pj'l'}
           <div class="chg">논문 (4) 부등식을 <b>등식으로 강화</b> — 필수.</div>
           <div class="ann why">(2)를 삭제하면 t = 1에 구매 없이 s = 1이 되는 <b>유령 기계</b>를 막을 유일한 앵커가 이 식이다.</div>
         
-          <div class="tex"><button type="button">LaTeX 복사</button><code>s_{pjl1} = x_{pjl} \quad \forall p \in P,\ (j,l) \in F \tag{4'}</code></div>
+          <div class="tex"><button type="button">LaTeX 복사</button><code>s_{pjl1} = x_{pjl}
+\qquad
+\forall p \in P,\ (j,l) \in F \qquad(4')</code></div>
         </div></div>
       </div>
 
@@ -415,8 +421,11 @@ s_{pjlt} \le \sum_{j' \in J}\sum_{l' \in L} x_{pj'l'}
             <span style="color:var(--chg);font-weight:600">③ 다른 위치에서 이동해 옴</span>.
             <span class="why">① 항이 있기 때문에 "그냥 머무름"에는 변수가 필요 없다.</span></div>
         
-          <div class="tex"><button type="button">LaTeX 복사</button><code>s_{pjlt} \;\le\; \sum_{l' :\, (j,l') \in F} s_{pjl'(t-1)} \;+\; \sum_{j' :\, (j',j) \in R} y_{pj'jlt} \;+\; \sum_{k \in P,\, k \neq p} w_{kpjt}
-\quad \forall p \in P,\ (j,l) \in F,\ t \in T \setminus \{1\} \tag{20}</code></div>
+          <div class="tex"><button type="button">LaTeX 복사</button><code>s_{pjlt} \le \sum_{l' : (j,l') \in F} s_{pjl'(t-1)}
++ \sum_{j' : (j',j) \in R} y_{pj'jlt}
++ \sum_{k \in P,\, k \neq p} w_{kpjt}
+\qquad
+\forall p \in P,\ (j,l) \in F,\ t \in T \setminus \{1\} \qquad(20)</code></div>
         </div></div>
       </div>
 
@@ -426,8 +435,9 @@ s_{pjlt} \le \sum_{j' \in J}\sum_{l' \in L} x_{pj'l'}
           <div class="ann">재구성되면 결과 상태 변수도 1 — 논문 그대로.
             <span class="why">joint에서 "도착 후 재구성"의 목적 상태가 실제 상태와 일치하도록 묶는 역할도 한다.</span></div>
         
-          <div class="tex"><button type="button">LaTeX 복사</button><code>\sum_{j' :\, (j',j) \in R} y_{pj'jlt} \;\le\; s_{pjlt}
-\quad \forall p \in P,\ (j,l) \in F,\ t \in T \setminus \{1\} \tag{6}</code></div>
+          <div class="tex"><button type="button">LaTeX 복사</button><code>\sum_{j' : (j',j) \in R} y_{pj'jlt} \le s_{pjlt}
+\qquad
+\forall p \in P,\ (j,l) \in F,\ t \in T \setminus \{1\} \qquad(6)</code></div>
         </div></div>
       </div>
 
@@ -439,11 +449,14 @@ s_{pjlt} \le \sum_{j' \in J}\sum_{l' \in L} x_{pj'l'}
           <div class="ann">재구성의 전제가 되는 configuration j′는 "직전에 p에 있던 기계"의 것이거나,
             joint에서는 <span style="color:var(--chg);font-weight:600">"j′를 달고 방금 p로 들어온 기계"</span>의 것이다.</div>
         
-          <div class="tex"><button type="button">LaTeX 복사</button><code>% separate (이동 XOR 재구성)
-y_{pj'jlt} \;\le\; \sum_{l' :\, (j',l') \in F} s_{pj'l'(t-1)} \tag{7}
-% joint (이동 + 재구성 동시)
-y_{pj'jlt} \;\le\; \sum_{l' :\, (j',l') \in F} s_{pj'l'(t-1)} + \sum_{k \in P,\, k \neq p} w_{kpj't}
-\quad \forall p \in P,\ (j',j) \in R,\ (j,l) \in F,\ t \in T \setminus \{1\} \tag{7'}</code></div>
+          <div class="tex"><button type="button">LaTeX 복사</button><code>y_{pj'jlt} \le \sum_{l' : (j',l') \in F} s_{pj'l'(t-1)}
+\qquad
+\forall p \in P,\ (j',j) \in R,\ (j,l) \in F,\ t \in T \setminus \{1\} \qquad(7)
+
+y_{pj'jlt} \le \sum_{l' : (j',l') \in F} s_{pj'l'(t-1)}
++ \sum_{k \in P,\, k \neq p} w_{kpj't}
+\qquad
+\forall p \in P,\ (j',j) \in R,\ (j,l) \in F,\ t \in T \setminus \{1\} \qquad(7')</code></div>
         </div></div>
       </div>
 
@@ -457,11 +470,15 @@ y_{pj'jlt} \;\le\; \sum_{l' :\, (j',l') \in F} s_{pj'l'(t-1)} + \sum_{k \in P,\,
             p의 기계가 떠나고 다른 기계가 들어왔는데도 "떠난 기계의 configuration"으로 현재 상태를 정당화할 수 있다.
             두 기계가 자리를 맞바꾸는 것만으로 machine type을 넘나드는 무료 변신이 가능해진다.</div>
         
-          <div class="tex"><button type="button">LaTeX 복사</button><code>% separate
-\sum_{k \in P,\, k \neq p} w_{kpjt} \;\le\; \sum_{l :\, (j,l) \in F} s_{pjlt} \tag{18a}
-% joint
-\sum_{k \in P,\, k \neq p} w_{kpjt} \;\le\; \sum_{l :\, (j,l) \in F} s_{pjlt} + \sum_{(j'',l) :\, (j,j'') \in R} y_{pjj''lt}
-\quad \forall p \in P,\ j \in J,\ t \in T \setminus \{1\} \tag{18a'}</code></div>
+          <div class="tex"><button type="button">LaTeX 복사</button><code>\sum_{k \in P,\, k \neq p} w_{kpjt} \le \sum_{l : (j,l) \in F} s_{pjlt}
+\qquad
+\forall p \in P,\ j \in J,\ t \in T \setminus \{1\} \qquad(18a)
+
+\sum_{k \in P,\, k \neq p} w_{kpjt}
+\le \sum_{l : (j,l) \in F} s_{pjlt}
++ \sum_{(j'',l) : (j,j'') \in R} y_{pjj''lt}
+\qquad
+\forall p \in P,\ j \in J,\ t \in T \setminus \{1\} \qquad(18a')</code></div>
         </div></div>
       </div>
 
@@ -472,8 +489,9 @@ y_{pj'jlt} \;\le\; \sum_{l' :\, (j',l') \in F} s_{pj'l'(t-1)} + \sum_{k \in P,\,
           <div class="ann why">반드시 <b>도착지에 대한 합산형</b>이어야 한다. 개별형 w<sub>kpjt</sub> ≤ <span class="up">∑</span><sub>l:(j,l)∈F</sub> s<sub>kjl(t−1)</sub>로 쓰면
             joint에서 한 기계가 두 곳으로 복제되는 해가 통과한다.</div>
         
-          <div class="tex"><button type="button">LaTeX 복사</button><code>\sum_{\substack{q \in P \\ q \neq p}} w_{pqjt} \;\le\; \sum_{l' :\, (j,l') \in F} s_{pjl'(t-1)}
-\quad \forall p \in P,\ j \in J,\ t \in T \setminus \{1\} \tag{18b}</code></div>
+          <div class="tex"><button type="button">LaTeX 복사</button><code>\sum_{q \in P,\, q \neq p} w_{pqjt} \le \sum_{l' : (j,l') \in F} s_{pjl'(t-1)}
+\qquad
+\forall p \in P,\ j \in J,\ t \in T \setminus \{1\} \qquad(18b)</code></div>
         </div></div>
       </div>
 
@@ -485,9 +503,11 @@ y_{pj'jlt} \;\le\; \sum_{l' :\, (j',l') \in F} s_{pj'l'(t-1)} + \sum_{k \in P,\,
             두 기계가 자리를 맞바꾸는 swap은 점유 변화 0 = 유입 1 − 유출 1로 그대로 허용된다.
             <b>등식</b>이므로 기계의 폐기는 불가능하다 — 유휴 기계도 매 기간 슬롯을 점유하고, 비켜주려면 이동비를 낸다.</div>
         
-          <div class="tex"><button type="button">LaTeX 복사</button><code>\sum_{(j,l) \in F} s_{pjlt} \;-\; \sum_{(j,l) \in F} s_{pjl(t-1)}
-\;=\; \sum_{j \in J} \sum_{k \in P,\, k \neq p} w_{kpjt} \;-\; \sum_{j \in J} \sum_{q \in P,\, q \neq p} w_{pqjt}
-\quad \forall p \in P,\ t \in T \setminus \{1\} \tag{19}</code></div>
+          <div class="tex"><button type="button">LaTeX 복사</button><code>\sum_{(j,l) \in F} s_{pjlt} - \sum_{(j,l) \in F} s_{pjl(t-1)}
+= \sum_{j \in J}\sum_{k \in P,\, k \neq p} w_{kpjt}
+- \sum_{j \in J}\sum_{q \in P,\, q \neq p} w_{pqjt}
+\qquad
+\forall p \in P,\ t \in T \setminus \{1\} \qquad(19)</code></div>
         </div></div>
       </div>
 
@@ -496,7 +516,7 @@ y_{pj'jlt} \;\le\; \sum_{l' :\, (j',l') \in F} s_{pj'l'(t-1)} + \sum_{k \in P,\,
           <div class="math">x<sub>pjl</sub>, s<sub>pjlt</sub>, y<sub>pj′jlt</sub> <span class="up">∈ {</span>0,1<span class="up">}</span>,  <span class="red">w<sub>kpjt</sub> <span class="up">∈ {</span>0,1<span class="up">}</span></span></div>
           <div class="chg">w의 도메인만 추가.</div>
         
-          <div class="tex"><button type="button">LaTeX 복사</button><code>x_{pjl},\ s_{pjlt},\ y_{pj'jlt},\ w_{kpjt} \in \{0,1\} \tag{16'}</code></div>
+          <div class="tex"><button type="button">LaTeX 복사</button><code>x_{pjl},\ s_{pjlt},\ y_{pj'jlt},\ w_{kpjt} \in \{0,1\} \qquad(16')</code></div>
         </div></div>
       </div>
 
@@ -517,7 +537,9 @@ y_{pj'jlt} \;\le\; \sum_{l' :\, (j',l') \in F} s_{pj'l'(t-1)} + \sum_{k \in P,\,
           <div class="math">v<sub>plt</sub> <span class="up">≤</span> <span class="up">∑</span><sub>j∈J</sub> s<sub>pjlt</sub> B<sub>jl</sub>   <span class="up">∀</span>p, l, t</div>
           <div class="ann">처리량은 배치된 RMT의 최대 생산능력 이하. <span class="why">기계층과 흐름층을 잇는 유일한 제약.</span></div>
         
-          <div class="tex"><button type="button">LaTeX 복사</button><code>v_{plt} \le \sum_{j \in J} s_{pjlt}\, B_{jl} \quad \forall p \in P,\ l \in L,\ t \in T \tag{8}</code></div>
+          <div class="tex"><button type="button">LaTeX 복사</button><code>v_{plt} \le \sum_{j \in J} s_{pjlt} B_{jl}
+\qquad
+\forall p \in P,\ l \in L,\ t \in T \qquad(8)</code></div>
         </div></div>
       </div>
       <div class="eq">
@@ -525,7 +547,9 @@ y_{pj'jlt} \;\le\; \sum_{l' :\, (j',l') \in F} s_{pj'l'(t-1)} + \sum_{k \in P,\,
           <div class="math"><span class="up">∑</span><sub>p∈P</sub> v<sub>plt</sub> <span class="up">≥</span> d<sub>l</sub><sup>t</sup>   <span class="up">∀</span>l, t</div>
           <div class="ann">period t에서 operation l의 총 수요 만족</div>
         
-          <div class="tex"><button type="button">LaTeX 복사</button><code>\sum_{p \in P} v_{plt} \ge d_l^{\,t} \quad \forall l \in L,\ t \in T \tag{9}</code></div>
+          <div class="tex"><button type="button">LaTeX 복사</button><code>\sum_{p \in P} v_{plt} \ge d_l^{\,t}
+\qquad
+\forall l \in L,\ t \in T \qquad(9)</code></div>
         </div></div>
       </div>
       <div class="eq">
@@ -533,8 +557,13 @@ y_{pj'jlt} \;\le\; \sum_{l' :\, (j',l') \in F} s_{pj'l'(t-1)} + \sum_{k \in P,\,
           <div class="math">v′<sub>plp′l′t</sub> <span class="up">≤</span> v<sub>plt</sub> q<sub>ll′t</sub>,  v′<sub>plp′l′t</sub> <span class="up">≤</span> v<sub>p′l′t</sub> q<sub>ll′t</sub></div>
           <div class="ann">선후행 관계 flow 제약 — 연속 공정 사이에만 흐름 허용</div>
         
-          <div class="tex"><button type="button">LaTeX 복사</button><code>v'_{plp'l't} \le v_{plt}\, q_{ll't}, \qquad v'_{plp'l't} \le v_{p'l't}\, q_{ll't}
-\quad \forall p,p' \in P,\ l,l' \in L,\ t \in T \tag{10, 11}</code></div>
+          <div class="tex"><button type="button">LaTeX 복사</button><code>v'_{plp'l't} \le v_{plt} q_{ll't}
+\qquad
+\forall p,p' \in P,\ l,l' \in L,\ t \in T \qquad(10)
+
+v'_{plp'l't} \le v_{p'l't} q_{ll't}
+\qquad
+\forall p,p' \in P,\ l,l' \in L,\ t \in T \qquad(11)</code></div>
         </div></div>
       </div>
       <div class="eq">
@@ -542,8 +571,11 @@ y_{pj'jlt} \;\le\; \sum_{l' :\, (j',l') \in F} s_{pj'l'(t-1)} + \sum_{k \in P,\,
           <div class="math"><span class="up">∑</span><sub>p′,l′</sub> v′<sub>plp′l′t</sub> <span class="up">=</span> <span class="up">∑</span><sub>p′,l′</sub> v′<sub>p′l′plt</sub> <span class="up">=</span> v<sub>plt</sub></div>
           <div class="ann">flow 균형 — 들어오는 flow = 처리량 = 나가는 flow. 더미 start/end로 경계 처리.</div>
         
-          <div class="tex"><button type="button">LaTeX 복사</button><code>\sum_{p' \in P}\sum_{l' \in L} v'_{plp'l't} \;=\; \sum_{p' \in P}\sum_{l' \in L} v'_{p'l'plt} \;=\; v_{plt}
-\quad \forall p \in P,\ l \in L,\ t \in T \tag{12-14}</code></div>
+          <div class="tex"><button type="button">LaTeX 복사</button><code>\sum_{p' \in P}\sum_{l' \in L} v'_{plp'l't}
+= \sum_{p' \in P}\sum_{l' \in L} v'_{p'l'plt}
+= v_{plt}
+\qquad
+\forall p \in P,\ l \in L,\ t \in T \qquad(12)\text{--}(14)</code></div>
         </div></div>
       </div>
       <div class="eq">
@@ -551,7 +583,9 @@ y_{pj'jlt} \;\le\; \sum_{l' :\, (j',l') \in F} s_{pj'l'(t-1)} + \sum_{k \in P,\,
           <div class="math">v<sub>plt</sub>, v′<sub>plp′l′t</sub> <span class="up">≥</span> 0</div>
           <div class="ann">flow 비음수</div>
         
-          <div class="tex"><button type="button">LaTeX 복사</button><code>v_{plt} \ge 0,\qquad v'_{plp'l't} \ge 0 \quad \forall p,p' \in P,\ l,l' \in L,\ t \in T \tag{15}</code></div>
+          <div class="tex"><button type="button">LaTeX 복사</button><code>v_{plt} \ge 0,\quad v'_{plp'l't} \ge 0
+\qquad
+\forall p,p' \in P,\ l,l' \in L,\ t \in T \qquad(15)</code></div>
         </div></div>
       </div>
     </div>
@@ -584,9 +618,14 @@ y_{pj'jlt} \;\le\; \sum_{l' :\, (j',l') \in F} s_{pj'l'(t-1)} + \sum_{k \in P,\,
             (S)는 "모형에서 유도되는 유효 등식(강화식)"으로 층을 나눠 보이면
             논문과의 거리와 계산 성능을 함께 지킬 수 있다.</div>
         
-          <div class="tex"><button type="button">LaTeX 복사</button><code>\sum_{l :\, (j,l) \in F} s_{pjlt} \;=\; \sum_{l' :\, (j,l') \in F} s_{pjl'(t-1)} \;-\; \sum_{q \in P,\, q \neq p} w_{pqjt} \;+\; \sum_{k \in P,\, k \neq p} w_{kpjt}
-\;-\; \sum_{(j'',l) :\, (j,j'') \in R} y_{pjj''lt} \;+\; \sum_{l :\, (j,l) \in F} \sum_{j' :\, (j',j) \in R} y_{pj'jlt}
-\quad \forall p \in P,\ j \in J,\ t \in T \setminus \{1\} \tag{S}</code></div>
+          <div class="tex"><button type="button">LaTeX 복사</button><code>\sum_{l : (j,l) \in F} s_{pjlt}
+= \sum_{l' : (j,l') \in F} s_{pjl'(t-1)}
+- \sum_{q \in P,\, q \neq p} w_{pqjt}
++ \sum_{k \in P,\, k \neq p} w_{kpjt}
+- \sum_{(j'',l) : (j,j'') \in R} y_{pjj''lt}
++ \sum_{l : (j,l) \in F}\sum_{j' : (j',j) \in R} y_{pj'jlt}
+\qquad
+\forall p \in P,\ j \in J,\ t \in T \setminus \{1\} \qquad(S)</code></div>
         </div></div>
       </div>
     </div>
