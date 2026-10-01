@@ -10,6 +10,7 @@ __pycache__/
 Result/
 Result_*/
 tmp/
+.tmp/
 
 # Solver artifacts
 *.lp
@@ -22,3 +23,5 @@ tmp/
 # 로컬 전용 (GitHub 제외)
 docs/RESEARCH_LOG.md
 experiments/margin_explain.py
+docs/*.html
+docs/*_files/
