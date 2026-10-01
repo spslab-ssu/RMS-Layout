@@ -610,16 +610,23 @@ def _cli() -> int:
     ap.add_argument("--save", default=None, help="해를 저장할 폴더")
     args = ap.parse_args()
 
-    try:
-        import config as cfg_mod
-    except ImportError:
-        print("config.py 를 찾을 수 없다. 저장소 루트에서 실행하라.", file=sys.stderr)
+    cfg_mod = None
+    for name in ("my_config", "config"):          # my_config.py 가 있으면 그것을 쓴다
+        try:
+            cfg_mod = __import__(name)
+            print("설정 파일: %s.py" % name)
+            break
+        except ImportError:
+            continue
+    if cfg_mod is None:
+        print("my_config.py 또는 config.py 를 찾을 수 없다. 저장소 루트에서 실행하라.",
+              file=sys.stderr)
         return 1
     from Src.data import load_instance
 
     cfg = SimpleNamespace(**{k: getattr(cfg_mod, k) for k in dir(cfg_mod) if k.isupper()})
     if args.dataset:
-        base = _Path(getattr(cfg_mod, "BASE_DIR", ".")) / "Data" / args.dataset
+        base = _Path(getattr(cfg_mod, "BASE_DIR", _Path(__file__).resolve().parent)) / "Data" / args.dataset
         if not base.exists():
             print("데이터셋 폴더가 없다: %s" % base, file=sys.stderr)
             return 1
