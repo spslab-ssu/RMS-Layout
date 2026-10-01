@@ -4,9 +4,10 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent
 DATA_DIR = BASE_DIR / "Data"
 
-# 실행할 데이터셋을 선택한다.
-# - "single_part": 메인논문 Example 1 단일부품 문제
-# - "multi_part": 메인논문 Example 2 다중부품 문제
+# 실행할 데이터셋을 선택한다. Data/ 아래 폴더명이다.
+# - "single_part"  : Saffar Example 1 단일부품
+# - "multi_part"   : Saffar Example 2 다중부품 (20슬롯, 4기간)
+# - "youssef_2007" : Youssef & ElMaraghy 2007 데이터 (20슬롯, 4기간)
 PROBLEM_NAME = "multi_part"
 PROBLEM_DIR = DATA_DIR / PROBLEM_NAME
 
@@ -86,14 +87,52 @@ STAGE2_TIME_LIMIT = None
 #                 "비용만 최소화했을 때 Cap이 어디에 남는지"를 보는 대조군이 된다.
 MINIMIZE_SIZING = True
 
-# adaptive layout: 기간 경계에서 기계 relocation(이동) 허용 정책. (milp_adaptive에서 사용)
-#   "off"      : 위치 고정 (base와 동등)
+# ===========================================================================
+#  adaptive layout — 기간 경계에서 기계 이동(relocation) 허용
+#  base_adaptive.py(w 정식화)와 Src/milp_adaptive.py(z 인코딩)가 함께 읽는다.
+#  python base_adaptive.py  로 실행하면 아래 값이 그대로 쓰인다.
+# ===========================================================================
+
+# 이동 정책
+#   "off"      : 위치 고정. 논문 원형과 동등 (이동 변수를 만들지 않는다)
 #   "separate" : 이동이면 config 유지, 재구성이면 제자리 (동시 금지)
 #   "joint"    : 이동 + 재구성 동시 허용
 ADAPTIVE_MODE = "off"
+
 # 이동비 = 구매가 C_j * (ALPHA + BETA * 거리 D_kp)
+#   ALPHA : 거리와 무관한 1회 고정비 (분해·크레인·재조립). 기계값 대비 비율.
+#   BETA  : 거리 1칸당 추가비. 기계값 대비 비율.
+#   둘 다 0이면 이동이 공짜 -> 이득의 상한을 본다.
+#   실측 손익분기는 ALPHA = 0.069 부근 (기계값의 약 7%). BETA = ALPHA/5 권장.
 ALPHA = 0.0
 BETA = 0.0
+
+# 이동비를 "거리당 정액"으로 계산하고 싶을 때만 숫자를 넣는다 (ALPHA/BETA 대신 적용).
+#   None  : 위의 C_j(ALPHA + BETA*D) 식을 쓴다  <- 기본
+#   숫자  : 이동비 = MOVE_COST_FLAT * 거리. 기계값과 무관해진다.
+MOVE_COST_FLAT = None
+
+# (S) 강화식 — configuration 단위 기계 보존 등식.
+#   새 변수 없이 s, y, w 만으로 쓰며 최적해를 자르지 않는다.
+#   True 로 두면 LP relaxation이 크게 강해진다 (multi_part에서 bound 약 11% 상승).
+#   논문 원형에 가깝게 보이려면 False.
+SAFFAR_BALANCE_EQ = False
+
+# w(이동), y(재구성)를 이진으로 선언할지.
+#   True  : 논문 원형대로 이진 <- 기본
+#   False : 연속. 모델은 가벼워지지만 정수해 보장은 별도 확인이 필요하다.
+SAFFAR_W_BINARY = True
+
+# ---- 솔버 옵션 ----
+# Gurobi MIPFocus. None이면 기본값.
+#   1 = 좋은 해를 빨리 찾기, 2 = 최적성 증명, 3 = bound 끌어올리기
+MIP_FOCUS = None
+
+# Gurobi 로그를 터미널에 출력할지. 1 = 출력, 0 = 조용히.
+OUTPUT_FLAG = 1
+
+# Gurobi 파라미터를 직접 넘기고 싶을 때. 예: {"Seed": 0, "Threads": 8}
+GUROBI_PARAMS = {"Seed": 0}
 
 # dummy start/end operation id. 실제 operation과 충돌하지 않게 둔다.
 START_OPERATION = 0
