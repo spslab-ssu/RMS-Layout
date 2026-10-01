@@ -315,9 +315,9 @@ v'_{plp'l't} &amp;\geq 0 &amp;&amp; \forall p,p' \in P,\ l,l' \in L,\ t \in T
           <div class="tex" id="obj-tex"><button type="button">LaTeX 복사</button><code>\begin{aligned}
 \min \quad
 &amp; \sum_{p \in P}\sum_{j \in J}\sum_{l \in L} C_j x_{pjl} \qquad (1')\\
-&amp;+ \sum_{t \in T \setminus \{1\}}\sum_{k \in P}\sum_{p \in P}\sum_{j' \in J}\sum_{j \in J}\sum_{l \in L}
+&amp;+ \sum_{t \in T,\, t \ne 1}\sum_{k \in P}\sum_{p \in P}\sum_{j' \in J}\sum_{j \in J}\sum_{l \in L}
 r_{j'j} z_{kpj'jlt}\\
-&amp;+ \sum_{t \in T \setminus \{1\}}\sum_{k \in P}\sum_{p \in P,\, p \neq k}\sum_{j' \in J}\sum_{j \in J}\sum_{l \in L}
+&amp;+ \sum_{t \in T,\, t \ne 1}\sum_{k \in P}\sum_{p \in P,\, p \neq k}\sum_{j' \in J}\sum_{j \in J}\sum_{l \in L}
 C_{j'} (\alpha + \beta D_{kp}) z_{kpj'jlt}\\
 &amp;+ \sum_{t \in T}\sum_{p \in P}\sum_{l \in L}\sum_{p' \in P}\sum_{l' \in L}
 v'_{plp'l't} D_{pp'} MHC
@@ -389,7 +389,7 @@ v'_{plp'l't} D_{pp'} MHC
         
           <div class="tex"><button type="button">LaTeX 복사</button><code>s_{pjlt} \le \sum_{l' \in L} s_{pjl'(t-1)} + \sum_{j' \in J} y_{pj'jlt}
 \qquad
-\forall p \in P,\ j \in J,\ l \in L,\ t \in T \setminus \{1\}</code></div>
+\forall p \in P,\ j \in J,\ l \in L,\ t \ne 1</code></div>
         </div></div>
       </div>
 
@@ -414,7 +414,7 @@ v'_{plp'l't} D_{pp'} MHC
         
           <div class="tex"><button type="button">LaTeX 복사</button><code>y_{pj'jlt} \le \sum_{l' \in L} s_{pj'l'(t-1)}
 \qquad
-\forall p \in P,\ j',j \in J,\ l \in L,\ t \in T \setminus \{1\}</code></div>
+\forall p \in P,\ j',j \in J,\ l \in L,\ t \ne 1</code></div>
         </div></div>
       </div>
 
@@ -428,7 +428,7 @@ v'_{plp'l't} D_{pp'} MHC
           <div class="tex"><button type="button">LaTeX 복사</button><code>\sum_{p \in P}\sum_{j \in J}\sum_{l \in L} z_{kpj'jlt}
 = \sum_{l' \in L} s_{kj'l'(t-1)}
 \qquad
-\forall k \in P,\ j' \in J,\ t \in T \setminus \{1\} \qquad(R1)</code></div>
+\forall k \in P,\ j' \in J,\ t \ne 1 \qquad(R1)</code></div>
         </div></div>
       </div>
 
@@ -441,7 +441,7 @@ v'_{plp'l't} D_{pp'} MHC
         
           <div class="tex"><button type="button">LaTeX 복사</button><code>s_{pjlt} = \sum_{k \in P}\sum_{j' \in J} z_{kpj'jlt}
 \qquad
-\forall p \in P,\ j \in J,\ l \in L,\ t \in T \setminus \{1\} \qquad(R2)</code></div>
+\forall p \in P,\ j \in J,\ l \in L,\ t \ne 1 \qquad(R2)</code></div>
         </div></div>
       </div>
 
@@ -615,15 +615,15 @@ v'_{plp'l't} \le v_{p'l't} q_{ll't}
 \begin{align}
 % ---------- Objective ----------
 \min\ &amp; \sum_{p \in P}\sum_{j \in J}\sum_{l \in L} C_j\, x_{pjl}
- + \sum_{t \in T \setminus \{1\}}\sum_{k \in P}\sum_{p \in P}\sum_{j' \in J}\sum_{j \in J}\sum_{l \in L} r_{j'j}\, z_{kpj'jlt} \notag \\
- &amp; + \sum_{t \in T \setminus \{1\}}\sum_{k \in P}\sum_{\substack{p \in P \\ p \neq k}}\sum_{j' \in J}\sum_{j \in J}\sum_{l \in L} C_{j'}\bigl(\alpha + \beta D_{kp}\bigr) z_{kpj'jlt} \notag \\
+ + \sum_{t \in T,\, t \ne 1}\sum_{k \in P}\sum_{p \in P}\sum_{j' \in J}\sum_{j \in J}\sum_{l \in L} r_{j'j}\, z_{kpj'jlt} \notag \\
+ &amp; + \sum_{t \in T,\, t \ne 1}\sum_{k \in P}\sum_{\substack{p \in P \\ p \neq k}}\sum_{j' \in J}\sum_{j \in J}\sum_{l \in L} C_{j'}\bigl(\alpha + \beta D_{kp}\bigr) z_{kpj'jlt} \notag \\
  &amp; + \sum_{t \in T}\sum_{p \in P}\sum_{l \in L}\sum_{p' \in P}\sum_{l' \in L} v'_{plp'l't}\, D_{pp'}\, \mathrm{MHC} \tag{1'} \\
 % ---------- machine layer ----------
 \text{s.t.}\quad &amp; \sum_{j \in J}\sum_{l \in L} s_{pjlt} \le 1 &amp;&amp; \forall p \in P,\ t \in T \tag{3} \\
 &amp; \sum_{(j,l) \in F} x_{pjl} \le 1 &amp;&amp; \forall p \in P \tag{3'} \\
 &amp; s_{pjl1} = x_{pjl} &amp;&amp; \forall p \in P,\ (j,l) \in F \tag{4'} \\
-&amp; \sum_{p \in P}\sum_{j \in J}\sum_{l \in L} z_{kpj'jlt} = \sum_{l' \in L} s_{kj'l'(t-1)} &amp;&amp; \forall k \in P,\ j' \in J,\ t \in T \setminus \{1\} \tag{R1} \\
-&amp; s_{pjlt} = \sum_{k \in P}\sum_{j' \in J} z_{kpj'jlt} &amp;&amp; \forall p \in P,\ j \in J,\ l \in L,\ t \in T \setminus \{1\} \tag{R2} \\
+&amp; \sum_{p \in P}\sum_{j \in J}\sum_{l \in L} z_{kpj'jlt} = \sum_{l' \in L} s_{kj'l'(t-1)} &amp;&amp; \forall k \in P,\ j' \in J,\ t \ne 1 \tag{R1} \\
+&amp; s_{pjlt} = \sum_{k \in P}\sum_{j' \in J} z_{kpj'jlt} &amp;&amp; \forall p \in P,\ j \in J,\ l \in L,\ t \ne 1 \tag{R2} \\
 % ---------- flow layer ----------
 &amp; v_{plt} \le \sum_{j \in J} s_{pjlt}\, B_{jl} &amp;&amp; \forall p \in P,\ l \in L,\ t \in T \tag{8} \\
 &amp; \sum_{p \in P} v_{plt} \ge d_l^{\,t} &amp;&amp; \forall l \in L,\ t \in T \tag{9} \\
