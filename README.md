@@ -343,38 +343,81 @@ min 구매비 + 재구성비 + material handling cost
 
 ## 8. 실행 방법
 
-상위 연구 폴더의 공용 가상환경을 사용합니다.
+### 준비
 
 ```bash
-cd /Users/miles/Documents/02_학부연구생
-source .venv/bin/activate
-cd 01_RMS/03_Development/RMS_Layout
+python -m venv .venv
+# Windows (PowerShell):  .venv/Scripts/Activate.ps1
+# mac/Linux:             source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-논문 재현 데이터를 생성/복사합니다.
+**Gurobi 라이선스가 따로 필요합니다.** `pip install gurobipy`에 딸려 오는 제한
+라이선스는 변수 2,000개 / 제약 2,000개까지만 풉니다. 이 저장소는 가장 작은 조합도
+4,720 변수라서 그대로는 `Model too large`로 막힙니다. 학생·연구자는 Gurobi 사이트에서
+무료 Named-User Academic License를 받아 `grbgetkey`로 등록하면 됩니다.
 
-```bash
-python Data/generate_data.py
-```
+데이터 CSV는 저장소에 들어 있습니다. `python Data/generate_data.py`는 데이터를 다시
+만들 때만 쓰고, 그냥 돌릴 때는 필요 없습니다.
 
-단일부품 문제를 풉니다.
+### 실행
 
-```bash
-python main.py
-```
-
-다중부품 문제를 풀려면 `config.py`에서 다음 값을 바꿉니다.
+`config.py` 위쪽 일곱 줄만 바꾸고 `python main.py`를 실행합니다.
 
 ```python
-PROBLEM_NAME = "multi_part"
+PROBLEM_NAME = "multi_part"   # single_part | multi_part | youssef_2007
+TIME_LIMIT = 600              # 초
+MIP_GAP = 0.0                 # 0이면 최적 증명까지, 0.03이면 gap 3%에서 멈춤
+MODEL = "w"                   # base | z | w
+ADAPTIVE_MODE = "off"         # off(위치 고정) | joint(이동 + 재구성 허용)
+ALPHA = 0.0                   # 이동비 = 구매가 C_j * (ALPHA + BETA * 거리)
+BETA = 0.0
 ```
-
-그리고 다시 실행합니다.
 
 ```bash
 python main.py
 ```
+
+무엇이 돌아가는지 첫 줄에 찍힙니다.
+
+```text
+모형 w (adaptive w 정식화) | 데이터 multi_part | 시간제한 600s | MIPGap 0.0
+  이동 정책 joint | alpha 0.0 beta 0.0
+```
+
+### MODEL — 세 가지 모형
+
+| 값 | 모형 | 코드 |
+|---|---|---|
+| `base` | 논문 원형. 기계 위치가 기간 내내 고정이라 `ADAPTIVE_MODE`를 무시합니다 | `Src/milp.py` |
+| `z` | adaptive layout, z 인코딩. 전이변수 하나로 이동과 재구성을 함께 표현합니다 | `Src/milp_adaptive.py` |
+| `w` | adaptive layout, w 정식화. 논문 변수에 이동 이진변수 w를 더합니다 | `base_adaptive.py` |
+
+`ALPHA`, `BETA`가 둘 다 0이면 이동이 공짜라서 adaptive layout 이득의 **상한**을 봅니다.
+
+모형별 바로 실행 스크립트도 있습니다. `MODEL`을 보지 않고 그 모형만 풉니다.
+
+```bash
+python run_adaptive.py     # z 모형
+python base_adaptive.py    # w 모형. 단독 파일이라 CLI 인자도 받습니다
+```
+
+### 문제 크기
+
+| 데이터 | MODEL | 정책 | 변수 | 제약 |
+|---|---|---|---|---|
+| single_part | base | off | 4,096 | 3,136 |
+| single_part | w | joint | 11,296 | 3,952 |
+| single_part | z | joint | 26,320 | 1,984 |
+| multi_part | base | off | 9,800 | 6,528 |
+| multi_part | w | joint | 22,340 | 7,308 |
+| multi_part | z | joint | 68,000 | 3,588 |
+| youssef_2007 | base | off | 20,960 | 21,252 |
+| youssef_2007 | w | joint | 31,220 | 16,392 |
+| youssef_2007 | z | joint | 219,200 | 5,472 |
+
+youssef_2007은 600초 안에 최적이 증명됩니다(z 129초, w 26초). multi_part는 위치 고정
+최적값 35,775를 증명하는 데 48시간이 걸렸으므로, 600초로는 gap이 남은 채 끝납니다.
 
 ---
 

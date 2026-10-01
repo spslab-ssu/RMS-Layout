@@ -23,7 +23,7 @@ MODEL = "w"
 # adaptive layout: 기간 경계에서 기계 relocation(이동) 허용 정책. (milp_adaptive에서 사용)
 #   "off"      : 위치 고정 (base와 동등)
 #   "joint"    : 이동 + 재구성 동시 허용
-ADAPTIVE_MODE = "off"
+ADAPTIVE_MODE = "joint"
 # 이동비 = 구매가 C_j * (ALPHA + BETA * 거리 D_kp)
 ALPHA = 0.0
 BETA = 0.0
