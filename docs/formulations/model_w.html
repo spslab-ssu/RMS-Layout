@@ -200,7 +200,6 @@
             <div class="def"><span class="sym">T</span><span class="txt">생산 기간의 집합</span></div>
             <div class="def new"><span class="sym">F <span class="up">⊆</span> J <span class="up">×</span> L</span><span class="txt">수행 가능한 (configuration, operation) 쌍의 집합 <span class="why">(B<sub>jl</sub>가 정의된 조합)</span></span></div>
             <div class="def new"><span class="sym">R <span class="up">⊆</span> J <span class="up">×</span> J</span><span class="txt">재구성이 가능한 (j′, j) 쌍의 집합 <span class="why">(j′ ≠ j, 동일 machine type 내)</span></span></div>
-            <div class="def"><span class="sym">L<sub>j</sub></span><span class="txt">configuration j가 수행할 수 있는 operation의 집합 <span class="why">= { l : (j, l) ∈ F }</span></span></div>
           </div>
 
           <p class="grouplabel" style="margin-top:18px">Indices</p>
@@ -234,7 +233,6 @@
 P &amp;: RMT를\ 설치할\ 수\ 있는\ 모든\ 위치의\ 집합\\
 J &amp;: 가능한\ 모든\ RMT\ configuration의\ 집합\\
 L &amp;: 필요한\ 모든\ 생산\ 공정(operation)의\ 집합\\
-L_j &amp;: configuration\ j가\ 수행할\ 수\ 있는\ operation의\ 집합,\quad L_j=\{\,l:(j,l)\in F\,\}\\
 T &amp;: 생산\ 기간의\ 집합\\
 F &amp;\subseteq J\times L:\ 실행\ 가능한\ (configuration,\ operation)\ 쌍의\ 집합\\
 R &amp;\subseteq J\times J:\ 재구성이\ 가능한\ (j',j)\ 쌍의\ 집합\quad (j'\neq j,\ 동일\ machine\ type\ 내)
@@ -291,7 +289,7 @@ D_{pp'} &amp;: 위치\ p와\ p'\ 사이의\ Manhattan\ distance,\quad |X_p-X_{p'
           <div class="ann">period t 시작 시 위치 p의 RMT가 configuration j′에서 j로 재구성되고 operation l을 수행하면 1
             <span class="why">— 논문 그대로. 단 joint 정책에서 p는 "그 기계가 기간 t에 놓여 있는 슬롯(= 도착지)"으로 읽는다.</span></div>
         
-          <div class="tex"><button type="button">LaTeX 복사</button><code>y_{pj'jlt} \in \{0,1\} \quad \forall p \in P,\ (j',j) \in R,\ l \in L_j,\ t \in T \setminus \{1\}</code></div>
+          <div class="tex"><button type="button">LaTeX 복사</button><code>y_{pj'jlt} \in \{0,1\} \quad \forall p \in P,\ (j',j) \in R,\ (j,l) \in F,\ t \in T \setminus \{1\}</code></div>
         </div></div>
       </div>
       <div class="eq new">
@@ -326,7 +324,7 @@ D_{pp'} &amp;: 위치\ p와\ p'\ 사이의\ Manhattan\ distance,\quad |X_p-X_{p'
       <div class="eq mod">
         <div class="eq-in"><span class="tag">(1′)</span><div class="eq-main">
           <div class="math"><span class="up">min</span>  <span class="up">∑</span><sub>p∈P</sub> <span class="up">∑</span><sub>j∈J</sub> <span class="up">∑</span><sub>l∈L</sub> C<sub>j</sub> x<sub>pjl</sub></div>
-          <div class="math">    <span class="up">+</span> <span class="up">∑</span><sub>t∈T\{1}</sub> <span class="up">∑</span><sub>p∈P</sub> <span class="up">∑</span><sub>(j′,j)∈R</sub> <span class="up">∑</span><sub>l∈L<sub>j</sub></sub> r<sub>j′j</sub> y<sub>pj′jlt</sub></div>
+          <div class="math">    <span class="up">+</span> <span class="up">∑</span><sub>t∈T\{1}</sub> <span class="up">∑</span><sub>p∈P</sub> <span class="up">∑</span><sub>(j′,j)∈R</sub> <span class="up">∑</span><sub>l:(j,l)∈F</sub> r<sub>j′j</sub> y<sub>pj′jlt</sub></div>
           <div class="math">    <span class="up">+</span> <span class="red"><span class="up">∑</span><sub>t∈T\{1}</sub> <span class="up">∑</span><sub>k∈P</sub> <span class="up">∑</span><sub>p∈P, p≠k</sub> <span class="up">∑</span><sub>j∈J</sub> C<sub>j</sub><span class="up">(</span>α <span class="up">+</span> β D<sub>kp</sub><span class="up">)</span> w<sub>kpjt</sub></span></div>
           <div class="math">    <span class="up">+</span> <span class="up">∑</span><sub>t∈T</sub> <span class="up">∑</span><sub>p∈P</sub> <span class="up">∑</span><sub>l∈L</sub> <span class="up">∑</span><sub>p′∈P</sub> <span class="up">∑</span><sub>l′∈L</sub> v′<sub>plp′l′t</sub> D<sub>pp′</sub> <span class="up">MHC</span></div>
           <div class="chg">이동비 항 하나만 추가. 구매비 · 재구성비(y) · 자재취급비 항은 논문 그대로.</div>
@@ -336,7 +334,7 @@ D_{pp'} &amp;: 위치\ p와\ p'\ 사이의\ Manhattan\ distance,\quad |X_p-X_{p'
             같은 config 안의 operation 변경과 제자리 유지는 변수가 없으므로 비용 0이다.</div>
         
           <div class="tex"><button type="button">LaTeX 복사</button><code>\min\ \sum_{p \in P}\sum_{j \in J}\sum_{l \in L} C_j\, x_{pjl}
-\;+\; \sum_{t \in T \setminus \{1\}}\sum_{p \in P}\sum_{(j',j) \in R}\sum_{l \in L_j} r_{j'j}\, y_{pj'jlt}
+\;+\; \sum_{t \in T \setminus \{1\}}\sum_{p \in P}\sum_{(j',j) \in R}\sum_{l :\, (j,l) \in F} r_{j'j}\, y_{pj'jlt}
 \;+\; \sum_{t \in T \setminus \{1\}}\sum_{k \in P}\sum_{\substack{p \in P \\ p \neq k}}\sum_{j \in J} C_j\bigl(\alpha + \beta D_{kp}\bigr) w_{kpjt}
 \;+\; \sum_{t \in T}\sum_{p \in P}\sum_{l \in L}\sum_{p' \in P}\sum_{l' \in L} v'_{plp'l't}\, D_{pp'}\, \mathrm{MHC}
 \tag{1'}</code></div>
@@ -394,13 +392,13 @@ s_{pjlt} \le \sum_{j' \in J}\sum_{l' \in L} x_{pj'l'}
 
       <div class="eq mod">
         <div class="eq-in"><span class="tag">(20)</span><div class="eq-main">
-          <div class="math">s<sub>pjlt</sub> <span class="up">≤</span> <span class="up">∑</span><sub>l′∈L<sub>j</sub></sub> s<sub>pjl′(t−1)</sub> <span class="up">+</span> <span class="up">∑</span><sub>j′</sub> y<sub>pj′jlt</sub> <span class="red"><span class="up">+</span> <span class="up">∑</span><sub>k∈P, k≠p</sub> w<sub>kpjt</sub></span>   <span class="up">∀</span>p, (j,l) <span class="up">∈</span> F, t <span class="up">≠</span> 1</div>
+          <div class="math">s<sub>pjlt</sub> <span class="up">≤</span> <span class="up">∑</span><sub>l′:(j,l′)∈F</sub> s<sub>pjl′(t−1)</sub> <span class="up">+</span> <span class="up">∑</span><sub>j′</sub> y<sub>pj′jlt</sub> <span class="red"><span class="up">+</span> <span class="up">∑</span><sub>k∈P, k≠p</sub> w<sub>kpjt</sub></span>   <span class="up">∀</span>p, (j,l) <span class="up">∈</span> F, t <span class="up">≠</span> 1</div>
           <div class="chg">논문 (5)에 <b>이동 유입항 하나만</b> 추가.</div>
           <div class="ann">상태의 출처 세 가지: ① 같은 configuration 유지 ② 제자리 재구성
             <span style="color:var(--chg);font-weight:600">③ 다른 위치에서 이동해 옴</span>.
             <span class="why">① 항이 있기 때문에 "그냥 머무름"에는 변수가 필요 없다.</span></div>
         
-          <div class="tex"><button type="button">LaTeX 복사</button><code>s_{pjlt} \;\le\; \sum_{l' \in L_j} s_{pjl'(t-1)} \;+\; \sum_{j' :\, (j',j) \in R} y_{pj'jlt} \;+\; \sum_{k \in P,\, k \neq p} w_{kpjt}
+          <div class="tex"><button type="button">LaTeX 복사</button><code>s_{pjlt} \;\le\; \sum_{l' :\, (j,l') \in F} s_{pjl'(t-1)} \;+\; \sum_{j' :\, (j',j) \in R} y_{pj'jlt} \;+\; \sum_{k \in P,\, k \neq p} w_{kpjt}
 \quad \forall p \in P,\ (j,l) \in F,\ t \in T \setminus \{1\} \tag{20}</code></div>
         </div></div>
       </div>
@@ -418,46 +416,46 @@ s_{pjlt} \le \sum_{j' \in J}\sum_{l' \in L} x_{pj'l'}
 
       <div class="eq mod">
         <div class="eq-in"><span class="tag">(7)/(7′)</span><div class="eq-main">
-          <div class="math"><span class="pol">separate</span>y<sub>pj′jlt</sub> <span class="up">≤</span> <span class="up">∑</span><sub>l′∈L<sub>j′</sub></sub> s<sub>pj′l′(t−1)</sub></div>
-          <div class="math"><span class="pol">joint</span>y<sub>pj′jlt</sub> <span class="up">≤</span> <span class="up">∑</span><sub>l′∈L<sub>j′</sub></sub> s<sub>pj′l′(t−1)</sub> <span class="red"><span class="up">+</span> <span class="up">∑</span><sub>k∈P, k≠p</sub> w<sub>kpj′t</sub></span>   <span class="up">∀</span>(p, j′, j, l), t <span class="up">≠</span> 1</div>
+          <div class="math"><span class="pol">separate</span>y<sub>pj′jlt</sub> <span class="up">≤</span> <span class="up">∑</span><sub>l′:(j′,l′)∈F</sub> s<sub>pj′l′(t−1)</sub></div>
+          <div class="math"><span class="pol">joint</span>y<sub>pj′jlt</sub> <span class="up">≤</span> <span class="up">∑</span><sub>l′:(j′,l′)∈F</sub> s<sub>pj′l′(t−1)</sub> <span class="red"><span class="up">+</span> <span class="up">∑</span><sub>k∈P, k≠p</sub> w<sub>kpj′t</sub></span>   <span class="up">∀</span>(p, j′, j, l), t <span class="up">≠</span> 1</div>
           <div class="chg">separate는 논문 (7) 그대로. joint만 이동 유입항 추가.</div>
           <div class="ann">재구성의 전제가 되는 configuration j′는 "직전에 p에 있던 기계"의 것이거나,
             joint에서는 <span style="color:var(--chg);font-weight:600">"j′를 달고 방금 p로 들어온 기계"</span>의 것이다.</div>
         
           <div class="tex"><button type="button">LaTeX 복사</button><code>% separate (이동 XOR 재구성)
-y_{pj'jlt} \;\le\; \sum_{l' \in L_{j'}} s_{pj'l'(t-1)} \tag{7}
+y_{pj'jlt} \;\le\; \sum_{l' :\, (j',l') \in F} s_{pj'l'(t-1)} \tag{7}
 % joint (이동 + 재구성 동시)
-y_{pj'jlt} \;\le\; \sum_{l' \in L_{j'}} s_{pj'l'(t-1)} + \sum_{k \in P,\, k \neq p} w_{kpj't}
-\quad \forall p \in P,\ (j',j) \in R,\ l \in L_j,\ t \in T \setminus \{1\} \tag{7'}</code></div>
+y_{pj'jlt} \;\le\; \sum_{l' :\, (j',l') \in F} s_{pj'l'(t-1)} + \sum_{k \in P,\, k \neq p} w_{kpj't}
+\quad \forall p \in P,\ (j',j) \in R,\ (j,l) \in F,\ t \in T \setminus \{1\} \tag{7'}</code></div>
         </div></div>
       </div>
 
       <div class="eq new">
         <div class="eq-in"><span class="tag">(18a)</span><div class="eq-main">
-          <div class="math"><span class="pol">separate</span><span class="red"><span class="up">∑</span><sub>k∈P, k≠p</sub> w<sub>kpjt</sub> <span class="up">≤</span> <span class="up">∑</span><sub>l∈L<sub>j</sub></sub> s<sub>pjlt</sub></span>   <span class="up">∀</span>p, j, t <span class="up">≠</span> 1</div>
-          <div class="math"><span class="pol">joint</span><span class="red"><span class="up">∑</span><sub>k∈P, k≠p</sub> w<sub>kpj′t</sub> <span class="up">≤</span> <span class="up">∑</span><sub>l∈L<sub>j′</sub></sub> s<sub>pj′lt</sub> <span class="up">+</span> <span class="up">∑</span><sub>(j″,l):(j′,j″)∈R</sub> y<sub>pj′j″lt</sub></span>   <span class="up">∀</span>p, j′, t <span class="up">≠</span> 1</div>
+          <div class="math"><span class="pol">separate</span><span class="red"><span class="up">∑</span><sub>k∈P, k≠p</sub> w<sub>kpjt</sub> <span class="up">≤</span> <span class="up">∑</span><sub>l:(j,l)∈F</sub> s<sub>pjlt</sub></span>   <span class="up">∀</span>p, j, t <span class="up">≠</span> 1</div>
+          <div class="math"><span class="pol">joint</span><span class="red"><span class="up">∑</span><sub>k∈P, k≠p</sub> w<sub>kpj′t</sub> <span class="up">≤</span> <span class="up">∑</span><sub>l:(j′,l)∈F</sub> s<sub>pj′lt</sub> <span class="up">+</span> <span class="up">∑</span><sub>(j″,l):(j′,j″)∈R</sub> y<sub>pj′j″lt</sub></span>   <span class="up">∀</span>p, j′, t <span class="up">≠</span> 1</div>
           <div class="chg">도착 등록 — configuration j로 들어온 기계는 도착지에서 configuration j 상태여야 한다 (separate: 이동 중 재구성 금지).
             joint는 "j′를 유지하거나, 도착지에서 j′ → j로 재구성된다".</div>
-          <div class="ann why"><b>이 식이 빠지면 모델이 깨진다.</b> (20)의 유지항 <span class="up">∑</span><sub>l′∈L<sub>j</sub></sub> s<sub>pjl′(t−1)</sub>은 떠난 기계를 빼지 않은 gross 형태라,
+          <div class="ann why"><b>이 식이 빠지면 모델이 깨진다.</b> (20)의 유지항 <span class="up">∑</span><sub>l′:(j,l′)∈F</sub> s<sub>pjl′(t−1)</sub>은 떠난 기계를 빼지 않은 gross 형태라,
             p의 기계가 떠나고 다른 기계가 들어왔는데도 "떠난 기계의 configuration"으로 현재 상태를 정당화할 수 있다.
             두 기계가 자리를 맞바꾸는 것만으로 machine type을 넘나드는 무료 변신이 가능해진다.</div>
         
           <div class="tex"><button type="button">LaTeX 복사</button><code>% separate
-\sum_{k \in P,\, k \neq p} w_{kpjt} \;\le\; \sum_{l \in L_j} s_{pjlt} \tag{18a}
+\sum_{k \in P,\, k \neq p} w_{kpjt} \;\le\; \sum_{l :\, (j,l) \in F} s_{pjlt} \tag{18a}
 % joint
-\sum_{k \in P,\, k \neq p} w_{kpjt} \;\le\; \sum_{l \in L_j} s_{pjlt} + \sum_{(j'',l) :\, (j,j'') \in R} y_{pjj''lt}
+\sum_{k \in P,\, k \neq p} w_{kpjt} \;\le\; \sum_{l :\, (j,l) \in F} s_{pjlt} + \sum_{(j'',l) :\, (j,j'') \in R} y_{pjj''lt}
 \quad \forall p \in P,\ j \in J,\ t \in T \setminus \{1\} \tag{18a'}</code></div>
         </div></div>
       </div>
 
       <div class="eq new">
         <div class="eq-in"><span class="tag">(18b)</span><div class="eq-main">
-          <div class="math"><span class="red"><span class="up">∑</span><sub>q∈P, q≠k</sub> w<sub>kqjt</sub> <span class="up">≤</span> <span class="up">∑</span><sub>l∈L<sub>j</sub></sub> s<sub>kjl(t−1)</sub></span>   <span class="up">∀</span>k <span class="up">∈</span> P, j <span class="up">∈</span> J, t <span class="up">≠</span> 1</div>
+          <div class="math"><span class="red"><span class="up">∑</span><sub>q∈P, q≠k</sub> w<sub>kqjt</sub> <span class="up">≤</span> <span class="up">∑</span><sub>l:(j,l)∈F</sub> s<sub>kjl(t−1)</sub></span>   <span class="up">∀</span>k <span class="up">∈</span> P, j <span class="up">∈</span> J, t <span class="up">≠</span> 1</div>
           <div class="chg">출발 조건 — 직전 기간에 위치 k에 configuration j 기계가 실제로 있어야 하고, 한 기계는 최대 한 곳으로만 떠난다.</div>
-          <div class="ann why">반드시 <b>도착지에 대한 합산형</b>이어야 한다. 개별형 w<sub>kpjt</sub> ≤ <span class="up">∑</span><sub>l∈L<sub>j</sub></sub> s<sub>kjl(t−1)</sub>로 쓰면
+          <div class="ann why">반드시 <b>도착지에 대한 합산형</b>이어야 한다. 개별형 w<sub>kpjt</sub> ≤ <span class="up">∑</span><sub>l:(j,l)∈F</sub> s<sub>kjl(t−1)</sub>로 쓰면
             joint에서 한 기계가 두 곳으로 복제되는 해가 통과한다.</div>
         
-          <div class="tex"><button type="button">LaTeX 복사</button><code>\sum_{\substack{q \in P \\ q \neq p}} w_{pqjt} \;\le\; \sum_{l' \in L_j} s_{pjl'(t-1)}
+          <div class="tex"><button type="button">LaTeX 복사</button><code>\sum_{\substack{q \in P \\ q \neq p}} w_{pqjt} \;\le\; \sum_{l' :\, (j,l') \in F} s_{pjl'(t-1)}
 \quad \forall p \in P,\ j \in J,\ t \in T \setminus \{1\} \tag{18b}</code></div>
         </div></div>
       </div>
@@ -561,7 +559,7 @@ y_{pj'jlt} \;\le\; \sum_{l' \in L_{j'}} s_{pj'l'(t-1)} + \sum_{k \in P,\, k \neq
 
       <div class="eq opt">
         <div class="eq-in"><span class="tag">(S)</span><div class="eq-main">
-          <div class="math"><span class="up">∑</span><sub>l∈L<sub>j</sub></sub> s<sub>pjlt</sub> <span class="up">=</span> <span class="up">∑</span><sub>l′∈L<sub>j</sub></sub> s<sub>pjl′(t−1)</sub> <span class="up">−</span> <span class="up">∑</span><sub>q∈P, q≠p</sub> w<sub>pqjt</sub> <span class="up">+</span> <span class="up">∑</span><sub>k∈P, k≠p</sub> w<sub>kpjt</sub> <span class="up">−</span> <span class="up">∑</span><sub>(j″,l):(j,j″)∈R</sub> y<sub>pjj″lt</sub> <span class="up">+</span> <span class="up">∑</span><sub>l∈L<sub>j</sub></sub> <span class="up">∑</span><sub>j′:(j′,j)∈R</sub> y<sub>pj′jlt</sub>   <span class="up">∀</span>p, j, t <span class="up">≠</span> 1</div>
+          <div class="math"><span class="up">∑</span><sub>l:(j,l)∈F</sub> s<sub>pjlt</sub> <span class="up">=</span> <span class="up">∑</span><sub>l′:(j,l′)∈F</sub> s<sub>pjl′(t−1)</sub> <span class="up">−</span> <span class="up">∑</span><sub>q∈P, q≠p</sub> w<sub>pqjt</sub> <span class="up">+</span> <span class="up">∑</span><sub>k∈P, k≠p</sub> w<sub>kpjt</sub> <span class="up">−</span> <span class="up">∑</span><sub>(j″,l):(j,j″)∈R</sub> y<sub>pjj″lt</sub> <span class="up">+</span> <span class="up">∑</span><sub>l:(j,l)∈F</sub> <span class="up">∑</span><sub>j′:(j′,j)∈R</sub> y<sub>pj′jlt</sub>   <span class="up">∀</span>p, j, t <span class="up">≠</span> 1</div>
           <div class="chg">선택 — configuration 단위 기계 보존 등식. <b>새 변수 없이</b> s, y, w만으로 쓴다. 최적해를 자르지 않는다.</div>
           <div class="ann">(19)는 이 식을 j에 대해 합한 것이다. (S)를 넣으면 LP relaxation이 크게 강해진다.
             <span class="why">넣지 않은 순수 부등식판은 최적값은 같지만 완화가 약하다 — multi_part에서 약 11% 낮은 bound.</span></div>
@@ -569,8 +567,8 @@ y_{pj'jlt} \;\le\; \sum_{l' \in L_{j'}} s_{pj'l'(t-1)} + \sum_{k \in P,\, k \neq
             (S)는 "모형에서 유도되는 유효 등식(강화식)"으로 층을 나눠 보이면
             논문과의 거리와 계산 성능을 함께 지킬 수 있다.</div>
         
-          <div class="tex"><button type="button">LaTeX 복사</button><code>\sum_{l \in L_j} s_{pjlt} \;=\; \sum_{l' \in L_j} s_{pjl'(t-1)} \;-\; \sum_{q \in P,\, q \neq p} w_{pqjt} \;+\; \sum_{k \in P,\, k \neq p} w_{kpjt}
-\;-\; \sum_{(j'',l) :\, (j,j'') \in R} y_{pjj''lt} \;+\; \sum_{l \in L_j} \sum_{j' :\, (j',j) \in R} y_{pj'jlt}
+          <div class="tex"><button type="button">LaTeX 복사</button><code>\sum_{l :\, (j,l) \in F} s_{pjlt} \;=\; \sum_{l' :\, (j,l') \in F} s_{pjl'(t-1)} \;-\; \sum_{q \in P,\, q \neq p} w_{pqjt} \;+\; \sum_{k \in P,\, k \neq p} w_{kpjt}
+\;-\; \sum_{(j'',l) :\, (j,j'') \in R} y_{pjj''lt} \;+\; \sum_{l :\, (j,l) \in F} \sum_{j' :\, (j',j) \in R} y_{pj'jlt}
 \quad \forall p \in P,\ j \in J,\ t \in T \setminus \{1\} \tag{S}</code></div>
         </div></div>
       </div>
@@ -754,7 +752,6 @@ y_{pj'jlt} \;\le\; \sum_{l' \in L_{j'}} s_{pj'l'(t-1)} + \sum_{k \in P,\, k \neq
 % P : 설치 가능 위치(슬롯),  p, k, q, p' ∈ P
 % J : configuration,         j, j'      ∈ J
 % L : operation,             l, l'      ∈ L
-% L_j ⊆ L : config j 가 수행 가능한 operation
 % T : period,                t          ∈ T
 % F ⊆ J × L : (config, op) 실행 가능 쌍
 % R ⊆ J × J : 같은 기계 안에서 가능한 재구성 쌍 (j' → j)
@@ -766,18 +763,18 @@ y_{pj'jlt} \;\le\; \sum_{l' \in L_{j'}} s_{pj'l'(t-1)} + \sum_{k \in P,\, k \neq
 \begin{align}
 % ---------- Objective ----------
 \min\ &amp; \sum_{p \in P}\sum_{j \in J}\sum_{l \in L} C_j\, x_{pjl}
- + \sum_{t \in T \setminus \{1\}}\sum_{p \in P}\sum_{(j',j) \in R}\sum_{l \in L_j} r_{j'j}\, y_{pj'jlt} \notag \\
+ + \sum_{t \in T \setminus \{1\}}\sum_{p \in P}\sum_{(j',j) \in R}\sum_{l :\, (j,l) \in F} r_{j'j}\, y_{pj'jlt} \notag \\
  &amp; + \sum_{t \in T \setminus \{1\}}\sum_{k \in P}\sum_{\substack{p \in P \\ p \neq k}}\sum_{j \in J} C_j\bigl(\alpha + \beta D_{kp}\bigr) w_{kpjt} \notag \\
  &amp; + \sum_{t \in T}\sum_{p \in P}\sum_{l \in L}\sum_{p' \in P}\sum_{l' \in L} v'_{plp'l't}\, D_{pp'}\, \mathrm{MHC} \tag{1'} \\
 % ---------- machine layer ----------
 \text{s.t.}\quad &amp; \sum_{(j,l) \in F} s_{pjlt} \le 1 &amp;&amp; \forall p \in P,\ t \in T \tag{3} \\
 &amp; \sum_{(j,l) \in F} x_{pjl} \le 1 &amp;&amp; \forall p \in P \tag{3'} \\
 &amp; s_{pjl1} = x_{pjl} &amp;&amp; \forall p \in P,\ (j,l) \in F \tag{4'} \\
-&amp; s_{pjlt} \le \sum_{l' \in L_j} s_{pjl'(t-1)} + \sum_{j' :\, (j',j) \in R} y_{pj'jlt} + \sum_{k \in P,\, k \neq p} w_{kpjt} &amp;&amp; \forall p \in P,\ (j,l) \in F,\ t \in T \setminus \{1\} \tag{20} \\
+&amp; s_{pjlt} \le \sum_{l' :\, (j,l') \in F} s_{pjl'(t-1)} + \sum_{j' :\, (j',j) \in R} y_{pj'jlt} + \sum_{k \in P,\, k \neq p} w_{kpjt} &amp;&amp; \forall p \in P,\ (j,l) \in F,\ t \in T \setminus \{1\} \tag{20} \\
 &amp; \sum_{j' :\, (j',j) \in R} y_{pj'jlt} \le s_{pjlt} &amp;&amp; \forall p \in P,\ (j,l) \in F,\ t \in T \setminus \{1\} \tag{6} \\
-&amp; y_{pj'jlt} \le \sum_{l' \in L_{j'}} s_{pj'l'(t-1)} + \sum_{k \in P,\, k \neq p} w_{kpj't} &amp;&amp; \forall p \in P,\ (j',j) \in R,\ l \in L_j,\ t \in T \setminus \{1\} \tag{7'} \\
-&amp; \sum_{k \in P,\, k \neq p} w_{kpjt} \le \sum_{l \in L_j} s_{pjlt} + \sum_{(j'',l) :\, (j,j'') \in R} y_{pjj''lt} &amp;&amp; \forall p \in P,\ j \in J,\ t \in T \setminus \{1\} \tag{18a'} \\
-&amp; \sum_{q \in P,\, q \neq p} w_{pqjt} \le \sum_{l' \in L_j} s_{pjl'(t-1)} &amp;&amp; \forall p \in P,\ j \in J,\ t \in T \setminus \{1\} \tag{18b} \\
+&amp; y_{pj'jlt} \le \sum_{l' :\, (j',l') \in F} s_{pj'l'(t-1)} + \sum_{k \in P,\, k \neq p} w_{kpj't} &amp;&amp; \forall p \in P,\ (j',j) \in R,\ (j,l) \in F,\ t \in T \setminus \{1\} \tag{7'} \\
+&amp; \sum_{k \in P,\, k \neq p} w_{kpjt} \le \sum_{l :\, (j,l) \in F} s_{pjlt} + \sum_{(j'',l) :\, (j,j'') \in R} y_{pjj''lt} &amp;&amp; \forall p \in P,\ j \in J,\ t \in T \setminus \{1\} \tag{18a'} \\
+&amp; \sum_{q \in P,\, q \neq p} w_{pqjt} \le \sum_{l' :\, (j,l') \in F} s_{pjl'(t-1)} &amp;&amp; \forall p \in P,\ j \in J,\ t \in T \setminus \{1\} \tag{18b} \\
 &amp; \sum_{(j,l) \in F} s_{pjlt} - \sum_{(j,l) \in F} s_{pjl(t-1)} = \sum_{j \in J} \sum_{k \in P,\, k \neq p} w_{kpjt} - \sum_{j \in J} \sum_{q \in P,\, q \neq p} w_{pqjt} &amp;&amp; \forall p \in P,\ t \in T \setminus \{1\} \tag{19} \\
 % ---------- flow layer ----------
 &amp; v_{plt} \le \sum_{j \in J} s_{pjlt}\, B_{jl} &amp;&amp; \forall p \in P,\ l \in L,\ t \in T \tag{8} \\
@@ -791,13 +788,19 @@ y_{pj'jlt} \;\le\; \sum_{l' \in L_{j'}} s_{pj'l'(t-1)} + \sum_{k \in P,\, k \neq
 \end{align}
 
 % ---- 이동 정책 ----
-% off      : w 를 생성하지 않음 (W^in = W^out = 0). 논문 원형과 동치.
-% separate : (7)  y_{pj'jlt} ≤ σ_{pj'(t-1)},      (18a) W^in_{pjt} ≤ σ_{pjt}
+% off      : w 를 생성하지 않음 (이동 항이 전부 0). 논문 원형과 동치.
+% separate : 이동과 재구성을 같은 기간에 함께 하지 못하게 한다. (7') 과 (18a') 대신
+%            y_{pj'jlt} <= sum_{l' : (j',l') in F} s_{pj'l'(t-1)}                     (7)
+%            sum_{k in P, k != p} w_{kpjt} <= sum_{l : (j,l) in F} s_{pjlt}           (18a)
 % joint    : (7') 과 (18a') 을 사용 (위 본문). 이동과 재구성을 같은 기간에 함께 허용.
 
 % ---- 선택적 강화식 (config 단위 보존, 없어도 타당) ----
-% σ_{pjt} = σ_{pj(t-1)} − W^out_{pjt} + W^in_{pjt} − Y^out_{pjt} + Σ_{l ∈ L_j} Y^in_{pjlt}
-%   ∀ p ∈ P, j ∈ J, t ∈ T \ {1}                                            (S)
+% sum_{l : (j,l) in F} s_{pjlt}
+%   = sum_{l' : (j,l') in F} s_{pjl'(t-1)}
+%     - sum_{q in P, q != p} w_{pqjt}  + sum_{k in P, k != p} w_{kpjt}
+%     - sum_{(j'',l) : (j,j'') in R} y_{pjj''lt}
+%     + sum_{l : (j,l) in F} sum_{j' : (j',j) in R} y_{pj'jlt}
+%   for all p in P, j in J, t in T \ {1}                                        (S)
 </pre>
       </div>
     </div>
