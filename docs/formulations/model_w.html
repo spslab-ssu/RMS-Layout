@@ -230,34 +230,37 @@
           </div>
         </div>
       </div>
-      <div class="tex" id="sets-tex"><button type="button">LaTeX 복사</button><code>% ===== Sets =====
-% P        설치 가능 위치(슬롯)        p, k, q, p' \in P
-% J        RMT configuration          j, j', j'' \in J
-% L        operation                  l, l' \in L
-% L_j      config j 가 수행 가능한 operation,  L_j = \{ l : (j,l) \in F \}
-% T        생산 기간                   t \in T
-% F        \subseteq J \times L  실행 가능한 (configuration, operation) 쌍
-% R        \subseteq J \times J  재구성 가능한 (j', j) 쌍 (j' \neq j, 동일 machine type 내)
+      <div class="tex" id="sets-tex"><button type="button">LaTeX 복사</button><code>\begin{aligned}
+P &amp;: RMT를\ 설치할\ 수\ 있는\ 모든\ 위치의\ 집합\\
+J &amp;: 가능한\ 모든\ RMT\ configuration의\ 집합\\
+L &amp;: 필요한\ 모든\ 생산\ 공정(operation)의\ 집합\\
+L_j &amp;: configuration\ j가\ 수행할\ 수\ 있는\ operation의\ 집합,\quad L_j=\{\,l:(j,l)\in F\,\}\\
+T &amp;: 생산\ 기간의\ 집합\\
+F &amp;\subseteq J\times L:\ 실행\ 가능한\ (configuration,\ operation)\ 쌍의\ 집합\\
+R &amp;\subseteq J\times J:\ 재구성이\ 가능한\ (j',j)\ 쌍의\ 집합\quad (j'\neq j,\ 동일\ machine\ type\ 내)
+\end{aligned}
 
-% ===== Indices =====
-% p   RMT 위치 (이동 도착지)
-% k   이동 출발 위치
-% q   이동 도착 위치 (유출 합산용)
-% p'  자재 흐름의 상대 위치
-% j   configuration,  j' 직전 configuration,  j'' 다음 configuration
-% l   operation,      l' 상대 operation
-% t   생산 기간
+\begin{aligned}
+p &amp;\in P:\ RMT\ 위치\ (이동의\ 도착지)\\
+k &amp;\in P:\ 이동의\ 출발\ 위치\\
+q &amp;\in P:\ 이동의\ 도착\ 위치\ (유출\ 합산용)\\
+p' &amp;\in P:\ 자재\ 흐름의\ 상대\ 위치\\
+j,\ j',\ j'' &amp;\in J:\ RMT\ configuration\quad (j':\ 직전\ 기간,\ j'':\ 다음\ configuration)\\
+l,\ l' &amp;\in L:\ 생산\ 공정(operation)\\
+t &amp;\in T:\ 생산\ 기간
+\end{aligned}
 
-% ===== Input Parameters =====
-% X_p, Y_p        위치 p 의 x, y 좌표
-% C_j             configuration j 를 가진 RMT 구매비용
-% d_l^t           period t 에서 operation l 에 필요한 수요
-% MHC             제품 1단위를 거리 1만큼 이동시키는 자재취급비
-% B_{jl}          configuration j 의 RMT 가 operation l 을 수행할 때의 최대 생산능력
-% r_{j'j}         configuration 을 j' 에서 j 로 변경하는 비용 (r_{jj} = 0)
-% q_{ll't}        period t 에서 operation l 이 l' 의 직접 선행공정이면 1
-% D_{pp'}         위치 p, p' 사이 Manhattan 거리 = |X_p - X_{p'}| + |Y_p - Y_{p'}|
-% \alpha, \beta   이동비 계수.  기계 1대의 이동비 = C_j (\alpha + \beta D_{kp})</code></div>
+\begin{aligned}
+X_p,\ Y_p &amp;: 위치\ p의\ x좌표,\ y좌표\\
+C_j &amp;: configuration\ j를\ 가진\ RMT\ 구매비용\\
+d_l^{\,t} &amp;: period\ t에서\ operation\ l에\ 필요한\ 수요\\
+MHC &amp;: 제품\ 1단위를\ 거리\ 1만큼\ 이동시키는\ material\ handling\ cost\\
+B_{jl} &amp;: configuration\ j의\ RMT가\ operation\ l을\ 수행할\ 때의\ 최대\ 생산능력\\
+r_{j'j} &amp;: RMT\ configuration을\ j'에서\ j로\ 변경하는\ 비용\quad (r_{jj}=0)\\
+q_{ll't} &amp;: period\ t에서\ operation\ l이\ l'의\ 직접\ 선행공정이면\ 1,\ 아니면\ 0\\
+D_{pp'} &amp;: 위치\ p와\ p'\ 사이의\ Manhattan\ distance,\quad |X_p-X_{p'}|+|Y_p-Y_{p'}|\\
+\alpha,\ \beta &amp;\geq 0:\ 이동비\ 계수.\quad 기계\ 1대의\ 이동비 = C_j(\alpha+\beta D_{kp})
+\end{aligned}</code></div>
     </div>
   </section>
 
