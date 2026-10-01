@@ -37,6 +37,11 @@ def shim(data_dir: Path, tag: str, use_S: bool) -> SimpleNamespace:
                     ("RESOURCE_REQUIREMENT_FILE", "resource_requirements.csv"),
                     ("MODULE_COST_FILE", "module_costs.csv")]:
         setattr(s, key, data_dir / fn)
+    # Youssef 논문의 실제 모듈 단가(add 280 / remove 140 등)를 쓴다.
+    # 원본 저장소에서는 module_costs.csv.off 로 비활성화돼 있어 균일 50/25가 적용된다.
+    off = data_dir / "module_costs.csv.off"
+    if off.exists():
+        s.MODULE_COST_FILE = off
     s.SHARED_RESOURCE_MODE = "off"
     s.ALLOW_RECONFIGURATION = True
     s.USE_WARM_START = False

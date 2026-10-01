@@ -1,0 +1,170 @@
+[
+ {
+  "id": "MH_2",
+  "base": "youssef_2007",
+  "grid": {
+   "cols": 4,
+   "rows": 3,
+   "start": [
+    -2,
+    1.0
+   ],
+   "end": [
+    5,
+    1.0
+   ]
+  },
+  "demands": [
+   {
+    "part": "P2",
+    "periods": [
+     40,
+     0,
+     40,
+     0
+    ],
+    "seq": "1>5>15>1>5>15>60"
+   },
+   {
+    "part": "Q4",
+    "periods": [
+     0,
+     40,
+     0,
+     40
+    ],
+    "seq": "1>5>15>1>5>15>1>5>15>1>5>15>60"
+   }
+  ],
+  "params": {
+   "material_handling_cost": 2
+  },
+  "hypothesis": "c_mh 민감도 (R_layers_12 re-entrant, 12슬롯 4x3, 교대, 이동비 0): c_mh=2"
+ },
+ {
+  "id": "MH_4",
+  "base": "youssef_2007",
+  "grid": {
+   "cols": 4,
+   "rows": 3,
+   "start": [
+    -2,
+    1.0
+   ],
+   "end": [
+    5,
+    1.0
+   ]
+  },
+  "demands": [
+   {
+    "part": "P2",
+    "periods": [
+     40,
+     0,
+     40,
+     0
+    ],
+    "seq": "1>5>15>1>5>15>60"
+   },
+   {
+    "part": "Q4",
+    "periods": [
+     0,
+     40,
+     0,
+     40
+    ],
+    "seq": "1>5>15>1>5>15>1>5>15>1>5>15>60"
+   }
+  ],
+  "params": {
+   "material_handling_cost": 4
+  },
+  "hypothesis": "c_mh 민감도 (R_layers_12 re-entrant, 12슬롯 4x3, 교대, 이동비 0): c_mh=4"
+ },
+ {
+  "id": "MH_8",
+  "base": "youssef_2007",
+  "grid": {
+   "cols": 4,
+   "rows": 3,
+   "start": [
+    -2,
+    1.0
+   ],
+   "end": [
+    5,
+    1.0
+   ]
+  },
+  "demands": [
+   {
+    "part": "P2",
+    "periods": [
+     40,
+     0,
+     40,
+     0
+    ],
+    "seq": "1>5>15>1>5>15>60"
+   },
+   {
+    "part": "Q4",
+    "periods": [
+     0,
+     40,
+     0,
+     40
+    ],
+    "seq": "1>5>15>1>5>15>1>5>15>1>5>15>60"
+   }
+  ],
+  "params": {
+   "material_handling_cost": 8
+  },
+  "hypothesis": "c_mh 민감도 (R_layers_12 re-entrant, 12슬롯 4x3, 교대, 이동비 0): c_mh=8"
+ },
+ {
+  "id": "MH_16",
+  "base": "youssef_2007",
+  "grid": {
+   "cols": 4,
+   "rows": 3,
+   "start": [
+    -2,
+    1.0
+   ],
+   "end": [
+    5,
+    1.0
+   ]
+  },
+  "demands": [
+   {
+    "part": "P2",
+    "periods": [
+     40,
+     0,
+     40,
+     0
+    ],
+    "seq": "1>5>15>1>5>15>60"
+   },
+   {
+    "part": "Q4",
+    "periods": [
+     0,
+     40,
+     0,
+     40
+    ],
+    "seq": "1>5>15>1>5>15>1>5>15>1>5>15>60"
+   }
+  ],
+  "params": {
+   "material_handling_cost": 16
+  },
+  "hypothesis": "c_mh 민감도 (R_layers_12 re-entrant, 12슬롯 4x3, 교대, 이동비 0): c_mh=16"
+ }
+]
