@@ -272,7 +272,6 @@ D_{pp'} &amp;: \text{위치 } p \text{와 } p' \text{ 사이의 Manhattan distan
           <div class="ann">위치 p에 configuration j인 RMT를 구매/설치하고 operation l에 배정하면 1
             <span class="why">— 기간 인덱스가 없으므로 구매는 1기에만 일어난다.</span></div>
         
-          <div class="tex"><button type="button">LaTeX 복사</button><code>x_{pjl} \in \{0,1\} \quad \forall p \in P,\ (j,l) \in F</code></div>
         </div></div>
       </div>
       <div class="eq">
@@ -280,7 +279,6 @@ D_{pp'} &amp;: \text{위치 } p \text{와 } p' \text{ 사이의 Manhattan distan
           <div class="math">s<sub>pjlt</sub> <span class="up">∈ {</span>0, 1<span class="up">}</span></div>
           <div class="ann">period t에 위치 p의 RMT가 configuration j로 operation l을 수행하면 1</div>
         
-          <div class="tex"><button type="button">LaTeX 복사</button><code>s_{pjlt} \in \{0,1\} \quad \forall p \in P,\ (j,l) \in F,\ t \in T</code></div>
         </div></div>
       </div>
       <div class="eq">
@@ -289,7 +287,6 @@ D_{pp'} &amp;: \text{위치 } p \text{와 } p' \text{ 사이의 Manhattan distan
           <div class="ann">period t 시작 시 위치 p의 RMT가 configuration j′에서 j로 재구성되고 operation l을 수행하면 1
             <span class="why">— 논문 그대로. 단 joint 정책에서 p는 "그 기계가 기간 t에 놓여 있는 슬롯(= 도착지)"으로 읽는다.</span></div>
         
-          <div class="tex"><button type="button">LaTeX 복사</button><code>y_{pj'jlt} \in \{0,1\} \quad \forall p \in P,\ (j',j) \in R,\ (j,l) \in F,\ t \in T \setminus \{1\}</code></div>
         </div></div>
       </div>
       <div class="eq new">
@@ -301,8 +298,6 @@ D_{pp'} &amp;: \text{위치 } p \text{와 } p' \text{ 사이의 Manhattan distan
           <div class="ann why"><b>머무는 데는 변수가 들지 않는다.</b> 기계가 제자리에 있으면 w도 y도 켜지 않는다.
             변수는 "변화가 일어날 때만" 생긴다 — 이동하면 w, 재구성하면 y, 동시면 둘 다.</div>
         
-          <div class="tex"><button type="button">LaTeX 복사</button><code>w_{kpjt} \in \{0,1\} \quad \forall k,p \in P,\ k \neq p,\ j \in J,\ t \in T \setminus \{1\}
-% 기간 t 시작 시점에 위치 k 의 config j 기계가 위치 p 로 이동하면 1</code></div>
         </div></div>
       </div>
       <div class="eq">
@@ -311,9 +306,26 @@ D_{pp'} &amp;: \text{위치 } p \text{와 } p' \text{ 사이의 Manhattan distan
           <div class="ann">v: period t에 위치 p에서 operation l을 수행하는 RMT의 총 input(=output) flow ·
             v′: period t에 (p, l) RMT에서 (p′, l′) RMT로 이동하는 material flow</div>
         
-          <div class="tex"><button type="button">LaTeX 복사</button><code>v_{plt} \ge 0,\qquad v'_{plp'l't} \ge 0 \quad \forall p,p' \in P,\ l,l' \in L,\ t \in T</code></div>
         </div></div>
       </div>
+      <div class="tex" id="vars-tex"><button type="button">LaTeX 복사</button><code>\begin{aligned}
+x_{pjl} &amp;: \text{위치 } p \text{에 configuration } j \text{인 RMT를 구매·설치하고 operation } l \text{에 배정하면 1}\\
+s_{pjlt} &amp;: \text{period } t \text{에 위치 } p \text{의 RMT가 configuration } j \text{로 operation } l \text{을 수행하면 1}\\
+y_{pj'jlt} &amp;: \text{period } t \text{ 시작 시 위치 } p \text{의 RMT가 configuration } j' \text{에서 } j \text{로}\\
+&amp;\quad\ \ \text{재구성되고 operation } l \text{을 수행하면 1}\\
+w_{kpjt} &amp;: \text{period } t \text{ 시작 시 위치 } k \text{의 configuration } j \text{ RMT가 위치 } p \text{로 이동하면 1}\\
+v_{plt} &amp;: \text{period } t \text{에 위치 } p \text{에서 operation } l \text{을 수행하는 RMT의 총 input 또는 output flow}\\
+v'_{plp'l't} &amp;: \text{period } t \text{에 } (p,l) \text{ RMT에서 } (p',l') \text{ RMT로 이동하는 material flow}
+\end{aligned}
+
+\begin{aligned}
+x_{pjl} &amp;\in \{0,1\} &amp;&amp; \forall p \in P,\ (j,l) \in F\\
+s_{pjlt} &amp;\in \{0,1\} &amp;&amp; \forall p \in P,\ (j,l) \in F,\ t \in T\\
+y_{pj'jlt} &amp;\in \{0,1\} &amp;&amp; \forall p \in P,\ (j',j) \in R,\ (j,l) \in F,\ t \in T \setminus \{1\}\\
+w_{kpjt} &amp;\in \{0,1\} &amp;&amp; \forall k,p \in P,\ k \neq p,\ j \in J,\ t \in T \setminus \{1\}\\
+v_{plt} &amp;\geq 0 &amp;&amp; \forall p \in P,\ l \in L,\ t \in T\\
+v'_{plp'l't} &amp;\geq 0 &amp;&amp; \forall p,p' \in P,\ l,l' \in L,\ t \in T
+\end{aligned}</code></div>
     </div>
   </section>
 
@@ -333,11 +345,16 @@ D_{pp'} &amp;: \text{위치 } p \text{와 } p' \text{ 사이의 Manhattan distan
             각각 정확히 한 번 지불한다. w를 도착 configuration으로도 인덱싱하지 않기 때문이다.
             같은 config 안의 operation 변경과 제자리 유지는 변수가 없으므로 비용 0이다.</div>
         
-          <div class="tex"><button type="button">LaTeX 복사</button><code>\min\ \sum_{p \in P}\sum_{j \in J}\sum_{l \in L} C_j\, x_{pjl}
-\;+\; \sum_{t \in T \setminus \{1\}}\sum_{p \in P}\sum_{(j',j) \in R}\sum_{l :\, (j,l) \in F} r_{j'j}\, y_{pj'jlt}
-\;+\; \sum_{t \in T \setminus \{1\}}\sum_{k \in P}\sum_{\substack{p \in P \\ p \neq k}}\sum_{j \in J} C_j\bigl(\alpha + \beta D_{kp}\bigr) w_{kpjt}
-\;+\; \sum_{t \in T}\sum_{p \in P}\sum_{l \in L}\sum_{p' \in P}\sum_{l' \in L} v'_{plp'l't}\, D_{pp'}\, \mathrm{MHC}
-\tag{1'}</code></div>
+          <div class="tex"><button type="button">LaTeX 복사</button><code>\begin{aligned}
+\min \quad
+&amp; \sum_{p \in P}\sum_{j \in J}\sum_{l \in L} C_j x_{pjl} \qquad (1')\\
+&amp;+ \sum_{t \in T \setminus \{1\}}\sum_{p \in P}\sum_{(j',j) \in R}\sum_{l : (j,l) \in F}
+r_{j'j} y_{pj'jlt}\\
+&amp;+ \sum_{t \in T \setminus \{1\}}\sum_{k \in P}\sum_{p \in P,\, p \neq k}\sum_{j \in J}
+C_j (\alpha + \beta D_{kp}) w_{kpjt}\\
+&amp;+ \sum_{t \in T}\sum_{p \in P}\sum_{l \in L}\sum_{p' \in P}\sum_{l' \in L}
+v'_{plp'l't} D_{pp'} MHC
+\end{aligned}</code></div>
         </div></div>
       </div>
     </div>
