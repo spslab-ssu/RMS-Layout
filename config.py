@@ -14,6 +14,12 @@ PROBLEM_DIR = DATA_DIR / PROBLEM_NAME
 TIME_LIMIT = 600
 MIP_GAP = 0.0
 
+# 풀 모형을 고른다. (main.py 가 이 값을 보고 모형을 고른다)
+#   "base" : 논문 원형 (Src/milp.py). 위치 고정이라 ADAPTIVE_MODE를 무시한다
+#   "z"    : adaptive, z 인코딩 (Src/milp_adaptive.py)
+#   "w"    : adaptive, w 정식화 (base_adaptive.py)
+MODEL = "w"
+
 # adaptive layout: 기간 경계에서 기계 relocation(이동) 허용 정책. (milp_adaptive에서 사용)
 #   "off"      : 위치 고정 (base와 동등)
 #   "joint"    : 이동 + 재구성 동시 허용
