@@ -196,6 +196,33 @@
           </div>
         </div>
       </div>
+      <div class="tex" id="sets-tex"><button type="button">LaTeX 복사</button><code>% ===== Sets =====
+% P        설치 가능 위치(슬롯)        p, k, p' \in P
+% J        RMT configuration          j, j' \in J
+% L        operation                  l, l' \in L
+% T        생산 기간                   t \in T
+% F        \subseteq J \times L  실행 가능한 (configuration, operation) 쌍
+% R        \subseteq J \times J  재구성 가능한 (j', j) 쌍 (유지 j' = j 포함)
+% \mathcal{Z}   기간 경계에서 허용되는 전이 (k, p, j', j, l, t) 의 집합
+
+% ===== Indices =====
+% p   RMT 위치 (전이 도착지)
+% k   전이 출발 위치
+% p'  자재 흐름의 상대 위치
+% j   configuration,  j' 직전 configuration
+% l   operation,      l' 상대 operation
+% t   생산 기간
+
+% ===== Input Parameters =====
+% X_p, Y_p        위치 p 의 x, y 좌표
+% C_j             configuration j 를 가진 RMT 구매비용
+% d_l^t           period t 에서 operation l 에 필요한 수요
+% MHC             제품 1단위를 거리 1만큼 이동시키는 자재취급비
+% B_{jl}          configuration j 의 RMT 가 operation l 을 수행할 때의 최대 생산능력
+% r_{j'j}         configuration 을 j' 에서 j 로 변경하는 비용 (r_{jj} = 0)
+% q_{ll't}        period t 에서 operation l 이 l' 의 직접 선행공정이면 1
+% D_{pp'}         위치 p, p' 사이 Manhattan 거리 = |X_p - X_{p'}| + |Y_p - Y_{p'}|
+% \alpha, \beta   이동비 계수.  기계 1대의 이동비 = C_{j'} (\alpha + \beta D_{kp})</code></div>
     </div>
   </section>
 
