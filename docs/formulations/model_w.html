@@ -481,9 +481,9 @@ v'_{plp'l't} D_{pp'} MHC
           <div class="ann why">반드시 <b>도착지에 대한 합산형</b>이어야 한다. 개별형 w<sub>kpjt</sub> ≤ <span class="up">∑</span><sub>l:(j,l)∈F</sub> s<sub>kjl(t−1)</sub>로 쓰면
             joint에서 한 기계가 두 곳으로 복제되는 해가 통과한다.</div>
         
-          <div class="tex"><button type="button">LaTeX 복사</button><code>\sum_{q \in P,\, q \neq p} w_{pqjt} \le \sum_{l' : (j,l') \in F} s_{pjl'(t-1)}
+          <div class="tex"><button type="button">LaTeX 복사</button><code>\sum_{q \in P,\, q \neq k} w_{kqjt} \le \sum_{l : (j,l) \in F} s_{kjl(t-1)}
 \qquad
-\forall p \in P,\ j \in J,\ t \ne 1 \qquad(18b)</code></div>
+\forall k \in P,\ j \in J,\ t \ne 1 \qquad(18b)</code></div>
         </div></div>
       </div>
 
@@ -822,7 +822,7 @@ v'_{plp'l't} \le v_{p'l't} q_{ll't}
 &amp; \sum_{j' :\, (j',j) \in R} y_{pj'jlt} \le s_{pjlt} &amp;&amp; \forall p \in P,\ (j,l) \in F,\ t \ne 1 \tag{6} \\
 &amp; y_{pj'jlt} \le \sum_{l' :\, (j',l') \in F} s_{pj'l'(t-1)} + \sum_{k \in P,\, k \neq p} w_{kpj't} &amp;&amp; \forall p \in P,\ (j',j) \in R,\ (j,l) \in F,\ t \ne 1 \tag{7'} \\
 &amp; \sum_{k \in P,\, k \neq p} w_{kpjt} \le \sum_{l :\, (j,l) \in F} s_{pjlt} + \sum_{(j'',l) :\, (j,j'') \in R} y_{pjj''lt} &amp;&amp; \forall p \in P,\ j \in J,\ t \ne 1 \tag{18a'} \\
-&amp; \sum_{q \in P,\, q \neq p} w_{pqjt} \le \sum_{l' :\, (j,l') \in F} s_{pjl'(t-1)} &amp;&amp; \forall p \in P,\ j \in J,\ t \ne 1 \tag{18b} \\
+&amp; \sum_{q \in P,\, q \neq k} w_{kqjt} \le \sum_{l :\, (j,l) \in F} s_{kjl(t-1)} &amp;&amp; \forall k \in P,\ j \in J,\ t \ne 1 \tag{18b} \\
 &amp; \sum_{(j,l) \in F} s_{pjlt} - \sum_{(j,l) \in F} s_{pjl(t-1)} = \sum_{j \in J} \sum_{k \in P,\, k \neq p} w_{kpjt} - \sum_{j \in J} \sum_{q \in P,\, q \neq p} w_{pqjt} &amp;&amp; \forall p \in P,\ t \ne 1 \tag{19} \\
 % ---------- flow layer ----------
 &amp; v_{plt} \le \sum_{j \in J} s_{pjlt}\, B_{jl} &amp;&amp; \forall p \in P,\ l \in L,\ t \in T \tag{8} \\
