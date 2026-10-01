@@ -54,7 +54,7 @@ import gurobipy as gp
 from gurobipy import GRB
 
 try:                                  # warm start 는 선택 기능
-    from Src.warm_start import apply_warm_start
+    from Src.warm_start.mip_start import apply_warm_start
 except Exception:                     # noqa: BLE001
     apply_warm_start = None
 
@@ -598,7 +598,7 @@ def _cli() -> int:
     from pathlib import Path as _Path
 
     ap = argparse.ArgumentParser(description="Saffar 원형 + 이동 이진변수 w 정식화")
-    ap.add_argument("dataset", nargs="?", default=None, help="Data/ 아래 폴더명 (기본: config.PROBLEM_NAME)")
+    ap.add_argument("dataset", nargs="?", default=None, help="현재 RMS demand 이름 (예: demand_1) 또는 CSV 경로")
     ap.add_argument("mode", nargs="?", default=None, choices=["off", "separate", "joint"],
                     help="이동 정책 (기본: config.ADAPTIVE_MODE)")
     ap.add_argument("time_limit", nargs="?", type=int, default=None, help="초 (기본: config.TIME_LIMIT)")
@@ -615,21 +615,21 @@ def _cli() -> int:
     except ImportError:
         print("config.py 를 찾을 수 없다. 저장소 루트에서 실행하라.", file=sys.stderr)
         return 1
-    from Src.data import load_instance
+    from Src.data.loader import load_instance
 
     cfg = SimpleNamespace(**{k: getattr(cfg_mod, k) for k in dir(cfg_mod) if k.isupper()})
     if args.dataset:
-        base = _Path(getattr(cfg_mod, "BASE_DIR", ".")) / "Data" / args.dataset
-        if not base.exists():
-            print("데이터셋 폴더가 없다: %s" % base, file=sys.stderr)
+        candidate = _Path(args.dataset)
+        if candidate.suffix.lower() == ".csv" or candidate.parent != _Path("."):
+            demand_file = candidate if candidate.is_absolute() else _Path.cwd() / candidate
+            cfg.DEMAND_NAME = demand_file.stem
+        else:
+            cfg.DEMAND_NAME = args.dataset
+            demand_file = cfg.DEMAND_DIR / cfg.PROBLEM_TYPE / f"{cfg.DEMAND_NAME}.csv"
+        if not demand_file.exists():
+            print("demand CSV가 없다: %s" % demand_file, file=sys.stderr)
             return 1
-        cfg.PROBLEM_NAME = args.dataset
-        for key, fn in [("LOCATION_FILE", "locations.csv"), ("CONFIGURATION_FILE", "configurations.csv"),
-                        ("PRODUCTION_RATE_FILE", "production_rates.csv"), ("DEMAND_FILE", "demands.csv"),
-                        ("PARAMETER_FILE", "parameters.csv"), ("SHARED_RESOURCE_FILE", "shared_resources.csv"),
-                        ("RESOURCE_REQUIREMENT_FILE", "resource_requirements.csv"),
-                        ("MODULE_COST_FILE", "module_costs.csv")]:
-            setattr(cfg, key, base / fn)
+        cfg.DEMAND_FILE = demand_file.resolve()
     if args.mode:
         cfg.ADAPTIVE_MODE = args.mode
     if args.time_limit:
@@ -667,7 +667,7 @@ def _cli() -> int:
     print("=" * 60)
 
     if args.save:
-        from Src.output import save_solution
+        from Src.io.output import save_solution
         out = _Path(args.save)
         out.mkdir(parents=True, exist_ok=True)
         save_solution(solution, out)
