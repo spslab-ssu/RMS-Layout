@@ -46,6 +46,7 @@ from __future__ import annotations
 import math
 import time
 from collections import defaultdict
+from types import SimpleNamespace
 from dataclasses import dataclass, field
 from typing import Any
 
@@ -578,3 +579,101 @@ def _extract(model, instance, x, s, y, w, v, f,
         reconfigurations=reconfigs, material_flows=flows,
         cost_breakdown=cb, relocations=relocations,
     )
+
+
+# ===========================================================================
+#  단독 실행 진입점
+# ===========================================================================
+def _cli() -> int:
+    """python base_adaptive.py [데이터셋] [모드] [시간제한] [--alpha A] [--beta B] [--save DIR]
+
+    예)
+      python base_adaptive.py                              multi_part, off, 600초
+      python base_adaptive.py youssef_2007 joint 300
+      python base_adaptive.py multi_part joint 600 --alpha 0.02 --beta 0.004
+      python base_adaptive.py youssef_2007 joint 300 --save Result/my_run
+    """
+    import argparse
+    import sys
+    from pathlib import Path as _Path
+
+    ap = argparse.ArgumentParser(description="Saffar 원형 + 이동 이진변수 w 정식화")
+    ap.add_argument("dataset", nargs="?", default=None, help="Data/ 아래 폴더명 (기본: config.PROBLEM_NAME)")
+    ap.add_argument("mode", nargs="?", default=None, choices=["off", "separate", "joint"],
+                    help="이동 정책 (기본: config.ADAPTIVE_MODE)")
+    ap.add_argument("time_limit", nargs="?", type=int, default=None, help="초 (기본: config.TIME_LIMIT)")
+    ap.add_argument("--alpha", type=float, default=None, help="이동비 고정 계수")
+    ap.add_argument("--beta", type=float, default=None, help="이동비 거리 계수")
+    ap.add_argument("--flat", type=float, default=None, help="거리당 단가로 이동비 계산 (alpha/beta 대신)")
+    ap.add_argument("--gap", type=float, default=None, help="MIPGap 목표 (예 0.03)")
+    ap.add_argument("--balance-eq", action="store_true", help="(S) 강화식 사용")
+    ap.add_argument("--save", default=None, help="해를 저장할 폴더")
+    args = ap.parse_args()
+
+    try:
+        import config as cfg_mod
+    except ImportError:
+        print("config.py 를 찾을 수 없다. 저장소 루트에서 실행하라.", file=sys.stderr)
+        return 1
+    from Src.data import load_instance
+
+    cfg = SimpleNamespace(**{k: getattr(cfg_mod, k) for k in dir(cfg_mod) if k.isupper()})
+    if args.dataset:
+        base = _Path(getattr(cfg_mod, "BASE_DIR", ".")) / "Data" / args.dataset
+        if not base.exists():
+            print("데이터셋 폴더가 없다: %s" % base, file=sys.stderr)
+            return 1
+        cfg.PROBLEM_NAME = args.dataset
+        for key, fn in [("LOCATION_FILE", "locations.csv"), ("CONFIGURATION_FILE", "configurations.csv"),
+                        ("PRODUCTION_RATE_FILE", "production_rates.csv"), ("DEMAND_FILE", "demands.csv"),
+                        ("PARAMETER_FILE", "parameters.csv"), ("SHARED_RESOURCE_FILE", "shared_resources.csv"),
+                        ("RESOURCE_REQUIREMENT_FILE", "resource_requirements.csv"),
+                        ("MODULE_COST_FILE", "module_costs.csv")]:
+            setattr(cfg, key, base / fn)
+    if args.mode:
+        cfg.ADAPTIVE_MODE = args.mode
+    if args.time_limit:
+        cfg.TIME_LIMIT = args.time_limit
+    if args.alpha is not None:
+        cfg.ALPHA = args.alpha
+    if args.beta is not None:
+        cfg.BETA = args.beta
+    cfg.MOVE_COST_FLAT = args.flat          # None 이면 C_j(alpha + beta*D) 식을 쓴다
+    if args.gap is not None:
+        cfg.MIP_GAP = args.gap
+    cfg.SAFFAR_BALANCE_EQ = args.balance_eq
+
+    print("데이터 %s | 모드 %s | 시간제한 %ss | alpha %s beta %s%s"
+          % (cfg.PROBLEM_NAME, cfg.ADAPTIVE_MODE, cfg.TIME_LIMIT,
+             getattr(cfg, "ALPHA", 0.0), getattr(cfg, "BETA", 0.0),
+             " | (S) 사용" if cfg.SAFFAR_BALANCE_EQ else ""), flush=True)
+
+    instance = load_instance(cfg)
+    solution = solve_milp(instance, cfg)
+    sm = solution.summary
+
+    print("\n" + "=" * 60)
+    print("  상태        %s" % {2:"OPTIMAL",3:"INFEASIBLE",9:"TIME_LIMIT"}.get(sm.get("status"), sm.get("status")))
+    print("  목적함수    %s" % sm.get("objective"))
+    print("  best bound  %s" % sm.get("best_bound"))
+    print("  MIP gap     %s" % sm.get("mip_gap"))
+    print("  LP 완화     %s" % sm.get("lp_relaxation_bound"))
+    cb = solution.cost_breakdown or {}
+    print("  구매 %s / 재구성 %s / 자재취급 %s / 이동 %s"
+          % (cb.get("purchase_cost"), cb.get("reconfiguration_cost"),
+             cb.get("material_handling_cost"), cb.get("relocation_cost")))
+    print("  기계 %s대 / 재구성 %s회 / 이동 %s회"
+          % (sm.get("n_machines"), sm.get("n_reconfigurations"), sm.get("n_relocations")))
+    print("=" * 60)
+
+    if args.save:
+        from Src.output import save_solution
+        out = _Path(args.save)
+        out.mkdir(parents=True, exist_ok=True)
+        save_solution(solution, out)
+        print("해 저장:", out)
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(_cli())
