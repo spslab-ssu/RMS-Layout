@@ -1,6 +1,6 @@
 """Time-expanded network reformulation 실행 진입점.
 
-기존 `main.py`와 `Src/models/milp.py`는 그대로 두고, network model 실험은
+기존 `main.py`와 `Src/models/base.py`는 그대로 두고, network model 실험은
 이 파일에서만 호출한다. 협업 중 base MILP 수정과 충돌하지 않게 하기 위한
 분리 실행 파일이다.
 """

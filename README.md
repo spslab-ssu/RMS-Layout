@@ -23,7 +23,9 @@ RMS-Layout/
 │   │   ├── layout_22.csv
 │   │   ├── layout_23_3x7.csv
 │   │   ├── layout_26.csv
-│   │   └── layout_30.csv
+│   │   ├── layout_30.csv
+│   │   ├── layout_32.csv
+│   │   └── layout_37.csv
 │   ├── rmt_tables/              # RMT configuration table만 관리
 │   │   ├── table_1/
 │   │   │   ├── configurations.csv
@@ -56,7 +58,7 @@ RMS-Layout/
 │
 ├── Src/
 │   ├── data/loader.py
-│   ├── models/milp.py
+│   ├── models/base.py
 │   ├── models/milp_network.py
 │   ├── models/network_adaptive.py
 │   ├── models/adaptive_shared_resource.py
@@ -65,6 +67,9 @@ RMS-Layout/
 │   └── warm_start/mip_start.py
 │
 ├── experiments/
+├── exp/
+│   ├── generate_data.py        # 조합별 실험 demand/layout 생성
+│   └── run_experiments.py      # 네 모델 순차 실행 및 resume
 └── Result/                       # 실행 결과. GitHub 제외
 ```
 
@@ -78,22 +83,22 @@ Result/<problem_type>/<rmt_table>/<demand>/network/
 Result/<problem_type>/<rmt_table>/<demand>/network_adaptive/
 ```
 
-`solution_summary.json`의 `cost_consistency.difference`가 `0.0`이면 `cost_breakdown.csv`, `material_flows.csv`, `reconfigurations.csv`, `purchased_machines.csv`의 비용 합계가 objective와 일치한다는 뜻입니다.
+`solution_summary.json`의 `cost_consistency.difference`가 `0.0`이면 `cost_breakdown.csv`, `material_flows.csv`, `reconfigurations.csv`, `relocations.csv`, `purchased_machines.csv`의 비용 합계가 objective와 일치한다는 뜻입니다.
 
 ## 2. 데이터 흐름
 
 ```text
 설정          데이터 입력/전처리            MILP 모델             결과 저장             시각화
-config.py -> Src/data/loader.py  ->  Src/models/milp.py  ->  Src/io/output.py  ->  Src/viz/visualize.py
+config.py -> Src/data/loader.py  ->  Src/models/base.py  ->  Src/io/output.py  ->  Src/viz/visualize.py
             RMSInstance              RMSSolution        Result/<model>/*.csv  Result/<model>/figures/*.png
 ```
 
 각 단계는 앞 단계의 결과만 입력으로 받습니다.
 
-예를 들어 `Src/models/milp.py`는 CSV 파일명을 직접 알 필요가 없습니다.  
+예를 들어 `Src/models/base.py`는 CSV 파일명을 직접 알 필요가 없습니다.
 `Src/data/loader.py`가 CSV를 읽고 `RMSInstance` 객체를 만들어주면, 모델 코드는 그 객체의 속성만 사용합니다.
 
-이렇게 나누면 CSV 형식이 바뀌어도 `Src/data/loader.py`만 수정하면 되고, MILP 수식이 바뀌어도 `Src/models/milp.py`만 수정하면 됩니다.
+이렇게 나누면 CSV 형식이 바뀌어도 `Src/data/loader.py`만 수정하면 되고, MILP 수식이 바뀌어도 `Src/models/base.py`만 수정하면 됩니다.
 
 ---
 
@@ -119,7 +124,7 @@ config.py -> Src/data/loader.py  ->  Src/models/milp.py  ->  Src/io/output.py  -
    CSV가 모델용 parameter로 바뀌는 과정입니다.  
    여기서 `RMSInstance`가 만들어집니다.
 
-6. **`Src/models/milp.py`**  
+6. **`Src/models/base.py`**
    핵심 최적화 모델입니다.  
    변수, 제약식, 목적함수, 해 추출이 들어 있습니다.
 
@@ -139,7 +144,8 @@ config.py -> Src/data/loader.py  ->  Src/models/milp.py  ->  Src/io/output.py  -
 | 설정 | `config.py` | 데이터셋, 경로, solver 옵션 정의 | `PROBLEM_TYPE`, `LOCATION_NAME`, `RMT_TABLE_NAME`, `DEMAND_NAME`으로 입력 조합 선택 |
 | 입력 생성 | `Data/generate_data.py` | 논문 재현용 CSV 생성/복사 | 기존 검증 데이터를 새 구조로 이동 |
 | 데이터 | `Src/data/loader.py` | CSV 읽기 및 MILP parameter화 | `RMSInstance` 생성, single/multi 표준화 |
-| 모델 | `Src/models/milp.py` | Gurobi MILP 생성 및 solve | 구매/상태/재구성/flow/shared resource 제약 정의 |
+| 모델 | `Src/models/base.py` | Gurobi MILP 생성 및 solve | 구매/상태/재구성/flow/shared resource 제약 정의 |
+| 모델 | `base_adaptive.py` | Saffar 기반 adaptive layout | `w` 이동 변수와 relocation 비용을 포함한 독립 실행 모델 |
 | 모델 | `Src/models/milp_network.py` | time-expanded network reformulation | 같은 문제를 machine lifecycle path로 재표현 |
 | 모델 | `Src/models/network_adaptive.py` | full adaptive network model | period 사이 RMT location 이동 허용 |
 | 실행 | `run_network.py` | network model 별도 실행 | `main.py`와 분리해 협업 충돌 최소화 |
@@ -147,6 +153,8 @@ config.py -> Src/data/loader.py  ->  Src/models/milp.py  ->  Src/io/output.py  -
 | Warm start | `Src/warm_start/mip_start.py` | 기존 해 CSV를 Gurobi MIP start로 주입 | multi-part 논문 해 기반 warm start 선택 적용 |
 | 시각화 | `Src/viz/visualize.py` | period별 layout 이미지 생성 | Figure 2 스타일 결과 확인 |
 | 실험 | `experiments/shared_resource_sensitivity.py` | shared resource 보유량 민감도 분석 | infeasible 경계와 비용 안정화 구간 확인 |
+| 실험 데이터 | `exp/generate_data.py` | part/overlap/utilization/seed 조합 생성 | `Data/demands/exp/p1,p3,p5,p7`와 manifest 생성 |
+| 통합 실행 | `exp/run_experiments.py` | 생성 인스턴스를 네 모델로 순차 실행 | 완료된 key를 건너뛰어 중단 후 재개 가능 |
 
 ---
 
@@ -468,6 +476,7 @@ cost_breakdown.csv          # 구매비, 재구성비, MHC, 총 목적함수값
 purchased_machines.csv      # 구매된 RMT와 초기 configuration/operation
 machine_states.csv          # period별 위치/configuration/operation/flow
 reconfigurations.csv        # period별 configuration 변경 내역
+relocations.csv             # period별 RMT 위치 이동 내역과 relocation cost
 material_flows.csv          # arc별 material flow와 flow cost
 figures/layout_period_1.png
 figures/layout_period_2.png
@@ -475,6 +484,47 @@ figures/layout_period_3.png
 figures/layout_period_4.png
 figures/layout_all_periods.png
 ```
+
+### 일괄 실험 결과 구조
+
+`exp/run_experiments.py`는 각 demand와 layout 조합을 다음 순서로 실행합니다.
+
+```text
+base -> base_adaptive -> network -> network_adaptive
+```
+
+입력 demand와 결과는 part 기준으로 분리됩니다.
+
+```text
+Data/demands/exp/
+├── p1/<experiment_id>.csv
+├── p3/<experiment_id>.csv
+├── p5/<experiment_id>.csv
+├── p7/<experiment_id>.csv
+└── manifest.csv
+
+Result/exp/
+└── p1/
+    ├── summary.csv
+    └── <experiment_id>/<layout_name>/<model_name>/
+        ├── solution_summary.json
+        ├── cost_breakdown.csv
+        └── figures/
+```
+
+실험 데이터 생성:
+
+```bash
+python3 exp/generate_data.py --clean
+```
+
+통합 실행 예시:
+
+```bash
+python3 exp/run_experiments.py --part 1 --time-limit 30 --mip-gap 0.05
+```
+
+재실행 시 `summary.csv`에 정상 완료된 `(experiment_id, layout, model)`은 자동으로 건너뜁니다.
 
 ---
 
@@ -533,5 +583,5 @@ __pycache__/
 - `num_vars`, `num_constraints`: 모델 크기
 - `simplex_iterations`: simplex iteration 수
 
-초기에는 `Src/models/milp.py`와 `Src/models/milp_network.py`를 분리해 두고, shared resource처럼 두 모델에 공통으로 들어가는 제약은 같은 output schema로 비교합니다.  
+초기에는 `Src/models/base.py`와 `Src/models/milp_network.py`를 분리해 두고, shared resource처럼 두 모델에 공통으로 들어가는 제약은 같은 output schema로 비교합니다.
 adaptive layout처럼 문제 자체가 바뀌는 확장은 별도 파일(`Src/models/adaptive_shared_resource.py`)로 분리하는 것이 좋습니다.

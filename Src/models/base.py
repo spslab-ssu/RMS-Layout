@@ -23,6 +23,7 @@ class RMSSolution:
     material_flows: list[dict[str, Any]] = field(default_factory=list)
     resource_usage: list[dict[str, Any]] = field(default_factory=list)
     cost_breakdown: dict[str, float] = field(default_factory=dict)
+    relocations: list[dict[str, Any]] = field(default_factory=list)
 
 
 def solve_milp(instance, config) -> RMSSolution:

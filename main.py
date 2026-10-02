@@ -6,7 +6,7 @@
 
 import config
 from Src.data.loader import load_instance
-from Src.models.milp import solve_milp
+from Src.models.base import solve_milp
 from Src.io.output import save_solution
 from Src.viz.visualize import draw_layouts
 

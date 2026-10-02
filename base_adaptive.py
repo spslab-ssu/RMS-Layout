@@ -60,7 +60,7 @@ except Exception:                     # noqa: BLE001
 
 
 # =============================================================================
-#  공용 헬퍼 (Src/milp.py 에서 인라인)
+#  공용 헬퍼 (Src/models/base.py 에서 인라인)
 # =============================================================================
 @dataclass
 class RMSSolution:
@@ -468,7 +468,7 @@ def solve_milp(instance, config) -> RMSSolution:
     sol = _extract(
         model, instance, x, s, y, w, v, f,
         purchase_cost, reconfiguration_cost, move_cost, handling_cost,
-        lp_bound, lp_seconds, mode, alpha, beta, use_S, w_binary, n_S,
+        lp_bound, lp_seconds, mode, alpha, beta, use_S, w_binary, n_S, _flat,
     )
     if lam is not None and model.SolCount:
         sol.summary["route_shares"] = route_shares(instance, lam)
@@ -476,7 +476,7 @@ def solve_milp(instance, config) -> RMSSolution:
 
 
 def _build_flow_keys(instance, P, T):
-    """base(Src/milp.py)와 동일한 material flow key."""
+    """base(Src/models/base.py)와 동일한 material flow key."""
     keys = []
     for t in T:
         for left, right in instance.route_arcs:
@@ -493,7 +493,7 @@ def _build_flow_keys(instance, P, T):
 
 def _extract(model, instance, x, s, y, w, v, f,
              purchase_cost, reconfiguration_cost, move_cost, handling_cost,
-             lp_bound, lp_seconds, mode, alpha, beta, use_S, w_binary, n_S) -> RMSSolution:
+             lp_bound, lp_seconds, mode, alpha, beta, use_S, w_binary, n_S, flat) -> RMSSolution:
     status_name = {
         GRB.OPTIMAL: "OPTIMAL",
         GRB.TIME_LIMIT: "TIME_LIMIT",
@@ -550,9 +550,15 @@ def _extract(model, instance, x, s, y, w, v, f,
         if var.X > 0.5
     ]
     relocations = [
-        {"period": t, "from_location": k, "to_location": p, "configuration": j,
-         "machine": instance.machine[j], "distance": instance.distance[k, p],
-         "relocation_cost": round(instance.cost[j] * (alpha + beta * instance.distance[k, p]), 6)}
+        {"period": t, "location": p, "from_location": k, "to_location": p,
+         "from_machine": instance.machine[j], "to_machine": instance.machine[j],
+         "from_configuration": j, "to_configuration": j, "operation": 0,
+         "relocation_distance": instance.distance[k, p],
+         "relocation_cost": round(
+             (float(flat) * instance.distance[k, p]) if flat is not None
+             else instance.cost[j] * (alpha + beta * instance.distance[k, p]), 6
+         ),
+         "reconfiguration_cost": 0.0}
         for (k, p, j, t), var in sorted(w.items(), key=lambda i: (i[0][3], i[0][0]))
         if var.X > 0.5
     ]
@@ -569,7 +575,7 @@ def _extract(model, instance, x, s, y, w, v, f,
     summary["n_reconfigurations"] = len(reconfigs)
     summary["n_machines"] = len(purchased)
     # joint에서 한 경계에 이동과 재구성을 함께 한 건 수
-    reloc_arrivals = {(r["to_location"], r["configuration"], r["period"]) for r in relocations}
+    reloc_arrivals = {(r["to_location"], r["to_configuration"], r["period"]) for r in relocations}
     summary["n_move_and_reconfig"] = sum(
         1 for rc in reconfigs
         if (rc["location"], rc["from_configuration"], rc["period"]) in reloc_arrivals

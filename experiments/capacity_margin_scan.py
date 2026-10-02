@@ -21,7 +21,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(BASE_DIR))
 
 from Src.data.loader import load_instance
-from Src.models.milp import solve_milp
+from Src.models.base import solve_milp
 
 # ---------------- 실험 설정 ----------------
 PROBLEM_TYPE = "single_part"

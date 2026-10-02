@@ -12,6 +12,7 @@ def draw_layouts(result_dir: Path, instance) -> None:
     states_path = result_dir / "machine_states.csv"
     flows_path = result_dir / "material_flows.csv"
     reconfigs_path = result_dir / "reconfigurations.csv"
+    relocations_path = result_dir / "relocations.csv"
     purchases_path = result_dir / "purchased_machines.csv"
     if not states_path.exists() or states_path.stat().st_size == 0:
         return
@@ -19,9 +20,12 @@ def draw_layouts(result_dir: Path, instance) -> None:
     states = _read_csv_or_empty(states_path)
     flows = _read_csv_or_empty(flows_path)
     reconfigs = _read_csv_or_empty(reconfigs_path)
+    relocations = _read_csv_or_empty(relocations_path)
     purchases = _read_csv_or_empty(purchases_path)
     if states.empty:
         return
+    if not relocations.empty:
+        reconfigs = pd.concat([reconfigs, relocations], ignore_index=True, sort=False)
 
     figure_dir = result_dir / "figures"
     figure_dir.mkdir(parents=True, exist_ok=True)

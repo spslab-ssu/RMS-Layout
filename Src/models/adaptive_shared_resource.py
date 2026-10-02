@@ -2,7 +2,7 @@ from __future__ import annotations
 
 """Adaptive layout + shared-resource MILP for the RMS layout project.
 
-이 파일은 기존 `Src/models/milp.py`를 직접 수정하지 않고, 논문 개선 아이디어를
+이 파일은 기존 `Src/models/base.py`를 직접 수정하지 않고, 논문 개선 아이디어를
 실험하기 위한 별도 모델입니다. 기존 모델의 좋은 점은 유지하되, 아래 한계를
 보완하는 방향으로 작성했습니다.
 
@@ -67,7 +67,7 @@ from typing import Any
 import gurobipy as gp
 from gurobipy import GRB
 
-from Src.models.milp import RMSSolution
+from Src.models.base import RMSSolution
 
 
 def solve_adaptive_shared_resource_milp(instance, config) -> RMSSolution:

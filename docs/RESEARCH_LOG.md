@@ -7,7 +7,7 @@
 
 ## 0. 논문 재현 (완료)
 
-**무엇을:** 논문의 MILP 정식화 식 (1)–(16)을 Gurobi로 구현 (`Src/models/milp.py`, `Src/data/loader.py`).
+**무엇을:** 논문의 MILP 정식화 식 (1)–(16)을 Gurobi로 구현 (`Src/models/base.py`, `Src/data/loader.py`).
 수요를 route arc 기반 네트워크 플로우로 재구성한 것 외에는 논문과 동일한 모델.
 
 **결과 (논문 대비):**
@@ -53,7 +53,7 @@
 | 비활성 | cap = peak | $22,910 불변 (OPTIMAL) | 제약이 해를 왜곡하지 않음 |
 | 활성 | 모듈 20: 12→10 | ≥$25,025 증명 (잠정 $26,366), 구매비 $11,025→$15,225 | 제약이 구매 의사결정을 실제로 변화시킴 |
 
-**구현:** 커밋 `67e53f1`(CSV·config·리포트) + `c9e5c62`(data.py·milp.py 제약). origin/dk에 push됨.
+**구현:** 커밋 `67e53f1`(CSV·config·리포트) + `c9e5c62`(data loader·base.py 제약). origin/dk에 push됨.
 main 머지는 2단계에서 적정 capa 확정 후 한 번에 진행하기로 결정.
 
 ---

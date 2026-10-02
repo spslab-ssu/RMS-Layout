@@ -13,7 +13,7 @@ sys.path.insert(0, str(PROJECT_ROOT))
 
 import config as base_config
 from Src.data.loader import load_instance
-from Src.models.milp import solve_milp
+from Src.models.base import solve_milp
 
 
 DEFAULT_UNIFORM_LEVELS = "3,4,5,6,7,8,9,10,11,12,13,15,20"

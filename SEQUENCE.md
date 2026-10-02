@@ -11,7 +11,7 @@ V2GRO의 README처럼, 이 문서는 **코드를 처음 보는 사람이 어떤 
 ```text
 main.py는 조립만 한다.
 데이터 처리는 Src/data/loader.py가 한다.
-base 모델 수식은 Src/models/milp.py가 한다.
+base 모델 수식은 Src/models/base.py가 한다.
 결과 저장은 Src/io/output.py가 한다.
 그림은 Src/viz/visualize.py가 한다.
 ```
@@ -38,7 +38,7 @@ config.py
   ↓
 Src/data/loader.py
   ↓
-Src/models/milp.py
+Src/models/base.py
   ↓
 Src/io/output.py
   ↓
@@ -71,7 +71,7 @@ Src/data/loader.py
   - Data/locations, Data/rmt_tables, Data/demands, Data/parameters, Data/shared_resources의 선택된 CSV 읽기
   - RMSInstance 생성
 
-Src/models/milp.py
+Src/models/base.py
   - RMSInstance를 받아 Gurobi 모델 생성
   - 최적화 수행
   - RMSSolution 생성
@@ -356,7 +356,7 @@ arc_demand[(period, left_operation, right_operation)] = required_flow
 
 ---
 
-## 8. `Src/models/milp.py`
+## 8. `Src/models/base.py`
 
 ### 역할
 
@@ -444,6 +444,13 @@ reconfigurations.csv
 material_flows.csv
 ```
 
+Adaptive base 모델은 configuration 변경과 위치 이동을 분리해 저장합니다.
+
+```text
+reconfigurations.csv        # configuration 변경
+relocations.csv             # 위치 이동과 relocation cost
+```
+
 ### 설계 포인트
 
 결과 파일 이름을 고정합니다.
@@ -525,7 +532,7 @@ Src/data/loader.py 수정
 ### MILP 수식이 바뀌면
 
 ```text
-Src/models/milp.py 수정
+Src/models/base.py 수정
 ```
 
 ### 결과 파일 컬럼을 바꾸면
@@ -561,12 +568,12 @@ robust layout
 part-specific flow tracking
 ```
 
-처음에는 `config.py`에 옵션을 추가하고 `Src/models/milp.py`에서 조건부 제약을 추가하는 방식이 단순합니다.
+처음에는 `config.py`에 옵션을 추가하고 `Src/models/base.py`에서 조건부 제약을 추가하는 방식이 단순합니다.
 
 나중에 모델이 커지면 다음처럼 분리할 수 있습니다.
 
 ```text
-Src/models/milp.py
+Src/models/base.py
 Src/models/adaptive_shared_resource.py
 Src/milp_shared_resource.py
 ```

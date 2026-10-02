@@ -14,6 +14,7 @@ def save_solution(solution, result_dir: Path) -> None:
     _write_rows(result_dir / "purchased_machines.csv", solution.purchased_machines)
     _write_rows(result_dir / "machine_states.csv", solution.machine_states)
     _write_rows(result_dir / "reconfigurations.csv", solution.reconfigurations)
+    _write_rows(result_dir / "relocations.csv", getattr(solution, "relocations", []))
     _write_rows(result_dir / "material_flows.csv", solution.material_flows)
     _write_rows(result_dir / "resource_usage.csv", solution.resource_usage)
     _write_rows(result_dir / "cost_breakdown.csv", [solution.cost_breakdown] if solution.cost_breakdown else [])
@@ -28,6 +29,7 @@ def _cost_consistency(solution) -> dict:
     purchase = sum(float(row.get("purchase_cost", 0.0)) for row in solution.purchased_machines)
     reconfig = sum(float(row.get("reconfiguration_cost", 0.0)) for row in solution.reconfigurations)
     relocation = sum(float(row.get("relocation_cost", 0.0)) for row in solution.reconfigurations)
+    relocation += sum(float(row.get("relocation_cost", 0.0)) for row in getattr(solution, "relocations", []))
     handling = sum(float(row.get("flow_cost", 0.0)) for row in solution.material_flows)
     row_total = purchase + reconfig + relocation + handling
     model_total = float(solution.cost_breakdown.get("total_objective", 0.0))
@@ -63,6 +65,8 @@ def _cost_by_period(solution) -> list[dict]:
         purchase[first_period] += float(row["purchase_cost"])
     for row in solution.reconfigurations:
         reconfig[int(row["period"])] += float(row.get("reconfiguration_cost", 0.0))
+        relocation[int(row["period"])] += float(row.get("relocation_cost", 0.0))
+    for row in getattr(solution, "relocations", []):
         relocation[int(row["period"])] += float(row.get("relocation_cost", 0.0))
     for row in solution.material_flows:
         handling[int(row["period"])] += float(row["flow_cost"])
@@ -125,6 +129,14 @@ def _cost_detail(solution) -> list[dict]:
                 "amount": round(relocation_cost, 6),
                 "detail": f"위치 {row.get('from_location', row['location'])}→{row.get('to_location', row['location'])} 이동, 거리 {row.get('relocation_distance', 0)}",
             })
+    for row in getattr(solution, "relocations", []):
+        rows.append({
+            "period": int(row["period"]),
+            "cost_type": "relocation",
+            "location": f"{row.get('from_location', row['location'])}->{row.get('to_location', row['location'])}",
+            "amount": round(float(row.get("relocation_cost", 0.0)), 6),
+            "detail": f"위치 {row.get('from_location', row['location'])}→{row.get('to_location', row['location'])} 이동, 거리 {row.get('relocation_distance', row.get('distance', 0))}",
+        })
     for row in solution.material_flows:
         rows.append({
             "period": int(row["period"]),
