@@ -583,7 +583,7 @@ Src/milp_shared_resource.py
 
 ## Full adaptive network model
 
-`Src/models/network_adaptive.py`는 현재 `milp_network.py`를 확장한 모델입니다. 기존 network model은 같은 위치 안에서만 period 간 state가 이어지지만, full adaptive model은 transition arc에 이전 위치와 다음 위치를 모두 포함합니다.
+`Src/models/network_adaptive.py`는 `Src/models/network.py`를 확장한 모델입니다. 기존 network model은 같은 위치 안에서만 period 간 state가 이어지지만, full adaptive model은 transition arc에 이전 위치와 다음 위치를 모두 포함합니다.
 
 ```text
 (p_prev, t-1, j_prev, l_prev) -> (p_next, t, j_next, l_next)

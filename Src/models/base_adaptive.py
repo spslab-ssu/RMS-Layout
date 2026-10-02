@@ -33,7 +33,8 @@ network 모형도, z 통합전이 인코딩도 쓰지 않는다.
 
 사용
     from Src.data import load_instance
-    import config, base_adaptive
+    import config
+    from Src.models import base_adaptive
     inst = load_instance(config)
     sol  = base_adaptive.solve_milp(inst, config)
     print(sol.summary["objective"])
@@ -591,13 +592,13 @@ def _extract(model, instance, x, s, y, w, v, f,
 #  단독 실행 진입점
 # ===========================================================================
 def _cli() -> int:
-    """python base_adaptive.py [데이터셋] [모드] [시간제한] [--alpha A] [--beta B] [--save DIR]
+    """python -m Src.models.base_adaptive [데이터셋] [모드] [시간제한] [--alpha A] [--beta B] [--save DIR]
 
     예)
-      python base_adaptive.py                              multi_part, off, 600초
-      python base_adaptive.py youssef_2007 joint 300
-      python base_adaptive.py multi_part joint 600 --alpha 0.02 --beta 0.004
-      python base_adaptive.py youssef_2007 joint 300 --save Result/my_run
+      python -m Src.models.base_adaptive                         multi_part, off, 600초
+      python -m Src.models.base_adaptive youssef_2007 joint 300
+      python -m Src.models.base_adaptive multi_part joint 600 --alpha 0.02 --beta 0.004
+      python -m Src.models.base_adaptive youssef_2007 joint 300 --save Result/my_run
     """
     import argparse
     import sys

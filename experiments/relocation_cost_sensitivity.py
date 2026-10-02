@@ -12,7 +12,7 @@ sys.path.insert(0, str(PROJECT_ROOT))
 
 import config as base_config
 from Src.data.loader import load_instance
-from Src.models.milp_network import solve_milp as solve_network
+from Src.models.network import solve_milp as solve_network
 from Src.models.network_adaptive import solve_milp
 
 

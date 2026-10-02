@@ -7,7 +7,7 @@
 
 import config
 from Src.data.loader import load_instance
-from Src.models.milp_network import solve_milp
+from Src.models.network import solve_milp
 from Src.io.output import save_solution
 from Src.viz.visualize import draw_layouts
 

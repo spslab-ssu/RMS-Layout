@@ -59,7 +59,8 @@ RMS-Layout/
 ├── Src/
 │   ├── data/loader.py
 │   ├── models/base.py
-│   ├── models/milp_network.py
+│   ├── models/base_adaptive.py
+│   ├── models/network.py
 │   ├── models/network_adaptive.py
 │   ├── models/adaptive_shared_resource.py
 │   ├── io/output.py
@@ -145,8 +146,8 @@ config.py -> Src/data/loader.py  ->  Src/models/base.py  ->  Src/io/output.py  -
 | 입력 생성 | `Data/generate_data.py` | 논문 재현용 CSV 생성/복사 | 기존 검증 데이터를 새 구조로 이동 |
 | 데이터 | `Src/data/loader.py` | CSV 읽기 및 MILP parameter화 | `RMSInstance` 생성, single/multi 표준화 |
 | 모델 | `Src/models/base.py` | Gurobi MILP 생성 및 solve | 구매/상태/재구성/flow/shared resource 제약 정의 |
-| 모델 | `base_adaptive.py` | Saffar 기반 adaptive layout | `w` 이동 변수와 relocation 비용을 포함한 독립 실행 모델 |
-| 모델 | `Src/models/milp_network.py` | time-expanded network reformulation | 같은 문제를 machine lifecycle path로 재표현 |
+| 모델 | `Src/models/base_adaptive.py` | Saffar 기반 adaptive layout | `w` 이동 변수와 relocation 비용을 포함한 모델 |
+| 모델 | `Src/models/network.py` | time-expanded network reformulation | 같은 문제를 machine lifecycle path로 재표현 |
 | 모델 | `Src/models/network_adaptive.py` | full adaptive network model | period 사이 RMT location 이동 허용 |
 | 실행 | `run_network.py` | network model 별도 실행 | `main.py`와 분리해 협업 충돌 최소화 |
 | 출력 | `Src/io/output.py` | 결과 CSV/JSON 저장 | 결과 schema 고정 |
@@ -598,5 +599,5 @@ __pycache__/
 - `num_vars`, `num_constraints`: 모델 크기
 - `simplex_iterations`: simplex iteration 수
 
-초기에는 `Src/models/base.py`와 `Src/models/milp_network.py`를 분리해 두고, shared resource처럼 두 모델에 공통으로 들어가는 제약은 같은 output schema로 비교합니다.
+초기에는 `Src/models/base.py`와 `Src/models/network.py`를 분리해 두고, shared resource처럼 두 모델에 공통으로 들어가는 제약은 같은 output schema로 비교합니다.
 adaptive layout처럼 문제 자체가 바뀌는 확장은 별도 파일(`Src/models/adaptive_shared_resource.py`)로 분리하는 것이 좋습니다.

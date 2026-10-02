@@ -24,9 +24,9 @@ import config as default_config
 from Src.data.loader import load_instance
 from Src.io.output import save_solution
 from Src.models import base
-from Src.models import milp_network
+from Src.models import network
 from Src.models import network_adaptive
-import base_adaptive
+from Src.models import base_adaptive
 MODEL_NAMES = ("base", "base_adaptive", "network", "network_adaptive")
 
 
@@ -76,7 +76,7 @@ def _run_one(row: dict[str, str], model_name: str, result_dir: Path, args) -> di
     solver = {
         "base": base.solve_milp,
         "base_adaptive": base_adaptive.solve_milp,
-        "network": milp_network.solve_milp,
+        "network": network.solve_milp,
         "network_adaptive": network_adaptive.solve_milp,
     }[model_name]
     try:
