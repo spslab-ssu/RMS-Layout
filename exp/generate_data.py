@@ -25,6 +25,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 DATA_DIR = ROOT / "Data"
 DEMAND_ROOT = DATA_DIR / "demands" / "exp"
+RANDOM_DEMAND_ROOT = DATA_DIR / "demands" / "exp_random"
 LOCATION_ROOT = DATA_DIR / "locations"
 RMT_TABLE = "table_1"
 PERIODS = (1, 2, 3, 4)
@@ -105,8 +106,19 @@ def main() -> None:
             manifest_rows.append({**row, "layout_name": layout_name, "rmt_table": RMT_TABLE})
     _write_csv(DEMAND_ROOT / "manifest.csv", manifest_rows)
     _write_csv(DEMAND_ROOT / "demand_metadata.csv", demand_rows)
+
+    random_rows = _generate_random_sequence_data(base_period_totals)
+    random_manifest = [
+        {**row, "layout_name": layout_name, "rmt_table": RMT_TABLE}
+        for row in random_rows
+        for layout_name in LAYOUTS
+    ]
+    _write_csv(RANDOM_DEMAND_ROOT / "manifest.csv", random_manifest)
+    _write_csv(RANDOM_DEMAND_ROOT / "demand_metadata.csv", random_rows)
     print(f"generated demand files: {len(demand_rows)}")
     print(f"generated experiment rows: {len(manifest_rows)}")
+    print(f"generated random-sequence demand files: {len(random_rows)}")
+    print(f"generated random-sequence rows: {len(random_manifest)}")
     print(f"generated layouts: {', '.join(LAYOUTS)}")
 
 
@@ -115,13 +127,14 @@ def demand_rows_for_part(rows: list[dict], part_count: int) -> list[dict]:
 
 
 def _clean_generated_data() -> None:
-    if not DEMAND_ROOT.exists():
-        return
-    for path in sorted(DEMAND_ROOT.rglob("*"), reverse=True):
-        if path.is_file():
-            path.unlink()
-        elif path.is_dir():
-            path.rmdir()
+    for root in (DEMAND_ROOT, RANDOM_DEMAND_ROOT):
+        if not root.exists():
+            continue
+        for path in sorted(root.rglob("*"), reverse=True):
+            if path.is_file():
+                path.unlink()
+            elif path.is_dir():
+                path.rmdir()
 
 
 def _read_base_period_totals() -> list[int]:
@@ -147,6 +160,65 @@ def _write_layout_if_missing(name: str, rows: int, cols: int) -> None:
 
 def _routes(part_count: int, overlap: str) -> tuple[tuple[int, ...], ...]:
     return HIGH_ROUTES[part_count] if overlap == "high" else LOW_ROUTES[part_count]
+
+
+def _generate_random_sequence_data(base_period_totals: list[int]) -> list[dict[str, str | int | float]]:
+    """overlap을 통제하지 않는 별도 random-sequence 데이터군을 만든다.
+
+    route는 seed마다 새로 생성하고, 수요와 route의 random stream을 분리한다.
+    따라서 utilization을 바꾸면 수요량만 달라지고 같은 seed의 sequence는
+    유지되어 volume 효과를 독립적으로 비교할 수 있다.
+    """
+    rows: list[dict[str, str | int | float]] = []
+    for part_count in PART_COUNTS:
+        part_dir = RANDOM_DEMAND_ROOT / f"p{part_count}"
+        part_dir.mkdir(parents=True, exist_ok=True)
+        part_rows = []
+        for utilization in UTILIZATIONS:
+            for seed in SEEDS:
+                sequence_rng = random.Random(900000 + part_count * 1000 + seed)
+                demand_rng = random.Random(910000 + part_count * 1000 + round(utilization * 100) * 100 + seed)
+                routes = _random_routes(part_count, sequence_rng)
+                period_totals = _random_period_totals(base_period_totals, utilization, demand_rng)
+                demands = _allocate_demands(period_totals, part_count, demand_rng)
+                experiment_id = f"p{part_count}_random_u{int(round(utilization * 100)):03d}_s{seed:02d}"
+                path = part_dir / f"{experiment_id}.csv"
+                _write_demand(path, demands, routes)
+                row = {
+                    "experiment_id": experiment_id,
+                    "part_count": part_count,
+                    "overlap": "random",
+                    "sequence_mode": "random",
+                    "utilization": utilization,
+                    "seed": seed,
+                    "demand_file": str(path.relative_to(ROOT)),
+                    "route_operation_count": len(set(op for route in routes for op in route)),
+                    "period_total": ",".join(str(period_totals[t - 1]) for t in PERIODS),
+                    "total_demand": sum(period_totals),
+                }
+                part_rows.append(row)
+                rows.append(row)
+        _write_metadata(part_dir / "metadata.csv", part_rows)
+    return rows
+
+
+def _random_routes(part_count: int, rng: random.Random) -> tuple[tuple[int, ...], ...]:
+    """seed 기반 route를 생성한다.
+
+    임의 route가 layout_18에서 즉시 infeasible해지는 것을 피하기 위해 한
+    인스턴스에서 사용하는 고유 operation 수를 14개 이하로 둔다. 이는
+    overlap을 강제하는 것이 아니라 최소 layout의 수용 가능한 범위만 보장한다.
+    """
+    operation_pool = list(range(1, 21))
+    for _ in range(1000):
+        routes = []
+        for _part in range(part_count):
+            length = rng.choice((2, 2, 3))
+            route = tuple(rng.sample(operation_pool, length))
+            routes.append(route)
+        if len(set(op for route in routes for op in route)) <= 14:
+            return tuple(routes)
+    raise RuntimeError(f"failed to generate random routes for part_count={part_count}")
 
 
 def _seed_value(part_count: int, overlap: str, utilization: float, seed: int) -> int:

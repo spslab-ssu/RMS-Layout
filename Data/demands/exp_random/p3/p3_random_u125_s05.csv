@@ -1,0 +1,4 @@
+part,period1,period2,period3,period4,operation_sequence
+P1,31,43,41,39,18>12
+P2,27,44,41,41,11>6
+P3,31,41,41,42,3>7>13

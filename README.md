@@ -503,6 +503,10 @@ Data/demands/exp/
 ├── p7/<experiment_id>.csv
 └── manifest.csv
 
+Data/demands/exp_random/
+├── p1,p3,p5,p7/                 # overlap을 통제하지 않는 random sequence
+└── manifest.csv
+
 Result/exp/
 └── p1/
     ├── summary.csv
@@ -516,6 +520,17 @@ Result/exp/
 
 ```bash
 python3 exp/generate_data.py --clean
+```
+
+기본 생성 시 `Data/demands/exp_random`에도 seed별로 operation sequence를 새로
+생성합니다. Random sequence 실험은 별도 manifest를 지정해서 실행합니다.
+
+```bash
+python3 exp/run_experiments.py \
+  --manifest Data/demands/exp_random/manifest.csv \
+  --part 5 \
+  --time-limit 600 \
+  --mip-gap 0.05
 ```
 
 통합 실행 예시:
