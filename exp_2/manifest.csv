@@ -1,0 +1,17 @@
+experiment_id,part_count,overlap,sequence_mode,utilization,seed,demand_file,route_operation_count,period_total,total_demand,layout_name,rmt_table
+p3_random_u075_s01,3,random,random,0.75,1,Data/demands/exp_random/p3/p3_random_u075_s01.csv,4,"50,80,80,68",278,layout_18,table_1
+p3_random_u075_s01,3,random,random,0.75,1,Data/demands/exp_random/p3/p3_random_u075_s01.csv,4,"50,80,80,68",278,layout_22,table_1
+p3_random_u100_s01,3,random,random,1.0,1,Data/demands/exp_random/p3/p3_random_u100_s01.csv,4,"75,104,97,94",370,layout_18,table_1
+p3_random_u100_s01,3,random,random,1.0,1,Data/demands/exp_random/p3/p3_random_u100_s01.csv,4,"75,104,97,94",370,layout_22,table_1
+p5_random_u075_s01,5,random,random,0.75,1,Data/demands/exp_random/p5/p5_random_u075_s01.csv,9,"57,86,69,66",278,layout_18,table_1
+p5_random_u075_s01,5,random,random,0.75,1,Data/demands/exp_random/p5/p5_random_u075_s01.csv,9,"57,86,69,66",278,layout_22,table_1
+p5_random_u100_s01,5,random,random,1.0,1,Data/demands/exp_random/p5/p5_random_u100_s01.csv,9,"68,107,100,95",370,layout_18,table_1
+p5_random_u100_s01,5,random,random,1.0,1,Data/demands/exp_random/p5/p5_random_u100_s01.csv,9,"68,107,100,95",370,layout_22,table_1
+p3_random_u075_s02,3,random,random,0.75,2,Data/demands/exp_random/p3/p3_random_u075_s02.csv,7,"53,83,76,66",278,layout_18,table_1
+p3_random_u075_s02,3,random,random,0.75,2,Data/demands/exp_random/p3/p3_random_u075_s02.csv,7,"53,83,76,66",278,layout_22,table_1
+p3_random_u100_s02,3,random,random,1.0,2,Data/demands/exp_random/p3/p3_random_u100_s02.csv,7,"72,106,101,91",370,layout_18,table_1
+p3_random_u100_s02,3,random,random,1.0,2,Data/demands/exp_random/p3/p3_random_u100_s02.csv,7,"72,106,101,91",370,layout_22,table_1
+p5_random_u075_s02,5,random,random,0.75,2,Data/demands/exp_random/p5/p5_random_u075_s02.csv,11,"55,82,79,62",278,layout_18,table_1
+p5_random_u075_s02,5,random,random,0.75,2,Data/demands/exp_random/p5/p5_random_u075_s02.csv,11,"55,82,79,62",278,layout_22,table_1
+p5_random_u100_s02,5,random,random,1.0,2,Data/demands/exp_random/p5/p5_random_u100_s02.csv,11,"68,121,96,85",370,layout_18,table_1
+p5_random_u100_s02,5,random,random,1.0,2,Data/demands/exp_random/p5/p5_random_u100_s02.csv,11,"68,121,96,85",370,layout_22,table_1

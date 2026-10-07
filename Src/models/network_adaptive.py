@@ -8,6 +8,8 @@ from typing import Any
 import gurobipy as gp
 from gurobipy import GRB
 
+from Src.warm_start.mip_start import apply_network_warm_start
+
 
 @dataclass
 class RMSSolution:
@@ -106,6 +108,17 @@ def solve_milp(instance, config) -> RMSSolution:
 
     if bool(getattr(config, "USE_WARM_START", False)):
         raise ValueError("network model은 아직 기존 warm start CSV 적용을 지원하지 않습니다. MODEL_TYPE='base'로 실행하거나 USE_WARM_START=False로 설정하세요.")
+
+    network_warm_start_stats = {
+        "network_warm_start_requested": False,
+        "network_warm_start_applied": False,
+    }
+    if bool(getattr(config, "USE_NETWORK_WARM_START", False)):
+        network_warm_start_stats = apply_network_warm_start(
+            {"s": s, "x": x, "v": v, "f": f},
+            getattr(config, "NETWORK_WARM_START_DIR", ""),
+        )
+    model._network_warm_start_stats = network_warm_start_stats
 
     if bool(getattr(config, "USE_OBJECTIVE_CUTOFF", False)):
         cutoff = getattr(config, "OBJECTIVE_CUTOFF", None)
@@ -350,6 +363,7 @@ def _extract_solution(
     summary.update(_solver_metrics(model))
     summary["lp_relaxation_bound"] = lp_relaxation_bound
     summary.update(getattr(model, "_transition_arc_stats", {}))
+    summary.update(getattr(model, "_network_warm_start_stats", {}))
 
     if not model.SolCount:
         return RMSSolution(summary=summary)

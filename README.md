@@ -71,10 +71,19 @@ RMS-Layout/
 ├── exp/
 │   ├── generate_data.py        # 조합별 실험 demand/layout 생성
 │   └── run_experiments.py      # 네 모델 순차 실행 및 resume
+├── exp_2/
+│   ├── prepare.py              # 2차 optimal 비교 manifest 생성
+│   ├── manifest.csv            # seed 1, 2의 16개 대상 인스턴스
+│   └── README.md               # 2차 실험 실행 방법과 결과 위치
 └── Result/                       # 실행 결과. GitHub 제외
 ```
 
 > `Result/`, `__pycache__/`, `.DS_Store`는 생성 산출물이므로 GitHub에는 올리지 않습니다.
+
+2차 optimal 비교 실험은 `exp_2/manifest.csv`와 `Result/exp_2/`를 사용합니다. `network`
+결과를 `network_adaptive`의 partial MIP start로 주입하려면 실행기에
+`--network-warm-start`를 추가합니다. 조건과 seed별 실행 순서는 `exp_2/README.md`에
+정리되어 있습니다.
 
 실행 결과는 모델별로 분리해서 저장합니다. 같은 `table/demand` 조합을 여러 모델로 풀어도 CSV가 서로 덮어쓰이지 않습니다.
 
@@ -508,6 +517,11 @@ Data/demands/exp_random/
 ├── p1,p3,p5,p7/                 # overlap을 통제하지 않는 random sequence
 └── manifest.csv
 
+exp_2/
+├── prepare.py                    # 기존 random demand에서 2차 조건만 추출
+├── manifest.csv                  # p3/p5 × layout18/22 × u0.75/1.0 × seed1/2
+└── README.md
+
 Result/exp/
 └── p1/
     ├── summary.csv
@@ -541,6 +555,21 @@ python3 exp/run_experiments.py --part 1 --time-limit 30 --mip-gap 0.05
 ```
 
 재실행 시 `summary.csv`에 정상 완료된 `(experiment_id, layout, model)`은 자동으로 건너뜁니다.
+
+2차 실험은 seed 1을 먼저 실행한 뒤 seed 2를 실행합니다. 두 모델만 실행하고
+`network` 결과를 adaptive warm start로 사용하려면 다음과 같이 실행합니다.
+
+```bash
+python3 exp/run_experiments.py \
+  --manifest exp_2/manifest.csv \
+  --output Result/exp_2 \
+  --model network \
+  --model network_adaptive \
+  --seed 1 \
+  --time-limit 3600 \
+  --mip-gap 0 \
+  --network-warm-start
+```
 
 ---
 

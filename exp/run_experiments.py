@@ -38,15 +38,23 @@ def main() -> None:
     parser.add_argument("--layout", action="append", choices=("layout_18", "layout_22", "layout_32", "layout_37"))
     parser.add_argument("--model", action="append", choices=MODEL_NAMES)
     parser.add_argument("--limit", type=int, default=None, help="manifest 행 제한; 점검용")
+    parser.add_argument("--seed", action="append", type=int, choices=(1, 2, 3, 4, 5),
+                        help="특정 seed만 실행; 여러 번 지정 가능")
     parser.add_argument("--time-limit", type=float, default=30.0)
     parser.add_argument("--mip-gap", type=float, default=0.05)
     parser.add_argument("--output-flag", type=int, default=0)
+    parser.add_argument(
+        "--network-warm-start",
+        action="store_true",
+        help="network 결과를 같은 인스턴스의 network_adaptive에 partial MIP start로 주입",
+    )
     args = parser.parse_args()
 
     manifest_path = args.manifest if args.manifest.is_absolute() else ROOT / args.manifest
     rows = list(csv.DictReader(manifest_path.open(newline="", encoding="utf-8-sig")))
     rows = [row for row in rows if not args.parts or int(row["part_count"]) in args.parts]
     rows = [row for row in rows if not args.layout or row["layout_name"] in args.layout]
+    rows = [row for row in rows if not args.seed or int(row["seed"]) in args.seed]
     if args.limit is not None:
         rows = rows[:args.limit]
     selected_models = tuple(args.model or MODEL_NAMES)
@@ -71,7 +79,7 @@ def main() -> None:
 
 
 def _run_one(row: dict[str, str], model_name: str, result_dir: Path, args) -> dict:
-    cfg = _config_for(row, args)
+    cfg = _config_for(row, model_name, result_dir, args)
     instance = load_instance(cfg)
     solver = {
         "base": base.solve_milp,
@@ -108,7 +116,7 @@ def _run_one(row: dict[str, str], model_name: str, result_dir: Path, args) -> di
     return summary
 
 
-def _config_for(row: dict[str, str], args) -> SimpleNamespace:
+def _config_for(row: dict[str, str], model_name: str, result_dir: Path, args) -> SimpleNamespace:
     values = {name: getattr(default_config, name) for name in dir(default_config) if name.isupper()}
     cfg = SimpleNamespace(**values)
     part_count = int(row["part_count"])
@@ -123,12 +131,14 @@ def _config_for(row: dict[str, str], args) -> SimpleNamespace:
     cfg.PRODUCTION_RATE_FILE = ROOT / "Data/rmt_tables" / cfg.RMT_TABLE_NAME / "production_rates.csv"
     cfg.DEMAND_FILE = ROOT / row["demand_file"]
     cfg.PARAMETER_FILE = ROOT / "Data/parameters" / f"{cfg.PARAMETER_NAME}.csv"
-    cfg.RESULT_DIR = ROOT / "Result/exp" / f"p{part_count}"
+    cfg.RESULT_DIR = result_dir
     cfg.TIME_LIMIT = float(args.time_limit)
     cfg.MIP_GAP = float(args.mip_gap)
     cfg.OUTPUT_FLAG = int(args.output_flag)
     cfg.COMPUTE_LP_RELAXATION_BOUND = False
     cfg.USE_WARM_START = False
+    cfg.USE_NETWORK_WARM_START = bool(args.network_warm_start and model_name == "network_adaptive")
+    cfg.NETWORK_WARM_START_DIR = result_dir.parent / "network"
     cfg.USE_OBJECTIVE_CUTOFF = False
     cfg.RELOCATION_COST_PER_DISTANCE = 1.0
     cfg.RELOCATION_FIXED_COST = 0.0
