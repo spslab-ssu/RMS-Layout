@@ -43,7 +43,10 @@ python3 exp_3/prepare.py
 - `Data/locations/layout_27.csv`: 5x5 설치 위치와 start/end 위치
 
 각 demand 파일은 총수요 278을 유지하고, period 수에 따라 period별 수요를 seed 기반으로
-랜덤 배분한다. Sequence는 high/low route 집합에서 seed 기반으로 부품에 배정한다.
+랜덤 배분한다. Sequence는 고정 route 후보를 단순히 선택하는 방식이 아니라 seed마다 새로
+생성한다. High는 seed별 공통 core와 suffix를 새로 만들고, low는 seed별 operation permutation을
+서로 겹치지 않는 route로 분할한다. 같은 seed에서는 period 수가 달라도 동일 sequence를
+유지하여 period 수 효과와 sequence 효과를 분리한다.
 
 ## 실행
 

@@ -26,31 +26,12 @@ SEEDS = (1, 2, 3)
 TARGET_UTILIZATION = 0.75
 RMT_TABLE = "table_1"
 
-HIGH_ROUTE_POOL = {
-    1: ((2, 12, 11), (2, 12, 17), (2, 12, 8), (2, 12, 11, 8)),
-    3: (
-        (2, 12, 17), (2, 12, 11), (2, 12, 11, 8),
-        (2, 12, 8), (2, 12, 17, 8), (2, 13, 11),
-    ),
-    5: (
-        (2, 12, 17), (2, 12, 11), (2, 12, 11, 8),
-        (2, 12, 8), (2, 12, 17, 8), (2, 13, 11),
-        (2, 13, 16),
-    ),
-}
-
-LOW_ROUTE_POOL = {
-    1: ((10, 1, 17), (18, 9, 19), (3, 11, 6), (4, 20, 14, 5)),
-    3: (
-        (18, 9, 19), (10, 1, 17), (13, 16, 8, 12),
-        (3, 11, 6), (4, 20, 14, 5),
-    ),
-    5: (
-        (18, 9, 19), (10, 1, 17), (13, 16, 8, 12),
-        (3, 11, 6), (4, 20, 14, 5), (6, 7, 15),
-        (2, 18, 20),
-    ),
-}
+ALL_OPERATIONS = tuple(range(1, 21))
+# High overlap은 seed마다 공통 core를 새로 선택하고, 각 부품의 suffix를 새로 생성한다.
+# 기존 Saffar 예시의 2->12 흐름도 후보에 포함하되, 모든 seed가 같은 core를 사용하지 않는다.
+HIGH_COMMON_CORES = (
+    (2, 12), (2, 13), (5, 10), (6, 16), (9, 14), (11, 18),
+)
 
 
 def main() -> None:
@@ -111,17 +92,15 @@ def _target_total() -> int:
 
 
 def _routes_by_seed(part_count: int, overlap: str) -> dict[int, tuple[tuple[int, ...], ...]]:
-    pool = list((HIGH_ROUTE_POOL if overlap == "high" else LOW_ROUTE_POOL)[part_count])
     generated: dict[int, tuple[tuple[int, ...], ...]] = {}
     signatures: set[tuple[tuple[int, ...], ...]] = set()
     for seed in SEEDS:
         for attempt in range(100):
             rng = random.Random(_sequence_seed(part_count, overlap, seed, attempt))
-            selected = pool[:]
-            rng.shuffle(selected)
-            routes = tuple(selected[:part_count])
-            assigned = list(routes)
-            rng.shuffle(assigned)
+            if overlap == "high":
+                assigned = _generate_high_routes(part_count, rng)
+            else:
+                assigned = _generate_low_routes(part_count, rng)
             signature = tuple(assigned)
             if signature not in signatures:
                 generated[seed] = signature
@@ -130,6 +109,41 @@ def _routes_by_seed(part_count: int, overlap: str) -> dict[int, tuple[tuple[int,
         else:
             raise RuntimeError(f"failed to generate distinct routes for {part_count=}, {overlap=}")
     return generated
+
+
+def _generate_high_routes(part_count: int, rng: random.Random) -> list[tuple[int, ...]]:
+    """공통 core를 유지하면서 seed별로 완전히 새로운 route를 만든다."""
+    core = rng.choice(HIGH_COMMON_CORES)
+    remaining = [operation for operation in ALL_OPERATIONS if operation not in core]
+    routes = []
+    for _ in range(part_count):
+        for _attempt in range(100):
+            suffix_length = rng.choice((1, 2))
+            suffix = tuple(rng.sample(remaining, suffix_length))
+            route = core + suffix
+            if route not in routes:
+                routes.append(route)
+                break
+        else:
+            raise RuntimeError(f"failed to generate unique high routes for {part_count=}")
+    rng.shuffle(routes)
+    return routes
+
+
+def _generate_low_routes(part_count: int, rng: random.Random) -> list[tuple[int, ...]]:
+    """operation permutation을 서로 겹치지 않는 route들로 분할한다."""
+    operations = list(ALL_OPERATIONS)
+    rng.shuffle(operations)
+    lengths = [3] * part_count
+    for index in rng.sample(range(part_count), k=max(0, min(part_count, part_count // 2))):
+        lengths[index] = 4
+    routes = []
+    cursor = 0
+    for length in lengths:
+        routes.append(tuple(operations[cursor:cursor + length]))
+        cursor += length
+    rng.shuffle(routes)
+    return routes
 
 
 def _sequence_seed(part_count: int, overlap: str, seed: int, attempt: int) -> int:
