@@ -95,6 +95,9 @@ def run_one(spec: dict) -> dict:
     off_dir = None
     for mode in ("off", "joint"):
         shim = make_shim(data_dir, mode, OUT_ROOT / sid / ("gurobi_%s.log" % mode))
+        # 재구성 금지 시나리오 (spec에 allow_reconfiguration=false). 기본은 허용.
+        shim.ALLOW_RECONFIGURATION = bool(spec.get("allow_reconfiguration", True))
+        row["allow_reconfiguration"] = shim.ALLOW_RECONFIGURATION
         # 이동비 정의 두 가지. spec에 alpha/beta가 있으면 논문식 C_j(alpha + beta*D),
         # 없으면 기존대로 flat 단가 x 거리 (MOVE_COST_FLAT이 None이 아니면 엔진이 flat 분기를 탄다).
         if "alpha" in spec or "beta" in spec:

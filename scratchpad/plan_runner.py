@@ -35,7 +35,12 @@ def main():
     log("시작: 작업 %d개, 마감 %s" % (len(plan["jobs"]), plan["deadline"]))
     for i, job in enumerate(plan["jobs"], 1):
         t = int(job["time"])
-        need = (t if job["kind"] == "cutoff" else 2 * t) + 180
+        if job["kind"] == "cutoff":
+            need = t + 180
+        elif job["kind"] == "sweep":
+            need = t * len(job["units"].split(",")) + 180
+        else:
+            need = 2 * t + 180
         remaining = (deadline - datetime.now()).total_seconds()
         name = "[%d/%d] %s %s" % (i, len(plan["jobs"]), job["kind"], job["id"])
         if remaining < need:
@@ -44,6 +49,8 @@ def main():
         log("시작 %s (최대 %ds)" % (name, need))
         if job["kind"] == "cutoff":
             cmd = [sys.executable, "scratchpad/off_cutoff_run.py", job["id"], str(t)]
+        elif job["kind"] == "sweep":
+            cmd = [sys.executable, "scratchpad/move_cost_sweep.py", job["id"], str(t), job["units"]]
         else:
             cmd = [sys.executable, "scratchpad/campaign_run.py", job["queue"], str(t), job["id"]]
         with open(LOG, "a", encoding="utf-8") as fh:
