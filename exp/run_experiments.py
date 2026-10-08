@@ -35,7 +35,9 @@ def main() -> None:
     parser.add_argument("--manifest", type=Path, default=ROOT / "Data/demands/exp/manifest.csv")
     parser.add_argument("--output", type=Path, default=ROOT / "Result/exp")
     parser.add_argument("--part", action="append", type=int, choices=(1, 3, 5, 7), dest="parts")
-    parser.add_argument("--layout", action="append", choices=("layout_18", "layout_22", "layout_32", "layout_37"))
+    parser.add_argument("--layout", action="append", choices=("layout_18", "layout_22", "layout_27", "layout_32", "layout_37"))
+    parser.add_argument("--overlap", action="append", choices=("high", "low", "random"))
+    parser.add_argument("--period-count", action="append", type=int, choices=(2, 4, 6))
     parser.add_argument("--model", action="append", choices=MODEL_NAMES)
     parser.add_argument("--limit", type=int, default=None, help="manifest 행 제한; 점검용")
     parser.add_argument("--seed", action="append", type=int, choices=(1, 2, 3, 4, 5),
@@ -54,6 +56,8 @@ def main() -> None:
     rows = list(csv.DictReader(manifest_path.open(newline="", encoding="utf-8-sig")))
     rows = [row for row in rows if not args.parts or int(row["part_count"]) in args.parts]
     rows = [row for row in rows if not args.layout or row["layout_name"] in args.layout]
+    rows = [row for row in rows if not args.overlap or row.get("overlap") in args.overlap]
+    rows = [row for row in rows if not args.period_count or int(row.get("period_count", 0)) in args.period_count]
     rows = [row for row in rows if not args.seed or int(row["seed"]) in args.seed]
     if args.limit is not None:
         rows = rows[:args.limit]
@@ -130,7 +134,8 @@ def _config_for(row: dict[str, str], model_name: str, result_dir: Path, args) ->
     cfg.CONFIGURATION_FILE = ROOT / "Data/rmt_tables" / cfg.RMT_TABLE_NAME / "configurations.csv"
     cfg.PRODUCTION_RATE_FILE = ROOT / "Data/rmt_tables" / cfg.RMT_TABLE_NAME / "production_rates.csv"
     cfg.DEMAND_FILE = ROOT / row["demand_file"]
-    cfg.PARAMETER_FILE = ROOT / "Data/parameters" / f"{cfg.PARAMETER_NAME}.csv"
+    parameter_file = row.get("parameter_file", "")
+    cfg.PARAMETER_FILE = ROOT / parameter_file if parameter_file else ROOT / "Data/parameters" / f"{cfg.PARAMETER_NAME}.csv"
     cfg.RESULT_DIR = result_dir
     cfg.TIME_LIMIT = float(args.time_limit)
     cfg.MIP_GAP = float(args.mip_gap)
