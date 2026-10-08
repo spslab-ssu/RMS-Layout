@@ -44,9 +44,11 @@ python3 exp_3/prepare.py
 
 각 demand 파일은 총수요 278을 유지하고, period 수에 따라 period별 수요를 seed 기반으로
 랜덤 배분한다. Sequence는 고정 route 후보를 단순히 선택하는 방식이 아니라 seed마다 새로
-생성한다. High는 seed별 공통 core와 suffix를 새로 만들고, low는 seed별 operation permutation을
-서로 겹치지 않는 route로 분할한다. 같은 seed에서는 period 수가 달라도 동일 sequence를
-유지하여 period 수 효과와 sequence 효과를 분리한다.
+생성한다. High는 seed별 공통 core와 추가 operation을 새로 만들고, 공통 core를 각 route의
+앞·중간·뒤에 다르게 삽입한다. 따라서 작업이 겹치더라도 항상 sequence의 앞부분에만 몰리지
+않는다. Low는 seed별 operation permutation을 서로 겹치지 않는 route로 분할한다. 같은
+seed에서는 period 수가 달라도 동일 sequence를 유지하여 period 수 효과와 sequence 효과를
+분리한다.
 
 ## 실행
 

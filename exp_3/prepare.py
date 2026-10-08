@@ -112,20 +112,26 @@ def _routes_by_seed(part_count: int, overlap: str) -> dict[int, tuple[tuple[int,
 
 
 def _generate_high_routes(part_count: int, rng: random.Random) -> list[tuple[int, ...]]:
-    """공통 core를 유지하면서 seed별로 완전히 새로운 route를 만든다."""
+    """공통 core를 유지하되 route별 삽입 위치를 달리해 sequence를 만든다."""
     core = rng.choice(HIGH_COMMON_CORES)
     remaining = [operation for operation in ALL_OPERATIONS if operation not in core]
     routes = []
+    core_positions = []
     for _ in range(part_count):
         for _attempt in range(100):
             suffix_length = rng.choice((1, 2))
-            suffix = tuple(rng.sample(remaining, suffix_length))
-            route = core + suffix
+            extra = tuple(rng.sample(remaining, suffix_length))
+            insert_position = rng.randint(0, len(extra))
+            route = extra[:insert_position] + core + extra[insert_position:]
             if route not in routes:
                 routes.append(route)
+                core_positions.append(insert_position)
                 break
         else:
             raise RuntimeError(f"failed to generate unique high routes for {part_count=}")
+    if part_count > 1 and all(position == 0 for position in core_positions):
+        extra = routes[-1][len(core):]
+        routes[-1] = extra + core
     rng.shuffle(routes)
     return routes
 

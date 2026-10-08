@@ -1,2 +1,2 @@
 part,period1,period2,period3,period4,operation_sequence
-P1,76,68,69,65,5>10>12>11
+P1,76,68,69,65,12>11>5>10
