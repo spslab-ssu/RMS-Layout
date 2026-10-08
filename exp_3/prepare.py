@@ -26,27 +26,29 @@ SEEDS = (1, 2, 3)
 TARGET_UTILIZATION = 0.75
 RMT_TABLE = "table_1"
 
-HIGH_ROUTES = {
-    1: ((2, 12, 11),),
-    3: ((2, 12, 17), (2, 12, 11), (2, 12, 11, 8)),
+HIGH_ROUTE_POOL = {
+    1: ((2, 12, 11), (2, 12, 17), (2, 12, 8), (2, 12, 11, 8)),
+    3: (
+        (2, 12, 17), (2, 12, 11), (2, 12, 11, 8),
+        (2, 12, 8), (2, 12, 17, 8), (2, 13, 11),
+    ),
     5: (
-        (2, 12, 17),
-        (2, 12, 11),
-        (2, 12, 11, 8),
-        (2, 12, 8),
-        (2, 12, 17, 8),
+        (2, 12, 17), (2, 12, 11), (2, 12, 11, 8),
+        (2, 12, 8), (2, 12, 17, 8), (2, 13, 11),
+        (2, 13, 16),
     ),
 }
 
-LOW_ROUTES = {
-    1: ((10, 1, 17),),
-    3: ((18, 9, 19), (10, 1, 17), (13, 16, 8, 12)),
+LOW_ROUTE_POOL = {
+    1: ((10, 1, 17), (18, 9, 19), (3, 11, 6), (4, 20, 14, 5)),
+    3: (
+        (18, 9, 19), (10, 1, 17), (13, 16, 8, 12),
+        (3, 11, 6), (4, 20, 14, 5),
+    ),
     5: (
-        (18, 9, 19),
-        (10, 1, 17),
-        (13, 16, 8, 12),
-        (3, 11, 6),
-        (4, 20, 14, 5),
+        (18, 9, 19), (10, 1, 17), (13, 16, 8, 12),
+        (3, 11, 6), (4, 20, 14, 5), (6, 7, 15),
+        (2, 18, 20),
     ),
 }
 
@@ -61,14 +63,13 @@ def main() -> None:
     metadata_rows = []
     for part_count in PART_COUNTS:
         for overlap in OVERLAPS:
-            routes = _routes(part_count, overlap)
+            routes_by_seed = _routes_by_seed(part_count, overlap)
             for period_count in PERIOD_COUNTS:
                 for seed in SEEDS:
-                    rng = random.Random(_seed_value(part_count, overlap, period_count, seed))
+                    rng = random.Random(_demand_seed(part_count, overlap, period_count, seed))
                     period_totals = _allocate_total_by_period(target_total, period_count, rng)
                     demands = _allocate_total_by_part(period_totals, part_count, rng)
-                    assigned_routes = list(routes)
-                    rng.shuffle(assigned_routes)
+                    assigned_routes = routes_by_seed[seed]
                     experiment_id = _experiment_id(part_count, overlap, period_count, seed)
                     demand_path = DEMAND_ROOT / f"p{part_count}" / f"{experiment_id}.csv"
                     _write_demand(demand_path, demands, assigned_routes)
@@ -84,6 +85,7 @@ def main() -> None:
                         "period_total": ",".join(str(value) for value in period_totals),
                         "total_demand": sum(period_totals),
                         "route_operation_count": len({op for route in assigned_routes for op in route}),
+                        "operation_sequences": "|".join(">".join(str(op) for op in route) for route in assigned_routes),
                     }
                     metadata_rows.append(metadata)
                     for layout_name in LAYOUTS:
@@ -108,11 +110,34 @@ def _target_total() -> int:
     return round(base_total * TARGET_UTILIZATION)
 
 
-def _routes(part_count: int, overlap: str) -> tuple[tuple[int, ...], ...]:
-    return (HIGH_ROUTES if overlap == "high" else LOW_ROUTES)[part_count]
+def _routes_by_seed(part_count: int, overlap: str) -> dict[int, tuple[tuple[int, ...], ...]]:
+    pool = list((HIGH_ROUTE_POOL if overlap == "high" else LOW_ROUTE_POOL)[part_count])
+    generated: dict[int, tuple[tuple[int, ...], ...]] = {}
+    signatures: set[tuple[tuple[int, ...], ...]] = set()
+    for seed in SEEDS:
+        for attempt in range(100):
+            rng = random.Random(_sequence_seed(part_count, overlap, seed, attempt))
+            selected = pool[:]
+            rng.shuffle(selected)
+            routes = tuple(selected[:part_count])
+            assigned = list(routes)
+            rng.shuffle(assigned)
+            signature = tuple(assigned)
+            if signature not in signatures:
+                generated[seed] = signature
+                signatures.add(signature)
+                break
+        else:
+            raise RuntimeError(f"failed to generate distinct routes for {part_count=}, {overlap=}")
+    return generated
 
 
-def _seed_value(part_count: int, overlap: str, period_count: int, seed: int) -> int:
+def _sequence_seed(part_count: int, overlap: str, seed: int, attempt: int) -> int:
+    overlap_code = 1 if overlap == "high" else 2
+    return seed + part_count * 1000 + overlap_code * 10000 + attempt * 100000
+
+
+def _demand_seed(part_count: int, overlap: str, period_count: int, seed: int) -> int:
     overlap_code = 1 if overlap == "high" else 2
     return seed + part_count * 1000 + overlap_code * 10000 + period_count * 100000
 
