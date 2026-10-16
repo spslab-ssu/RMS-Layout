@@ -37,6 +37,8 @@ def main() -> None:
     parser.add_argument("--part", action="append", type=int, choices=(1, 3, 5, 7), dest="parts")
     parser.add_argument("--layout", action="append", choices=("layout_18", "layout_22", "layout_27", "layout_32", "layout_37"))
     parser.add_argument("--overlap", action="append", choices=("high", "low", "random"))
+    parser.add_argument("--utilization", action="append", choices=("0.5", "0.75", "1.0", "1.25"),
+                        help="특정 utilization만 실행; 여러 번 지정 가능")
     parser.add_argument("--period-count", action="append", type=int, choices=(2, 4, 6))
     parser.add_argument("--model", action="append", choices=MODEL_NAMES)
     parser.add_argument("--limit", type=int, default=None, help="manifest 행 제한; 점검용")
@@ -57,6 +59,7 @@ def main() -> None:
     rows = [row for row in rows if not args.parts or int(row["part_count"]) in args.parts]
     rows = [row for row in rows if not args.layout or row["layout_name"] in args.layout]
     rows = [row for row in rows if not args.overlap or row.get("overlap") in args.overlap]
+    rows = [row for row in rows if not args.utilization or row.get("utilization") in args.utilization]
     rows = [row for row in rows if not args.period_count or int(row.get("period_count", 0)) in args.period_count]
     rows = [row for row in rows if not args.seed or int(row["seed"]) in args.seed]
     if args.limit is not None:
