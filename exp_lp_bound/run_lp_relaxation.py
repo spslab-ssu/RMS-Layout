@@ -42,7 +42,7 @@ def append_row(path: Path, row: dict) -> None:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Run initial LP relaxation only")
-    parser.add_argument("--manifest", type=Path, default=ROOT / "Data/demands/exp/manifest.csv")
+    parser.add_argument("--manifest", type=Path, default=ROOT / "exp_lp_bound/manifest_exp1.csv")
     parser.add_argument("--output", type=Path, default=ROOT / "Result/lp_relaxation")
     parser.add_argument("--part", action="append", type=int, choices=(1, 3, 5, 7), dest="parts")
     parser.add_argument("--layout", action="append", choices=("layout_18", "layout_22", "layout_27", "layout_32", "layout_37"))

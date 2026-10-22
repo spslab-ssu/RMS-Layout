@@ -2,9 +2,11 @@
 
 이 폴더의 실행기는 MIP를 풀지 않고 각 모델의 초기 LP relaxation만 계산한다.
 
+`manifest_exp1.csv`에는 1차 실험에 실제 사용한 96개 인스턴스가 미리 정리되어 있다.
+
 ## 실행 대상
 
-기본 manifest 기준으로 다음 네 모델을 동일한 인스턴스에 대해 순차 실행한다.
+기본 manifest(`manifest_exp1.csv`) 기준으로 다음 네 모델을 동일한 인스턴스에 대해 순차 실행한다.
 
 - `base`
 - `base_adaptive`
@@ -19,8 +21,7 @@
 cd "/Users/miles/Documents/02_학부연구생/01_RMS/03_Development/RMS-Layout"
 
 python3 exp_lp_bound/run_lp_relaxation.py \
-  --manifest Data/demands/exp/manifest.csv \
-  --output Result/lp_relaxation \
+  --output Result/lp_relaxation_exp1 \
   --time-limit 300
 ```
 
@@ -30,7 +31,7 @@ python3 exp_lp_bound/run_lp_relaxation.py \
 
 ```bash
 python3 exp_lp_bound/run_lp_relaxation.py \
-  --manifest Data/demands/exp/manifest.csv \
+  --manifest exp_lp_bound/manifest_exp1.csv \
   --output Result/lp_relaxation_pilot \
   --part 1 \
   --layout layout_22 \
