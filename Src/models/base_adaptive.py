@@ -59,6 +59,8 @@ try:                                  # warm start 는 선택 기능
 except Exception:                     # noqa: BLE001
     apply_warm_start = None
 
+from Src.models.lp_only import make_lp_only_solution
+
 
 # =============================================================================
 #  공용 헬퍼 (Src/models/base.py 에서 인라인)
@@ -456,6 +458,11 @@ def solve_milp(instance, config) -> RMSSolution:
     )
 
     lp_bound, lp_seconds = _compute_lp_relaxation_bound(model, config)
+
+    if bool(getattr(config, "LP_ONLY", False)):
+        result = make_lp_only_solution(model, instance, lp_bound)
+        result.summary["lp_relaxation_seconds"] = lp_seconds
+        return result
 
     # off 해를 MIP start로 넣으면 joint는 반드시 off 이하가 된다 (off 해는 joint에서도 실행가능).
     if bool(getattr(config, "USE_WARM_START", False)):

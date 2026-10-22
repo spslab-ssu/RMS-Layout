@@ -7,6 +7,7 @@ from typing import Any
 
 import gurobipy as gp
 from gurobipy import GRB
+from Src.models.lp_only import make_lp_only_solution
 
 
 @dataclass
@@ -83,6 +84,9 @@ def solve_milp(instance, config) -> RMSSolution:
 
     model.setObjective(purchase_cost + reconfiguration_cost + handling_cost, GRB.MINIMIZE)
     lp_relaxation_bound = _compute_lp_relaxation_bound(model, config)
+
+    if bool(getattr(config, "LP_ONLY", False)):
+        return make_lp_only_solution(model, instance, lp_relaxation_bound)
 
     if bool(getattr(config, "USE_WARM_START", False)):
         raise ValueError("network model은 아직 기존 warm start CSV 적용을 지원하지 않습니다. MODEL_TYPE='base'로 실행하거나 USE_WARM_START=False로 설정하세요.")
@@ -413,6 +417,7 @@ def _compute_lp_relaxation_bound(model, config) -> float | None:
     relaxation = model.relax()
     relaxation.Params.OutputFlag = 0
     relaxation.optimize()
+    model._lp_relaxation_seconds = float(relaxation.Runtime)
     if relaxation.Status != GRB.OPTIMAL:
         return None
     return _clean_float(relaxation.ObjVal)
